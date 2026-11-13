@@ -1,0 +1,1944 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tischbuch – LÜ Burger &amp; Grill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;600&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --bg:#f4f1ec;--panel:#fff;--ink:#34373d;--muted:#74777d;--line:#e2dcd4;--soft:#efebe5;
+  --accent:#677967;--accent-ink:#fff;--danger:#b3261e;
+  --open:#4f6f8f;--here:#4c8a5a;--done:#9a958d;--late:#c0692f;
+  --series:#677967;
+  --brand:#677967;--beige:#dfd8d0;--taupe:#928370;--hero:url("https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg");
+  --floor:#e9e2d6;--floor-out:#dde2da;--wall:#928370;--chair:#b07a52;--wood1:#d6b98f;--wood2:#b98f62;--woodline:#9c7650;
+  --serif:"Libre Bodoni","Bodoni 72",Didot,Georgia,serif;--sans:Raleway,"Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#17191a;--panel:#202324;--ink:#ebe8e3;--muted:#a3a09a;--line:#36393b;--soft:#292c2d;
+  --accent:#9db39d;--accent-ink:#141a14;--danger:#f2857d;
+  --open:#5f86ad;--here:#4f9a62;--done:#6e6a64;--late:#d0773a;
+  --series:#9db39d;
+  --brand:#465446;--taupe:#bcad99;
+  --floor:#2d2924;--floor-out:#262c27;--wall:#6f6354;--chair:#8f6344;--wood1:#b89a72;--wood2:#99754f;--woodline:#7d5e3f;
+}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.danger{color:var(--danger)}
+button.link{border:0;background:none;padding:2px 4px;color:var(--muted)}
+input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 9px;width:100%}
+input[type=checkbox]{width:auto}
+small{color:var(--muted)}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:18px;letter-spacing:.2px}
+.brand span{font-weight:500;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:1px 8px;margin-left:6px}
+.datenav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.datenav input{width:auto}
+.actions{margin-left:auto;display:flex;gap:8px}
+.kpis{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:104px}
+.kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:4px;padding:12px 16px 0}
+.tabs button{border-radius:8px 8px 0 0;border-bottom:0;color:var(--muted)}
+.tabs button.on{color:var(--ink);font-weight:600;background:var(--panel)}
+main{padding:0 16px 24px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:12px}
+.planwrap{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px}
+@media (max-width:900px){.planwrap{grid-template-columns:minmax(0,1fr)}}
+.plan{overflow:auto;max-height:calc(100vh - 230px);min-height:260px;border:1px solid var(--line);border-radius:8px}
+.pin{position:relative;width:max-content}
+.prow{display:flex}
+.prow .lbl{position:sticky;left:0;z-index:2;flex:none;width:118px;padding:4px 10px;background:var(--panel);border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:center}
+.prow .lbl small{font-size:11px}
+.prow .track{position:relative;flex:none;width:var(--w);height:42px;border-bottom:1px solid var(--line);
+  background-image:repeating-linear-gradient(to right,var(--line) 0 1px,transparent 1px var(--hw))}
+.prow .track.slot{cursor:cell}
+.prow.hours{position:sticky;top:0;z-index:4}
+.prow.hours .lbl{z-index:5;font-size:12px;color:var(--muted)}
+.prow.hours .lbl,.prow.hours .track{height:28px;background-color:var(--soft)}
+.prow.hours span{position:absolute;top:5px;font-size:12px;color:var(--muted);padding-left:5px;font-variant-numeric:tabular-nums}
+.prow.room .lbl,.prow.room .track{height:26px;background:var(--soft);background-image:none;font-size:12px;font-weight:600;white-space:nowrap;overflow:visible}
+.bar{position:absolute;top:4px;height:33px;border-radius:6px;padding:2px 7px;color:#fff;font-size:12px;line-height:1.25;overflow:hidden;white-space:nowrap;cursor:pointer;background:var(--open);border:1px solid rgba(0,0,0,.15)}
+.bar b{display:block;overflow:hidden;text-overflow:ellipsis}
+.bar.arrived{background:var(--here)}.bar.done{background:var(--done)}.bar.late{background:var(--late)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:3px;border:1px solid rgba(255,255,255,.7)}
+.now{position:absolute;top:0;bottom:0;width:2px;background:var(--danger);z-index:1;pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+aside h3,section h3{margin:4px 0 8px;font-size:14px}
+.card{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:8px;cursor:pointer;background:var(--bg)}
+.card:hover{border-color:var(--muted)}
+.empty{color:var(--muted);font-size:13px;padding:6px 0}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+tr.rowlink{cursor:pointer}tr.rowlink:hover{background:var(--soft)}
+.tablewrap{overflow-x:auto}
+.pill{display:inline-block;font-size:12px;border-radius:99px;padding:1px 9px;color:#fff;background:var(--open);white-space:nowrap}
+.pill.arrived{background:var(--here)}.pill.done{background:var(--done)}.pill.late{background:var(--late)}
+.pill.waiting_list{background:var(--muted)}.pill.canceled{background:var(--danger)}
+.tag{display:inline-block;font-size:11px;border-radius:4px;padding:0 6px;color:#fff;margin-right:3px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chips button.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.roomcard{border:1px solid var(--line);border-radius:10px;padding:10px}
+.roomhead{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.trow{display:grid;grid-template-columns:1fr 62px 62px 30px;gap:6px;margin-bottom:6px;align-items:center}
+.trow.h{font-size:11px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:0;width:min(600px,calc(100vw - 24px));max-height:calc(100vh - 24px)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dh h2{margin:0;font-size:16px}
+.db{padding:14px 16px;display:grid;gap:10px}
+.df{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:520px){.grid4{grid-template-columns:1fr 1fr}}
+label.f{display:grid;gap:3px;font-size:12px;color:var(--muted)}
+.picker{border:1px solid var(--line);border-radius:8px;padding:8px;max-height:170px;overflow:auto}
+.proom{margin-bottom:6px;font-size:12px;color:var(--muted)}
+.tchip{display:inline-flex;gap:4px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin:3px 4px 0 0;color:var(--ink);font-size:13px;cursor:pointer}
+.tchip.busy{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.hint{font-size:13px;color:var(--muted)}.err{color:var(--danger);font-size:13px;min-height:1em}
+.statebox{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--soft);border-radius:8px;padding:8px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:9px 16px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+#toast.on{opacity:1}
+.floorbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.floorbar input[type=range]{width:min(340px,100%);padding:0;border:0;background:none;accent-color:var(--accent)}
+.floorbar output{font-weight:700;font-size:18px;font-variant-numeric:tabular-nums;min-width:52px}
+.floors{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(664px,100%),1fr));gap:12px}
+.floor{border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;background:var(--panel)}
+.floor h3 small{font-weight:400;margin-left:6px}
+.fscroll{overflow-x:auto}
+.fcanvas{position:relative;width:640px;background:var(--soft);border-radius:8px}
+.edit .fcanvas{background-image:radial-gradient(var(--line) 1.5px,transparent 1.5px);background-size:20px 20px;background-position:-10px -10px}
+.ftab{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:10px;border:2px solid var(--line);background:var(--panel);padding:2px 4px;font-size:12px;line-height:1.2;cursor:pointer;overflow:hidden;user-select:none;-webkit-user-select:none}
+.ftab b{font-size:14px}
+.ftab span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ftab.round{border-radius:50%}
+.ftab:hover{border-color:var(--muted)}
+.ftab.not_started,.ftab.late,.ftab.arrived,.ftab.done{color:#fff;border-color:rgba(0,0,0,.15)}
+.ftab.not_started{background:var(--open)}.ftab.late{background:var(--late)}.ftab.arrived{background:var(--here)}.ftab.done{background:var(--done)}
+.ftab.soon{border-style:dashed;border-color:var(--open)}
+.edit .ftab{cursor:grab;touch-action:none}
+.ftab.drag{cursor:grabbing;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:2}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:12px;margin-top:12px}
+.chart{border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.chart h3{margin:0;font-size:14px}
+.chart p{margin:2px 0 8px;font-size:12px;color:var(--muted)}
+.chart svg{display:block;width:100%;height:auto}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .ax{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.chart .val{fill:var(--ink);font-size:11px;font-weight:600}
+.chart path.bar{fill:var(--series);pointer-events:none}
+.chart .hit:hover + path.bar{opacity:.75}
+.hrow{display:grid;grid-template-columns:120px 1fr 92px;gap:10px;align-items:center;padding:5px 0;font-size:13px}
+.hrow .ht{height:14px;display:block}
+.hrow .ht i{display:block;height:100%;min-width:2px;background:var(--series);border-radius:0 4px 4px 0}
+.hrow:hover .ht i{opacity:.75}
+.hrow .hv{font-variant-numeric:tabular-nums;white-space:nowrap}
+.hrow .hv small{margin-left:4px}
+details.tv{margin-top:8px;font-size:12px}
+details.tv summary{cursor:pointer;color:var(--muted)}
+details.tv td{padding:3px 8px;font-variant-numeric:tabular-nums}
+details.tv td:last-child{text-align:right}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--panel);font-size:12px;padding:5px 9px;border-radius:6px;max-width:260px;display:none}
+.grid3{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:10px}
+@media (max-width:520px){.grid3{grid-template-columns:1fr}}
+.gbar{display:flex;gap:8px;margin-bottom:10px}
+.gbar input{max-width:380px}
+.gbar button{white-space:nowrap}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.guestlink{margin-left:8px;font-size:13px;color:var(--accent)}
+.orow{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:14px}
+.lock{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-bottom:6px;max-width:460px}
+.addlock{display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px}
+.addlock label{flex:1;min-width:110px}
+body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main{display:none}
+#guest{max-width:580px;margin:0 auto;padding:24px 16px 40px}
+.gcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+.gcard h1{margin:0 0 2px;font-size:24px}
+.gcard h3{margin:18px 0 8px;font-size:14px}
+.gsub{color:var(--muted);margin:0 0 16px}
+.g3{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:10px}
+@media (max-width:520px){.g3{grid-template-columns:1fr}}
+.gslots{display:flex;flex-wrap:wrap;gap:8px}
+.gslots button{min-width:70px;font-variant-numeric:tabular-nums}
+.gslots button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.gslots button:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.gform{display:grid;gap:10px;margin-top:6px}
+.gform button{padding:11px;font-size:16px}
+.gsum{background:var(--soft);border-radius:10px;padding:12px 14px;margin:14px 0;line-height:1.6}
+.mailbody{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--soft);border-radius:8px;padding:12px;font-size:13px;line-height:1.5;max-height:50vh;overflow:auto}
+.mailcfg{display:grid;gap:8px;max-width:560px;margin-bottom:16px}
+a.btn{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:7px 12px;color:inherit;text-decoration:none;background:var(--panel)}
+a.btn:hover{border-color:var(--muted)}
+.consent{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted)}
+.foot{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center}
+
+/* ===== LÜ-Design ===== */
+body{font-family:var(--sans);font-weight:400}
+button{border-radius:2px;text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:600;padding:9px 14px}
+button.link{text-transform:none;letter-spacing:0;font-size:inherit;font-weight:400}
+input,select,textarea{border-radius:2px}
+.top{background:var(--brand);border:0;color:#fff;padding:10px 20px}
+.top button{background:transparent;border-color:rgba(255,255,255,.55);color:#fff}
+.top button:hover{border-color:#fff}
+.top button.primary{background:var(--beige);border-color:var(--beige);color:#34373d}
+.top input{color:var(--ink)}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:600;font-size:22px;letter-spacing:.06em;color:var(--beige)}
+.brand img{height:46px;width:auto;display:block}
+.brand span{font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--beige);border-color:rgba(223,216,208,.5);border-radius:2px;padding:3px 8px;margin:0}
+.kpis{padding:16px 20px 0}.tabs{padding:14px 20px 0;flex-wrap:wrap}main{padding:0 20px 28px}
+.kpi{border-radius:2px;padding:10px 16px}
+.kpi b{font-family:var(--serif);font-weight:600;font-size:24px}
+.kpi span{text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+.tabs button{border-radius:2px 2px 0 0;font-size:11px}
+.tabs button.on{box-shadow:inset 0 2px 0 var(--accent)}
+section{border-radius:0 2px 2px 2px;padding:16px}
+section h3,aside h3,.chart h3,.floor h3,.gcard h3{font-family:var(--serif);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--taupe);font-size:13px}
+.floor h3 small,section h3 small{font-family:var(--sans);letter-spacing:0;text-transform:none}
+.dh h2{font-family:var(--serif);font-weight:600;letter-spacing:.04em;font-size:19px}
+.card,.chart,.floor,.roomcard,dialog,.plan,.picker,.lock,.gsum,.statebox,.bar,.mailbody,.tchip,#tip{border-radius:3px}
+th{text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+label.f{text-transform:uppercase;letter-spacing:.06em;font-size:10px}
+label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing:0;font-size:15px}
+/* ===== Grundriss: Tische mit Stühlen ===== */
+.fcanvas{width:650px;border:5px solid var(--wall);border-radius:3px;background-color:var(--floor);
+  background-image:repeating-linear-gradient(90deg,rgba(90,70,40,.10) 0 1px,transparent 1px 46px),repeating-linear-gradient(0deg,rgba(90,70,40,.05) 0 1px,transparent 1px 230px)}
+.fcanvas.out{background-color:var(--floor-out);border-style:dashed;border-width:3px;border-color:var(--accent);
+  background-image:repeating-linear-gradient(90deg,rgba(60,80,60,.12) 0 1px,transparent 1px 40px),repeating-linear-gradient(0deg,rgba(60,80,60,.12) 0 1px,transparent 1px 40px)}
+.ftab,.ftab.round,.ftab.not_started,.ftab.late,.ftab.arrived,.ftab.done,.ftab.soon{border:0;background:none;border-radius:0;padding:0;overflow:visible;color:#3b2a1a;
+  filter:drop-shadow(0 2px 3px rgba(40,30,20,.3));transition:filter .15s,transform .15s}
+.ftab:hover{filter:drop-shadow(0 4px 8px rgba(40,30,20,.45));transform:translateY(-1px)}
+.ftab.not_started{--st:var(--open)}.ftab.late{--st:var(--late)}.ftab.arrived{--st:var(--here)}.ftab.done{--st:var(--done)}
+.ftab.occ{color:#fff}
+.tsvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tsvg .top{fill:url(#wood);stroke:var(--woodline);stroke-width:1}
+.tsvg .grain{stroke:var(--woodline);stroke-width:.6;opacity:.35;fill:none}
+.ftab.occ .tsvg .top{fill:var(--st);stroke:rgba(0,0,0,.25)}
+.ftab.occ .tsvg .grain{display:none}
+.ftab.soon .tsvg .top{stroke:var(--open);stroke-width:2.5;stroke-dasharray:6 4}
+.tsvg .chair{fill:var(--chair);stroke:rgba(0,0,0,.25);stroke-width:.8}
+.tsvg .chair.on{fill:var(--st)}
+.ftxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;padding:0 10px}
+.ftxt b{font-family:var(--serif);font-size:15px;letter-spacing:.04em}
+.ftab.round .ftxt{padding:0 14px}
+.ftab.round .ftxt span{font-size:11px}
+.legend i.wood{background:linear-gradient(var(--wood1),var(--wood2))}
+/* ===== Kundenseite ===== */
+#guest{max-width:none;margin:0;padding:0;position:relative}
+.glang{position:absolute;top:10px;right:12px;z-index:3;display:flex;gap:4px}
+.glang button{padding:5px 9px;font-size:11px;background:rgba(255,255,255,.88);color:#34373d;border-color:transparent}
+.glang button.on{background:var(--accent);color:var(--accent-ink)}
+body.embed .glang{position:static;justify-content:flex-end;margin-bottom:6px}
+.ghero{background:var(--hero-shade,linear-gradient(rgba(30,34,30,.5),rgba(30,34,30,.7))),var(--hero) center/cover no-repeat,var(--brand);color:var(--hero-ink,#fff);text-align:center;padding:34px 16px 96px}
+.ghero img{height:96px;width:auto}
+.gkick{font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin:14px 0 8px;opacity:.9}
+.gtitle{font-family:var(--serif);font-weight:600;font-size:clamp(26px,5vw,40px);letter-spacing:.05em;line-height:1.15;text-wrap:balance}
+#gbody{max-width:620px;margin:-64px auto 0;padding:0 16px 28px}
+.gcard{border:0;border-radius:3px;padding:28px;box-shadow:0 12px 44px rgba(40,30,20,.14)}
+.gcard h1{font-family:var(--serif);font-weight:600;font-size:28px;letter-spacing:.04em;color:var(--taupe)}
+.gsub{font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+.gcard h3{margin-top:22px}
+.gslots button{border-radius:2px;font-size:13px;letter-spacing:.04em;padding:10px 12px}
+.gform button{font-size:13px;padding:14px}
+.gfoot a{color:inherit}
+.gfoot{text-align:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:0 16px 30px}
+body.embed{background:transparent}
+body.embed .ghero,body.embed .gfoot{display:none}
+body.embed #gbody{margin:0 auto;padding:0}
+body.embed .gcard{box-shadow:none;border:1px solid var(--line)}
+.embedrow{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:8px;max-width:820px}
+.embedrow input,.embedrow textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+@media (max-width:620px){.embedrow{grid-template-columns:1fr}}
+.howto{max-width:820px;font-size:13px;line-height:1.55;color:var(--muted)}
+.howto b{color:var(--ink)}
+/* ===== Feinschliff ===== */
+@media (min-width:1000px){
+  body:not(.guest){display:grid;grid-template-columns:212px minmax(0,1fr);grid-template-rows:auto auto 1fr;grid-template-areas:"top top" "nav kpis" "nav main";min-height:100vh}
+  .top{grid-area:top}.kpis{grid-area:kpis}main{grid-area:main;padding-top:14px}
+  nav.tabs{grid-area:nav;flex-direction:column;flex-wrap:nowrap;gap:2px;padding:18px 12px;background:var(--panel);border-right:1px solid var(--line)}
+  nav.tabs::before{content:"Bereiche";font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 14px 8px}
+  .tabs button{border:0;border-radius:3px;text-align:left;padding:12px 14px;background:none}
+  .tabs button:hover{background:var(--soft)}
+  .tabs button.on{background:var(--soft);box-shadow:inset 3px 0 0 var(--accent)}
+  section{border-radius:3px}
+}
+.top{box-shadow:0 1px 0 rgba(0,0,0,.12);position:relative;z-index:6}
+.kpis{gap:0}
+.kpi{flex:1;min-width:108px;border-radius:0;margin-right:-1px;border-top:2px solid var(--beige)}
+.kpi:first-child{border-radius:3px 0 0 3px}.kpi:last-child{border-radius:0 3px 3px 0}
+section,.kpi{box-shadow:0 1px 3px rgba(40,30,20,.05)}
+.bar{border:0;border-left:4px solid rgba(0,0,0,.22);border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.2);padding:3px 8px;transition:filter .12s,transform .12s}
+.bar:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.prow.room .lbl{font-family:var(--serif);letter-spacing:.1em;text-transform:uppercase;color:var(--taupe)}
+.prow:not(.room):not(.hours):hover .track{background-color:rgba(103,121,103,.07)}
+.now::before{content:"";position:absolute;top:0;left:-4px;width:10px;height:10px;border-radius:50%;background:var(--danger)}
+.plan{border-radius:3px}
+dialog{border:0;box-shadow:0 24px 80px rgba(0,0,0,.32)}
+dialog::backdrop{background:rgba(30,34,30,.5);backdrop-filter:blur(2px)}
+tr.rowlink td{padding-top:10px;padding-bottom:10px}
+.card{background:var(--panel);border-left:3px solid var(--beige)}
+.fcanvas{box-shadow:inset 0 0 46px rgba(60,40,20,.14)}
+.tsvg .back{fill:rgba(0,0,0,.3)}
+.tsvg .plate{fill:rgba(255,255,255,.55);stroke:rgba(0,0,0,.12);stroke-width:.6}
+.ftab.occ .tsvg .plate{fill:rgba(255,255,255,.28);stroke:none}
+/* Kundenseite */
+.gsteps{display:flex;gap:6px;margin:-4px 0 18px}
+.gsteps span{flex:1;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-top:2px solid var(--line);padding-top:7px}
+.gsteps span.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+.gchips{display:flex;flex-wrap:wrap;gap:8px}
+.gchips button{min-width:46px;padding:10px 0;font-size:14px;letter-spacing:0}
+.gchips button.on,.gchips.days button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.gchips.days{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+.gchips.days button{flex:1 0 64px;display:grid;gap:1px;padding:8px 4px;text-transform:none}
+.gchips.days small{color:inherit;opacity:.75;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.gchips.days b{font-family:var(--serif);font-size:20px}
+.gslots{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr))}
+.gpick{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--soft);border-left:3px solid var(--accent);padding:10px 14px;margin:18px 0 4px;border-radius:3px}
+.gpick b{font-family:var(--serif);font-size:17px}
+@media (max-width:520px){.gcard{padding:20px 16px}.ghero{padding:26px 16px 88px}.ghero img{height:76px}}
+.top{color:var(--brand-ink,#fff)}
+.top button{color:var(--brand-ink,#fff);border-color:color-mix(in srgb,var(--brand-ink,#fff) 50%,transparent)}
+.top button:hover{border-color:var(--brand-ink,#fff)}
+.brand{color:var(--brand-ink,var(--beige))}
+.brand span{color:inherit;border-color:currentColor;opacity:.8}
+.gtitle{display:inline-block;background:var(--title-bg,transparent);color:var(--title-ink,inherit);padding:4px 14px}
+.twin{display:grid;grid-template-columns:minmax(120px,1.2fr) 110px 110px minmax(250px,2fr) 30px;gap:10px;align-items:end;margin-bottom:10px;max-width:860px}
+.wdays{display:flex;gap:4px;flex-wrap:wrap}
+.wdays label{display:flex;align-items:center;gap:3px;font-size:12px;border:1px solid var(--line);border-radius:2px;padding:6px 7px;cursor:pointer}
+@media (max-width:760px){.twin{grid-template-columns:1fr 1fr}.wdays{grid-column:1/-1}}
+.note{display:flex;justify-content:space-between;gap:6px;align-items:flex-start;background:var(--panel);border-left:3px solid var(--accent);border-radius:3px;padding:7px 10px;margin-bottom:6px;font-size:14px}
+.noteadd{display:flex;gap:6px}.noteadd button{padding:7px 12px}
+.calhead{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.calgrid.head{margin-bottom:6px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center}
+.cday{position:relative;min-height:86px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;text-transform:none;letter-spacing:0;font-weight:400;font-size:12px;padding:8px 9px 12px;border-radius:3px;overflow:hidden}
+.cday.off{border:0;background:none;min-height:0}
+.cday b{font-family:var(--serif);font-size:18px}
+.cday span{font-size:12px}.cday .mut{color:var(--muted)}
+.cday small{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.cday i{position:absolute;left:0;bottom:0;height:4px;background:var(--accent)}
+.cday.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.cday.sel{background:var(--soft)}
+.cday.closed{background:repeating-linear-gradient(135deg,transparent 0 8px,rgba(0,0,0,.035) 8px 16px)}
+@media (max-width:700px){.cday{min-height:60px;padding:5px}.cday span,.cday small{display:none}}
+.flagrows{display:grid;gap:6px;max-width:420px;margin-bottom:10px}
+.flagrow{display:grid;grid-template-columns:46px 1fr 30px;gap:8px;align-items:center}
+.flagrow input[type=color]{padding:2px;height:36px}
+.comborow{display:grid;grid-template-columns:1fr 70px 70px 30px;gap:8px;align-items:center}
+.loglist{font-size:12px;line-height:1.5;max-height:150px;overflow:auto;margin-top:6px}
+.loglist div{border-bottom:1px solid var(--line);padding:3px 0}
+.mergerow{display:flex;gap:8px;align-items:end}
+#cards{display:none}
+.printhead{display:none}
+@media print{
+  body:not(.guest){display:block;background:#fff}
+  .top,.kpis,nav.tabs,.foot,.chips,#toast,#tip,dialog{display:none!important}
+  main{padding:0}section{border:0;box-shadow:none;padding:0}
+  section:not(#v-list){display:none!important}
+  body.pcards main{display:none!important}
+  body.pcards #cards{display:grid!important;grid-template-columns:1fr 1fr;gap:6mm}
+  .tcard{border:1px solid #999;height:62mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2mm;text-align:center;break-inside:avoid;padding:4mm}
+  .tcard em{font-style:normal;letter-spacing:.3em;text-transform:uppercase;font-size:9pt}
+  .tcard b{font-family:var(--serif);font-size:22pt;line-height:1.1}
+  .tcard span{font-size:12pt}.tcard small{font-size:8pt;color:#555;letter-spacing:.08em;text-transform:uppercase}
+  #v-list{display:block!important}
+  .printhead{display:block;margin-bottom:10px}.printhead h2{margin:0;font-family:var(--serif)}.printhead p{margin:2px 0}
+  .pill{color:#000;background:none;border:1px solid #999}.tag{color:#000;background:none!important;border:1px solid #999}
+  td,th{padding:5px 6px;font-size:12px}tr{break-inside:avoid}
+}
+#venue-sel{width:auto;max-width:230px;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:0;padding:6px 8px;color:var(--ink)}
+#brandname{font-size:18px;letter-spacing:.08em}
+#login{position:fixed;inset:0;z-index:100;background:var(--brand);display:grid;place-items:center;padding:16px;overflow:auto}
+#login form{background:var(--panel);border-radius:3px;padding:28px;width:min(380px,100%);display:grid;gap:12px;box-shadow:0 12px 44px rgba(0,0,0,.25)}
+#login h1{margin:0;font-family:var(--serif);font-weight:600;font-size:26px;letter-spacing:.04em;color:var(--taupe)}
+#login button{padding:12px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b>Tischbuch<span>Prototyp · Beispieldaten</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
+  <div class="datenav">
+    <button data-act="day" data-n="-1" aria-label="Vorheriger Tag">‹</button>
+    <button data-act="today">Heute</button>
+    <button data-act="day" data-n="1" aria-label="Nächster Tag">›</button>
+    <input type="date" id="date" aria-label="Datum">
+    <strong id="dateLabel"></strong>
+  </div>
+  <div class="actions">
+    <button data-act="logout" id="b-logout" hidden>Abmelden</button>
+    <button data-act="walkin">Walk-in</button>
+    <button class="primary" data-act="new">+ Reservierung</button>
+  </div>
+</header>
+<div class="kpis" id="kpis"></div>
+<nav class="tabs">
+  <button data-act="view" data-v="plan">Tagesplan</button>
+  <button data-act="view" data-v="floor">Grundriss</button>
+  <button data-act="view" data-v="cal">Kalender</button>
+  <button data-act="view" data-v="list">Liste</button>
+  <button data-act="view" data-v="guests">Gäste</button>
+  <button data-act="view" data-v="stats">Statistik</button>
+  <button data-act="view" data-v="setup">Räume &amp; Tische</button>
+  <button data-act="view" data-v="online">Online-Buchung</button>
+  <button data-act="view" data-v="mails">E-Mails</button>
+</nav>
+<main>
+  <section id="v-plan">
+    <div class="planwrap">
+      <div>
+        <div class="plan" id="plan"></div>
+        <div class="legend">
+          <span><i style="background:var(--open)"></i>erwartet</span>
+          <span><i style="background:var(--late)"></i>verspätet</span>
+          <span><i style="background:var(--here)"></i>angekommen</span>
+          <span><i style="background:var(--done)"></i>gegangen</span>
+          <span>Klick auf eine freie Stelle legt eine Reservierung an.</span>
+        </div>
+      </div>
+      <aside id="wait"></aside>
+    </div>
+  </section>
+  <section id="v-floor" hidden></section>
+  <section id="v-cal" hidden></section>
+  <section id="v-list" hidden></section>
+  <section id="v-guests" hidden>
+    <div class="gbar"><input type="search" id="c-search" placeholder="Suchen: Name, Telefon, Firma, E-Mail" aria-label="Gäste suchen"><button data-act="csv">CSV-Export</button><button data-act="newcontact">+ Gast</button></div>
+    <div class="tablewrap" id="c-rows"></div>
+  </section>
+  <section id="v-stats" hidden></section>
+  <section id="v-setup" hidden></section>
+  <section id="v-online" hidden></section>
+  <section id="v-mails" hidden></section>
+  <div class="foot">
+    <span>Alle Daten sind erfunden und liegen nur in diesem Browser.</span>
+    <button class="link" data-act="reset">Beispieldaten zurücksetzen</button>
+  </div>
+</main>
+
+<div id="guest" hidden>
+  <div class="glang"><button type="button" data-act="glang" data-l="de">DE</button><button type="button" data-act="glang" data-l="en">EN</button></div>
+  <div class="ghero"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><div class="gkick" id="g-brand"></div><div class="gtitle">Happiness is burger-shaped</div></div>
+  <div id="gbody"></div>
+  <div class="gfoot"><span id="g-links"></span>A part of Lürzer · Obertauern</div>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--wood1)"/><stop offset="1" style="stop-color:var(--wood2)"/></linearGradient></defs></svg>
+
+<dialog id="dlg">
+  <form id="resform">
+    <div class="dh"><h2 id="d-title">Reservierung</h2><button type="button" class="link" data-act="close" aria-label="Schließen">✕</button></div>
+    <div class="db">
+      <div class="statebox" id="d-state" hidden></div>
+      <div class="grid3">
+        <label class="f">Name<input id="f-name" autocomplete="off" list="dl-contacts"></label>
+        <label class="f">Telefon<input id="f-phone" autocomplete="off"></label>
+        <label class="f">E-Mail<input id="f-email" autocomplete="off"></label>
+      </div>
+      <datalist id="dl-contacts"></datalist>
+      <div class="hint" id="f-guest"></div>
+      <div class="grid4">
+        <label class="f">Datum<input type="date" id="f-date"></label>
+        <label class="f">Von<select id="f-start"></select></label>
+        <label class="f">Bis<select id="f-end"></select></label>
+        <label class="f">Personen<input type="number" id="f-people" min="1" max="99"></label>
+      </div>
+      <div class="grid2">
+        <label class="f">davon Kindersitze<input type="number" id="f-children" min="0" max="20"></label>
+        <label class="f">Besonderheiten<div id="f-flags"></div></label>
+      </div>
+      <div id="d-series">
+        <div class="grid2">
+          <label class="f">Wiederholen<select id="f-repeat"><option value="none">Einmalig</option><option value="daily">Täglich</option><option value="weekly">Wöchentlich</option><option value="biweekly">Alle 2 Wochen</option></select></label>
+          <label class="f" id="l-until">Wiederholen bis<input type="date" id="f-until"></label>
+        </div>
+        <div class="hint" id="f-serieshint"></div>
+      </div>
+      <div class="hint" id="f-seriesinfo" hidden></div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <small>Tische (durchgestrichen = in dieser Zeit belegt)</small>
+          <button type="button" data-act="auto">Automatisch zuweisen</button>
+        </div>
+        <div class="picker" id="f-tables"></div>
+        <div class="hint" id="f-hint"></div>
+      </div>
+      <label class="f">Bemerkung<textarea id="f-note" rows="2"></textarea></label>
+      <div class="statebox" id="d-cancel" hidden>
+        <select id="f-reason" style="width:auto"><option value="other_reason">Anderer Grund</option><option value="guest_did_not_arrive">Gast nicht erschienen</option></select>
+        <label id="l-allseries" style="font-size:13px"><input type="checkbox" id="f-allseries"> <span></span></label>
+        <button type="button" class="danger" data-act="cancelok">Storno bestätigen</button>
+      </div>
+      <details id="d-log" hidden><summary style="cursor:pointer;font-size:13px;color:var(--muted)">Verlauf</summary><div class="loglist" id="f-log"></div></details>
+      <div class="err" id="f-err"></div>
+    </div>
+    <div class="df">
+      <button type="button" class="danger" id="b-cancel" data-act="cancelask" style="margin-right:auto">Stornieren</button>
+      <button type="button" data-act="close">Abbrechen</button>
+      <button type="submit" class="primary" id="b-save">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="kdlg">
+  <form id="kform" novalidate>
+    <div class="dh"><h2 id="k-title">Gast</h2><button type="button" class="link" data-act="close" aria-label="Schließen">✕</button></div>
+    <div class="db">
+      <div class="statebox" id="k-stats" hidden></div>
+      <div class="grid2"><label class="f">Vorname<input id="k-first" autocomplete="off"></label><label class="f">Nachname<input id="k-last" autocomplete="off"></label></div>
+      <div class="grid2"><label class="f">Telefon<input id="k-phone" autocomplete="off"></label><label class="f">E-Mail<input id="k-email" autocomplete="off"></label></div>
+      <div class="grid2"><label class="f">Firma<input id="k-company" autocomplete="off"></label><label class="f">Geburtstag<input id="k-birthday" type="date"></label></div>
+      <label class="f">Notiz zum Gast<textarea id="k-note" rows="2"></textarea></label>
+      <label class="consent"><input type="checkbox" id="k-locked"> Reservierungssperre (keine Online-Buchung, Warnung beim Eintragen)</label>
+      <div class="mergerow" id="k-mergerow"><label class="f" style="flex:1">Doppelten Eintrag hier hinein zusammenführen<select id="k-merge"></select></label><button type="button" data-act="merge">Zusammenführen</button></div>
+      <div id="k-hist"></div>
+      <div class="err" id="k-err"></div>
+    </div>
+    <div class="df">
+      <button type="button" class="danger" id="k-del" data-act="delcontact" style="margin-right:auto">Löschen</button>
+      <button type="button" id="k-res" data-act="resfor">Reservierung anlegen</button>
+      <button type="button" data-act="close">Abbrechen</button>
+      <button type="submit" class="primary">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="wdlg">
+  <form id="walkform">
+    <div class="dh"><h2>Walk-in (Gäste ohne Reservierung)</h2><button type="button" class="link" data-act="close" aria-label="Schließen">✕</button></div>
+    <div class="db">
+      <div class="hint" id="w-time"></div>
+      <div class="grid2">
+        <label class="f">Personen<input type="number" id="w-people" min="1" max="99" value="2"></label>
+        <label class="f">Freier Tisch<select id="w-table"></select></label>
+      </div>
+      <div class="err" id="w-err"></div>
+    </div>
+    <div class="df"><button type="button" data-act="close">Abbrechen</button><button type="submit" class="primary">Platzieren</button></div>
+  </form>
+</dialog>
+
+<div id="login" hidden><form id="loginform">
+  <h1>Tischbuch</h1><small id="login-sub">Anmeldung für das Personal</small>
+  <label class="f">E-Mail<input id="l-mail" type="email" autocomplete="username" required></label>
+  <label class="f">Passwort<input id="l-pass" type="password" autocomplete="current-password" required></label>
+  <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="l-show"> Passwort anzeigen</label>
+  <div class="err" id="l-err"></div>
+  <button type="submit" class="primary">Anmelden</button>
+  <button type="button" class="link" data-act="forgot" style="justify-self:start">Passwort vergessen?</button>
+</form>
+<form id="newpassform" hidden>
+  <h1>Neues Passwort</h1><small>Bitte ein neues Passwort für das Tischbuch vergeben (mindestens 8 Zeichen).</small>
+  <label class="f">Neues Passwort<input id="np-pass" type="password" autocomplete="new-password" minlength="8" required></label>
+  <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="np-show"> Passwort anzeigen</label>
+  <div class="err" id="np-err"></div>
+  <button type="submit" class="primary">Passwort speichern</button>
+</form></div>
+<dialog id="mdlg">
+  <div class="dh"><h2 id="m-subject">E-Mail</h2><button type="button" class="link" data-act="close" aria-label="Schließen">✕</button></div>
+  <div class="db"><small id="m-meta"></small><div class="mailbody" id="m-body"></div></div>
+  <div class="df"><a class="btn" id="m-mailto" href="#">Im Mailprogramm öffnen</a><button type="button" data-act="close">Schließen</button></div>
+</dialog>
+<dialog id="cdlg">
+  <div class="db"><div id="c-text"></div></div>
+  <div class="df"><button type="button" id="c-no">Abbrechen</button><button type="button" class="primary" id="c-yes">Ja</button></div>
+</dialog>
+<div id="cards"></div>
+<div id="toast" role="status"></div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+'use strict';
+const KEY='tischbuch.v1', PX=22, TO=1440, LAST_END=1425; // spätestes Ende 23:45
+const $=(s,r=document)=>r.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const t2m=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
+const m2t=m=>pad(Math.floor(m/60))+':'+pad(m%60);
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const addDays=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return iso(d)};
+const today=()=>iso(new Date());
+const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+let S, ui={view:'plan',date:today(),filter:'all',firstScroll:true,statDays:30,floorTime:null,floorEdit:false};
+let curId=null, pickSel=[];
+
+/* ---------- Daten ---------- */
+const QS=new URLSearchParams(location.search), GUEST=QS.has('gast'), EMBED=QS.has('embed');
+const SOURCES={website:'Website',google:'Google',facebook:'Facebook',instagram:'Instagram'};
+const SRC=SOURCES[QS.get('quelle')]?QS.get('quelle'):'';
+
+/* ---------- Online-Betrieb (Supabase) ----------
+   Mit ?demo=1 läuft die Seite wie der Prototyp nur im Browser, mit Beispieldaten.
+   Der Schlüssel unten ist der ÖFFENTLICHE Schlüssel; er erlaubt nur, was die Zugriffsrechte der Datenbank freigeben. */
+const SUPA_URL='https://cttvfdoxgvhzfrrnqkgn.supabase.co', SUPA_KEY='sb_publishable_kZhKo_346RE1GFJtrbio1g_ZXGCwkth';
+const VENUE_SLUG=/^[a-z0-9-]{1,40}$/.test(QS.get('betrieb')||'')?QS.get('betrieb'):'lue';
+const RECOVERY=/type=recovery/.test(location.hash);   // Rücksprung aus der E-Mail „Passwort zurücksetzen“
+const ONLINE=!QS.has('demo')&&!!window.supabase;
+const DB=ONLINE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
+const uid=()=>crypto.randomUUID();
+const hm=t=>(t||'').slice(0,5);
+let VENUE=null, shadow=null, syncQ=Promise.resolve(), syncBusy=0, pendingMails=[];
+
+async function fetchAll(table,build){
+  let out=[];
+  for(let from=0;;from+=1000){
+    const {data,error}=await build(DB.from(table).select('*')).range(from,from+999);
+    if(error) throw error;
+    out=out.concat(data); if(data.length<1000) return out;
+  }
+}
+const one=async q=>{const {data,error}=await q; if(error) throw error; return data;};
+/* Alles für den Betrieb laden und in die Form bringen, mit der die Oberfläche arbeitet */
+async function dbLoad(){
+  const v=VENUE.id, eq=q=>q.eq('venue_id',v), since=addDays(today(),-70);
+  const [vr,times,rooms,tables,flags,contacts,res,rt,locks,mails,notes,combos]=await Promise.all([
+    one(DB.from('venues').select('*').eq('id',v).single()),
+    fetchAll('venue_times',q=>eq(q).order('sort').order('from_time').order('id')),
+    fetchAll('rooms',q=>eq(q).order('sort').order('name').order('id')),
+    fetchAll('tables',q=>eq(q).order('sort').order('name').order('id')),
+    fetchAll('flags',q=>eq(q).order('label').order('id')),
+    fetchAll('contacts',q=>eq(q).order('created_at').order('id')),
+    fetchAll('reservations',q=>eq(q).gte('date',since).order('date').order('start_time').order('id')),
+    fetchAll('reservation_tables',q=>eq(q).order('reservation_id').order('table_id')),
+    fetchAll('online_locks',q=>eq(q).order('date').order('id')),
+    one(DB.from('mails').select('*').eq('venue_id',v).order('created_at',{ascending:false}).limit(200)),
+    fetchAll('day_notes',q=>eq(q).gte('date',since).order('date').order('created_at').order('id')),
+    fetchAll('table_combos',q=>eq(q).order('sort').order('id'))
+  ]);
+  const tb={}; for(const x of rt) (tb[x.reservation_id]??=[]).push(x.table_id);
+  VENUE=vr;
+  S={v:1,
+    rooms:rooms.map(r=>({id:r.id,name:r.name,is_outside:r.is_outside,tables:tables.filter(t=>t.room_id===r.id).map(t=>({id:t.id,name:t.name,min_capacity:t.min_capacity,max_capacity:t.max_capacity,x:t.x,y:t.y}))})),
+    flags:flags.map(f=>({id:f.id,label:f.label,color:f.color})),
+    reservations:res.map(r=>({...r,start_time:hm(r.start_time),end_time:hm(r.end_time),flags:r.flags||[],table_ids:tb[r.id]||[]})),
+    defaults:{show_from:hm(vr.show_from),standard_duration:m2t(vr.standard_duration_min)},
+    online:{name:vr.name,public_url:vr.public_url,max_pax:vr.online_max_pax,lead_minutes:vr.online_lead_minutes,slot_step:vr.online_slot_step,days_ahead:vr.online_days_ahead,cancel_hours:vr.online_cancel_hours,limit_per_hour:vr.online_limit_per_hour||0,open_from:vr.online_open_from||'',
+      times:times.map(t=>({id:t.id,name:t.name,from:hm(t.from_time),to:hm(t.to_time),days:t.days||[1,2,3,4,5,6,7]}))},
+    locks:locks.map(l=>({id:l.id,date:l.date,from:hm(l.from_time),to:hm(l.to_time)})),
+    notes:notes.map(n=>({id:n.id,date:n.date,text:n.text})),
+    combos:combos.map(c=>({id:c.id,table_ids:c.table_ids,min_capacity:c.min_capacity,max_capacity:c.max_capacity})),
+    contacts:contacts.map(c=>({...c,birthday:c.birthday||''})),
+    mails:mails.map(m=>({id:m.id,kind:m.kind,to:m.to_email,subject:m.subject,body:m.body,res_id:m.reservation_id,created_at:m.created_at})),
+    mailcfg:{confirm:vr.mail_confirm,cancel:vr.mail_cancel,signature:vr.mail_signature}};
+  shadow=flat(S);
+}
+/* Zustand der Oberfläche als Datenbank-Zeilen (Tabelle → Schlüssel → Zeile) */
+function flat(st){
+  const v=VENUE.id, o=st.online, T={venues:{},venue_times:{},rooms:{},tables:{},flags:{},contacts:{},reservations:{},online_locks:{},day_notes:{},table_combos:{},rt:{}};
+  T.venues[v]={name:o.name,public_url:o.public_url||'',show_from:st.defaults.show_from,standard_duration_min:t2m(st.defaults.standard_duration),
+    online_max_pax:o.max_pax,online_lead_minutes:o.lead_minutes,online_slot_step:o.slot_step,online_days_ahead:o.days_ahead,online_cancel_hours:o.cancel_hours,online_limit_per_hour:o.limit_per_hour||0,online_open_from:o.open_from||null,
+    mail_confirm:!!st.mailcfg.confirm,mail_cancel:!!st.mailcfg.cancel,mail_signature:st.mailcfg.signature||''};
+  o.times.forEach((t,i)=>{T.venue_times[t.id]={id:t.id,venue_id:v,name:t.name,from_time:t.from,to_time:t.to,days:t.days||[1,2,3,4,5,6,7],sort:i};});
+  st.rooms.forEach((r,i)=>{
+    T.rooms[r.id]={id:r.id,venue_id:v,name:r.name,is_outside:!!r.is_outside,sort:i};
+    r.tables.forEach((t,j)=>{T.tables[t.id]={id:t.id,venue_id:v,room_id:r.id,name:t.name,min_capacity:t.min_capacity,max_capacity:t.max_capacity,x:t.x??null,y:t.y??null,sort:j};});
+  });
+  for(const f of st.flags) T.flags[f.id]={id:f.id,venue_id:v,label:f.label,color:f.color};
+  for(const c of st.contacts) T.contacts[c.id]={id:c.id,venue_id:v,first_name:c.first_name||'',last_name:c.last_name||'',company_name:c.company_name||'',phone:c.phone||'',email:c.email||'',birthday:c.birthday||null,note:c.note||'',locked:!!c.locked};
+  for(const r of st.reservations){
+    T.reservations[r.id]={id:r.id,venue_id:v,type:r.type,guest_name:r.guest_name,phone:r.phone||'',email:r.email||'',num_people:r.num_people,num_children:r.num_children||0,
+      date:r.date,start_time:r.start_time,end_time:r.end_time,note:r.note||'',status_guest:r.status_guest||'not_started',flags:r.flags||[],is_walkin:!!r.is_walkin,
+      is_online_reservation:!!r.is_online_reservation,source:r.source||'',cancel_reason:r.cancel_reason||'',contact_id:r.contact_id||null,series_id:r.series_id||null,series_rule:r.series_rule||null,code:r.code||null};
+    if(r.type==='reservation') for(const t of r.table_ids) T.rt[r.id+'|'+t]={reservation_id:r.id,table_id:t};
+  }
+  for(const l of st.locks) T.online_locks[l.id]={id:l.id,venue_id:v,date:l.date,from_time:l.from,to_time:l.to};
+  for(const n of st.notes||[]) T.day_notes[n.id]={id:n.id,venue_id:v,date:n.date,text:n.text};
+  (st.combos||[]).forEach((c,i)=>{T.table_combos[c.id]={id:c.id,venue_id:v,table_ids:c.table_ids,min_capacity:c.min_capacity,max_capacity:c.max_capacity,sort:i};});
+  return T;
+}
+/* Nur die Unterschiede zum letzten bekannten Stand in die Datenbank schreiben */
+async function dbSync(){
+  syncBusy++;
+  try{
+    const cur=flat(S), J=JSON.stringify, ck=q=>q.then(({error})=>{if(error) throw error;});
+    const ups=t=>Object.keys(cur[t]).filter(k=>J(cur[t][k])!==J(shadow[t][k])).map(k=>cur[t][k]);
+    const del=t=>Object.keys(shadow[t]).filter(k=>!(k in cur[t]));
+    // 1. Frei gewordene Tische zuerst lösen, damit Umbuchungen nicht an sich selbst scheitern
+    for(const k of del('rt')){const [a,b]=k.split('|'); await ck(DB.from('reservation_tables').delete().eq('reservation_id',a).eq('table_id',b));}
+    // 2. Einstellungen und Stammdaten, dann Reservierungen
+    const vu=ups('venues')[0]; if(vu) await ck(DB.from('venues').update(vu).eq('id',VENUE.id));
+    for(const t of ['venue_times','rooms','tables','flags','contacts','reservations','online_locks','day_notes','table_combos']){
+      const rows=ups(t); for(let i=0;i<rows.length;i+=500) await ck(DB.from(t).upsert(rows.slice(i,i+500)));
+    }
+    // 3. Neue Tischzuweisungen (die Datenbank lehnt Doppelbelegungen ab)
+    const add=ups('rt'), byRes={}, lost=[];
+    for(const x of add) (byRes[x.reservation_id]??=[]).push(x);
+    for(const rid in byRes){
+      const {error}=await DB.from('reservation_tables').insert(byRes[rid]);
+      if(!error) continue;
+      if(error.code!=='23P01') throw error;
+      // Tisch inzwischen vergeben: ohne verbleibenden Tisch kommt die Reservierung auf die Warteliste
+      const left=await one(DB.from('reservation_tables').select('table_id').eq('reservation_id',rid));
+      if(!left.length) await ck(DB.from('reservations').update({type:'waiting_list',status_guest:'not_started'}).eq('id',rid));
+      lost.push(cur.reservations[rid]?.guest_name||'');
+    }
+    // 4. Gelöschtes entfernen
+    for(const t of ['reservations','online_locks','day_notes','table_combos','contacts','tables','rooms','flags','venue_times']){
+      const ids=del(t); if(ids.length) await ck(DB.from(t).delete().in('id',ids));
+    }
+    shadow=cur;
+    if(lost.length){
+      pendingMails=[];
+      toast(`Tisch inzwischen anderweitig vergeben: ${lost.join(', ')} steht jetzt auf der Warteliste.`);
+      await dbLoad(); render();
+    }
+    if(pendingMails.length){
+      const list=pendingMails; pendingMails=[];
+      for(const m of list) await DB.rpc('staff_queue_mail',m);
+      const mails=await one(DB.from('mails').select('*').eq('venue_id',VENUE.id).order('created_at',{ascending:false}).limit(200));
+      S.mails=mails.map(m=>({id:m.id,kind:m.kind,to:m.to_email,subject:m.subject,body:m.body,res_id:m.reservation_id,created_at:m.created_at}));
+      if(ui.view==='mails'&&!document.querySelector('dialog[open]')) render();
+    }
+  }catch(e){
+    console.error(e); pendingMails=[];
+    toast(e.code==='23P01'?'Dieser Tisch wurde inzwischen anderweitig vergeben. Die Ansicht wurde aktualisiert.':'Speichern fehlgeschlagen: '+(e.message||e)+' Die Ansicht wurde neu geladen.');
+    try{await dbLoad(); render();}catch(e2){console.error(e2);}
+  }finally{syncBusy--;}
+}
+/* Änderungen anderer Geräte übernehmen */
+let bumpT=null;
+function bump(){
+  clearTimeout(bumpT);
+  bumpT=setTimeout(async()=>{
+    if(!VENUE||!shadow) return;
+    if(syncBusy||document.querySelector('dialog[open]')||ui.floorEdit) return bump();
+    const before=JSON.stringify(shadow);
+    try{await dbLoad();}catch(e){console.error(e); return;}
+    if(JSON.stringify(shadow)!==before||ui.view==='mails') render();
+  },600);
+}
+function showLogin(msg=''){ $('#login').hidden=false; $('#l-err').textContent=msg; }
+async function enter(){
+  const {data,error}=await DB.from('venues').select('id,name').order('name');
+  if(error||!data||!data.length){ await DB.auth.signOut(); return showLogin('Dieser Benutzer ist keinem Betrieb zugeordnet.'); }
+  let saved=null; try{saved=localStorage.getItem('tischbuch.venue')}catch(e){}
+  VENUE={id:(data.find(v=>v.id===saved)||data[0]).id};
+  const sel=$('#venue-sel'); sel.hidden=data.length<2;
+  sel.innerHTML=data.map(v=>`<option value="${v.id}"${v.id===VENUE.id?' selected':''}>${esc(v.name)}</option>`).join('');
+  sel.onchange=()=>{ try{localStorage.setItem('tischbuch.venue',sel.value)}catch(e){} location.reload(); };
+  try{await dbLoad();}catch(e){console.error(e); return showLogin('Die Daten konnten nicht geladen werden: '+(e.message||e));}
+  applyBrand(VENUE.brand,VENUE.name);
+  $('#login').hidden=true; $('#b-logout').hidden=false;
+  $('.brand span').textContent='Online';
+  $('.foot span').textContent='Verbunden mit der Online-Datenbank. Änderungen werden sofort gespeichert.';
+  $('.foot [data-act=reset]').hidden=true;
+  render();
+  const f='venue_id=eq.'+VENUE.id;
+  DB.channel('tischbuch')
+    .on('postgres_changes',{event:'*',schema:'public',table:'reservations',filter:f},bump)
+    .on('postgres_changes',{event:'*',schema:'public',table:'reservation_tables',filter:f},bump)
+    .on('postgres_changes',{event:'*',schema:'public',table:'tables',filter:f},bump)
+    .subscribe();
+}
+async function startOnline(){
+  if(GUEST) return guestStart();
+  const {data}=await DB.auth.getSession();
+  if(RECOVERY){
+    history.replaceState(null,'',location.pathname+location.search);
+    if(data&&data.session){ $('#login').hidden=false; $('#loginform').hidden=true; $('#newpassform').hidden=false; $('#np-pass').focus(); return; }
+    return showLogin('Der Link zum Zurücksetzen ist abgelaufen oder wurde schon benutzt. Bitte „Passwort vergessen?“ erneut anklicken.');
+  }
+  if(data&&data.session) await enter(); else showLogin();
+}
+/* Kundenseite: nur die öffentlichen Funktionen der Datenbank */
+async function guestStart(){
+  $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED);
+  const {data,error}=await DB.rpc('public_config',{p_slug:VENUE_SLUG});
+  if(error||!data){ $('#gbody').innerHTML='<div class="gcard"><h1>Tisch reservieren</h1><div class="gsum">Die Online-Reservierung ist im Moment nicht erreichbar. Bitte rufen Sie uns an.</div></div>'; xl($('#gbody')); return; }
+  applyBrand(data.brand,data.name);
+  S={online:{name:data.name,max_pax:data.max_pax,days_ahead:data.days_ahead,cancel_hours:data.cancel_hours,open_from:data.open_from||'',times:[]},
+     rooms:data.rooms.map(r=>({id:r.id,name:r.name,tables:[1]})),locks:[],reservations:[],contacts:[]};
+  guestSlots();
+}
+async function guestSlots(){
+  const key=[g.date,g.pax,g.room].join('|'); g.slotKey=key; g.slots=null; renderGuest();
+  if(g.mode!=='book'||g.done||g.pax>S.online.max_pax) return;
+  const {data,error}=await DB.rpc('public_availability',{p_slug:VENUE_SLUG,p_date:g.date,p_pax:g.pax,p_room:g.room||null});
+  if(g.slotKey!==key) return;
+  const groups=[];
+  for(const x of (error?[]:data||[])){
+    let gr=groups.find(y=>y.name===x.period); if(!gr) groups.push(gr={name:x.period,items:[]});
+    gr.items.push({m:t2m(hm(x.slot)),ok:x.available});
+  }
+  g.slots=groups; renderGuest();
+}
+const gRefresh=()=>ONLINE?guestSlots():renderGuest();
+/* Design je Haus: Farben, Logo, Titelbild und Slogan kommen aus der Datenbank */
+const BRANDKEYS=['--brand','--brand-ink','--accent','--accent-ink','--beige','--taupe','--series','--serif','--hero-shade','--hero-ink','--title-bg','--title-ink'];
+let curBrand=null;
+function applyBrand(b,name){
+  curBrand={b:b||{},name:name||''}; b=curBrand.b;
+  const dark=matchMedia('(prefers-color-scheme:dark)').matches, vars={...(b.vars||{}),...(dark?b.dark||{}:{})}, st=document.documentElement.style;
+  const okUrl=u=>typeof u==='string'&&/^https:\/\/[^"'()\s]+$/.test(u);
+  for(const k of BRANDKEYS){ st.removeProperty(k); const v=vars[k]; if(typeof v==='string'&&/^[#\w\s,.%"-]+$/.test(v)) st.setProperty(k,v); }
+  if(okUrl(b.hero)) st.setProperty('--hero',`url("${b.hero}")`); else st.setProperty('--hero','none');
+  document.querySelectorAll('img[data-logo]').forEach(i=>{ if(okUrl(b.logo)){i.hidden=false; if(i.src!==b.logo) i.src=b.logo;} else i.hidden=true; });
+  const bn=$('#brandname'); bn.hidden=okUrl(b.logo); bn.textContent=curBrand.name.split(/[.–-]/)[0].trim();
+  $('.gtitle').textContent=b.tagline||curBrand.name;
+}
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name); });
+const onlineDefaults=()=>({name:'LÜ – Burger & Grill',public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
+  limit_per_hour:0,open_from:'',times:[{id:'zt1',name:'Mittag',from:'11:30',to:'14:00',days:[1,2,3,4,5,6,7]},{id:'zt2',name:'Abend',from:'17:30',to:'21:00',days:[1,2,3,4,5,6,7]}]});
+/* ---------- E-Mails (werden nur erzeugt und im Postausgang abgelegt, nicht verschickt) ---------- */
+const mailDefaults=()=>({confirm:true,cancel:true,signature:'Herzliche Grüße\nIhr Team'});
+const MAILKIND={confirm:'Bestätigung',cancel:'Stornierung'};
+const validMail=m=>/^\S+@\S+\.\S+$/.test(m||'');
+function queueMail(kind,r,list=[r]){
+  if(ONLINE&&!GUEST){ if(!S.mailcfg[kind]||!validMail(r.email)||!list.length) return false; pendingMails.push({p_res:r.id,p_kind:kind}); return true; }
+  const o=S.online, c=S.mailcfg; if(!c[kind]||!validMail(r.email)||!list.length) return false;
+  const ld=d=>new Date(d+'T12:00:00').toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const many=list.length>1, pers=`${r.num_people} ${r.num_people===1?'Person':'Personen'}`;
+  const when=many?`Termine (${list.length}):\n${list.map(x=>'  • '+ld(x.date)+', '+x.start_time+' Uhr').join('\n')}\nPersonen: ${pers}`
+    :`Datum: ${ld(r.date)}\nUhrzeit: ${r.start_time} Uhr\nPersonen: ${pers}`;
+  let subject, body;
+  if(kind==='confirm'){
+    subject=`Ihre Reservierung bei ${o.name}`+(many?'':` am ${shortDate(r.date)}`);
+    body=`Guten Tag ${r.guest_name},\n\nvielen Dank für Ihre Reservierung bei ${o.name}. Wir haben für Sie eingetragen:\n\n${when}`
+      +(r.note?`\nIhre Nachricht: ${r.note}`:'')
+      +(r.code?`\n\nBuchungscode: ${r.code}\nSie können ${o.cancel_hours?`bis ${o.cancel_hours} ${o.cancel_hours===1?'Stunde':'Stunden'} vor Beginn`:'bis zum Beginn'} selbst stornieren:\n${location.origin+location.pathname}?gast=1&code=${r.code}`
+        :'\n\nWenn Sie nicht kommen können, geben Sie uns bitte rechtzeitig Bescheid.')
+      +'\n\nWir freuen uns auf Ihren Besuch.';
+  }else{
+    subject=`Stornierung Ihrer Reservierung bei ${o.name}`+(many?'':` am ${shortDate(r.date)}`);
+    body=`Guten Tag ${r.guest_name},\n\n${many?'folgende Reservierungen wurden':'folgende Reservierung wurde'} storniert:\n\n${when}\n\nVielleicht dürfen wir Sie ein anderes Mal begrüßen.`;
+  }
+  body+=`\n\n${c.signature}\n${o.name}`;
+  S.mails.unshift({id:uid(),kind,to:r.email.trim(),subject,body,res_id:r.id,created_at:new Date().toISOString()});
+  if(S.mails.length>200) S.mails.length=200;
+  return true;
+}
+function renderMails(){
+  const c=S.mailcfg, ts=d=>new Date(d).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  $('#v-mails').innerHTML=`<p class="hint" style="margin-top:0">Der Prototyp verschickt nichts. Jede E-Mail wird nur erzeugt und hier im Postausgang abgelegt. Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
+  <h3>Automatische E-Mails</h3>
+  <div class="mailcfg">
+    <label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> Bestätigung bei neuer Reservierung (online und vom Personal eingetragen)</label>
+    <label><input type="checkbox" data-m="cancel"${c.cancel?' checked':''}> Nachricht bei Stornierung (nicht bei „Gast nicht erschienen“)</label>
+    <label class="f">Grußformel am Ende<textarea rows="2" data-m="signature">${esc(c.signature)}</textarea></label>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Postausgang (${S.mails.length})</h3>${S.mails.length?'<button data-act="mailclear" class="danger">Postausgang leeren</button>':''}</div>
+  <div class="tablewrap"><table><thead><tr><th>Erstellt</th><th>Art</th><th>An</th><th>Betreff</th></tr></thead><tbody>${S.mails.map(m=>`<tr class="rowlink" data-act="mailopen" data-id="${m.id}"><td>${ts(m.created_at)}</td><td><span class="pill ${m.kind==='cancel'?'canceled':'arrived'}">${MAILKIND[m.kind]}</span></td><td>${esc(m.to)}</td><td>${esc(m.subject)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Noch keine E-Mails. Lege eine Reservierung mit E-Mail-Adresse an, dann erscheint hier die Bestätigung.</td></tr>'}</tbody></table></div>`;
+}
+function openMail(id){
+  const m=S.mails.find(m=>m.id===id); if(!m) return;
+  $('#m-subject').textContent=m.subject; $('#m-meta').textContent=`${MAILKIND[m.kind]} · an ${m.to} · erstellt ${new Date(m.created_at).toLocaleString('de-AT')}`;
+  $('#m-body').textContent=m.body;
+  $('#m-mailto').href=`mailto:${encodeURIComponent(m.to)}?subject=${encodeURIComponent(m.subject)}&body=${encodeURIComponent(m.body)}`;
+  $('#mdlg').showModal();
+}
+
+/* Buchungscode für Online-Buchungen (ohne leicht verwechselbare Zeichen) */
+function mkCode(st){
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c;
+  do{c=''; for(let i=0;i<6;i++) c+=A[Math.floor(Math.random()*A.length)];}while(st.reservations.some(r=>r.code===c));
+  return c;
+}
+const addCodes=st=>{for(const r of st.reservations) if(r.is_online_reservation&&!r.code) r.code=mkCode(st);};
+function seed(){
+  let n=1; const id=p=>p+(n++);
+  const mk=(name,min,max)=>({id:id('t'),name,min_capacity:min,max_capacity:max});
+  const rooms=[
+    {id:id('r'),name:'Stube',is_outside:false,tables:[mk('T1',1,2),mk('T2',2,4),mk('T3',2,4),mk('T4',4,6),mk('T5',4,6),mk('T6',6,10)]},
+    {id:id('r'),name:'Wintergarten',is_outside:false,tables:[mk('W1',1,2),mk('W2',2,4),mk('W3',4,6),mk('W4',6,8)]},
+    {id:id('r'),name:'Terrasse',is_outside:true,tables:[mk('A1',2,4),mk('A2',2,4),mk('A3',4,8)]}
+  ];
+  const flags=[{id:'f1',label:'Geburtstag',color:'#b7791f'},{id:'f2',label:'Stammgast',color:'#2f7d5b'},{id:'f3',label:'Allergie',color:'#c2410c'},{id:'f4',label:'VIP',color:'#6b46c1'}];
+  const tid=name=>rooms.flatMap(r=>r.tables).find(t=>t.name===name).id;
+  const t0=today(), now=nowMin(), reservations=[];
+  const phs={}, ph=nm=>phs[nm]??=('0664 555 01'+pad(Object.keys(phs).length));
+  const add=(day,name,people,start,dur,tables,fl=[],note='',extra={})=>{
+    const s=t2m(start), e=Math.min(s+dur,LAST_END), date=addDays(t0,day);
+    let st='not_started';
+    if(day===0 && tables.length){ if(e<=now) st='done'; else if(s<=now) st='arrived'; }
+    if(day<0 && tables.length) st='done';
+    reservations.push(Object.assign({id:n++,type:tables.length?'reservation':'waiting_list',guest_name:name,phone:ph(name),email:'',
+      num_people:people,num_children:0,date,start_time:start,end_time:m2t(e),note,status_guest:st,flags:fl,
+      table_ids:tables.map(tid),is_walkin:false,cancel_reason:'',created_at:new Date().toISOString()},extra));
+  };
+  add(0,'Huber',4,'12:00',90,['T2']);
+  add(0,'Gruber',2,'12:30',90,['T1'],['f2']);
+  add(0,'Steiner',6,'12:00',120,['T4'],['f1'],'Torte um 13:00');
+  add(0,'Wagner',3,'13:00',90,['W2'],[],'Kinderstuhl',{num_children:1});
+  add(0,'Pichler',2,'18:00',120,['T1']);
+  add(0,'Moser',4,'18:30',120,['T3'],['f3'],'Glutenfrei');
+  add(0,'Hofer',8,'19:00',150,['T6'],['f1']);
+  add(0,'Leitner',5,'19:00',120,['W3']);
+  add(0,'Berger',2,'19:30',120,['W1'],['f2'],'Fensterplatz');
+  add(0,'Fuchs',10,'20:00',150,['T4','T5'],['f4'],'Firmenessen');
+  add(0,'Eder',4,'20:30',120,['W2']);
+  add(0,'Aigner',6,'19:30',120,[],[],'Ruft zurück, falls nichts frei wird');
+  add(0,'Lechner',2,'18:00',120,[],[],'',{type:'canceled',cancel_reason:'other_reason'});
+  add(1,'Brandner',4,'12:30',90,['T3']);
+  add(1,'Reiter',2,'19:00',120,['W1'],['f2']);
+  add(1,'Winkler',7,'19:30',150,['W4'],['f1']);
+  add(-1,'Maier',4,'19:00',120,['T2']);
+  add(-7,'Gruber',2,'12:30',90,['T1'],['f2']);
+  add(-14,'Gruber',2,'19:00',120,['T1'],['f2']);
+  add(-21,'Gruber',4,'19:00',120,['T2'],['f2']);
+  add(-5,'Berger',2,'19:30',120,['W1'],['f2']);
+  add(-12,'Berger',2,'19:30',120,['W1'],['f2']);
+  add(-30,'Hofer',6,'18:30',150,['T6'],['f1']);
+  add(-9,'Aigner',6,'19:00',120,[],[],'',{type:'canceled',cancel_reason:'guest_did_not_arrive'});
+  /* erfundener Verlauf der letzten 60 Tage, damit die Statistik etwas zeigt (fester Zufall, bei jedem Laden gleich) */
+  let z=20261; const rnd=()=>{z=z+0x6D2B79F5|0; let t=Math.imul(z^z>>>15,1|z); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296;};
+  const pick=a=>a[Math.floor(rnd()*a.length)];
+  const pool=['Huber','Gruber','Steiner','Wagner','Pichler','Moser','Hofer','Leitner','Berger','Fuchs','Eder','Bauer','Wimmer','Lang','Wolf','Haas','Koller','Schwarz','Winter','Brandner','Reiter','Winkler'];
+  const keep=S; S={rooms,reservations}; // autoAssign/busy arbeiten auf S
+  for(let day=-60;day<=-1;day++){
+    const date=addDays(t0,day), wd=new Date(date+'T12:00:00').getDay(), cnt=3+Math.floor(rnd()*4)+(wd===5||wd===6?4:wd===0?2:0);
+    for(let i=0;i<cnt;i++){
+      const lunch=rnd()<0.3, s=lunch?690+30*Math.floor(rnd()*5):1050+30*Math.floor(rnd()*7), e=s+(lunch?90:120);
+      const people=pick([2,2,2,2,3,4,4,4,5,6,6,8]), k=rnd(), src=rnd(), walk=src<0.12, canceled=!walk&&k<0.14;
+      const tables=canceled?[]:autoAssign(date,s,e,people);
+      if(!canceled&&!tables.length) continue;
+      const name=walk?'Walk-in':pick(pool);
+      reservations.push({id:n++,type:canceled?'canceled':'reservation',guest_name:name,phone:walk?'':ph(name),email:'',num_people:people,num_children:0,date,
+        start_time:m2t(s),end_time:m2t(e),note:'',status_guest:canceled?'not_started':'done',flags:[],table_ids:tables,is_walkin:walk,is_online_reservation:!walk&&src<0.42,source:walk||src>=0.42?'':src<0.15?'google':src<0.23?'facebook':src<0.27?'instagram':'website',
+        cancel_reason:canceled?(k<0.06?'guest_did_not_arrive':'other_reason'):'',created_at:new Date().toISOString()});
+    }
+  }
+  S=keep;
+  const d={v:1,nextId:n,rooms,flags,reservations,defaults:{show_from:'11:00',standard_duration:'02:00'},online:onlineDefaults(),locks:[],notes:[],combos:[],contacts:[],mails:[],mailcfg:mailDefaults()};
+  for(const r of reservations) ensureContact(r,d);
+  const note=(nm,t)=>{const c=d.contacts.find(c=>c.last_name===nm); if(c) c.note=t;};
+  note('Gruber','Sitzt gern am Fenster'); note('Berger','Trinkt immer den Hauswein'); note('Moser','Glutenunverträglichkeit');
+  addCodes(d);
+  return d;
+}
+function load(){
+  try{const raw=localStorage.getItem(KEY); if(raw){const d=JSON.parse(raw); if(d&&d.v===1){d.online??=onlineDefaults(); d.online.cancel_hours??=2; d.online.public_url??=''; if(d.online.name==='Restaurant Beispiel') d.online.name='LÜ – Burger & Grill'; d.mails??=[]; d.mailcfg??=mailDefaults(); d.locks??=[]; d.notes??=[]; d.combos??=[]; d.online.limit_per_hour??=0; d.online.open_from??=''; d.online.times.forEach((t,i)=>{t.days??=[1,2,3,4,5,6,7]; t.id??='zt'+i;}); addCodes(d); if(!d.contacts){d.contacts=[]; for(const r of d.reservations) ensureContact(r,d);} return d;}}}catch(e){}
+  return seed();
+}
+function save(){
+  if(ONLINE){ if(!GUEST&&shadow) syncQ=syncQ.then(dbSync); return; }
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+}
+const FROM=()=>t2m(S.defaults.show_from);
+const DUR=()=>t2m(S.defaults.standard_duration);
+const allTables=()=>S.rooms.flatMap(r=>r.tables);
+const tableById=id=>allTables().find(t=>t.id===id);
+const roomOf=id=>S.rooms.find(r=>r.tables.some(t=>t.id===id));
+const resById=id=>S.reservations.find(r=>String(r.id)===String(id));
+const dayRes=(date=ui.date)=>S.reservations.filter(r=>r.date===date);
+const tableNames=r=>r.table_ids.map(id=>tableById(id)?.name).filter(Boolean).join(', ');
+
+/* ---------- Gästekartei: Zuordnung ---------- */
+const digits=v=>String(v||'').replace(/\D/g,'');
+const cname=c=>[c.first_name,c.last_name].filter(Boolean).join(' ')||c.company_name||'(ohne Name)';
+const shortDate=d=>d?new Date(d+'T12:00:00').toLocaleDateString('de-AT',{day:'2-digit',month:'2-digit',year:'numeric'}):'–';
+/* Sucht den Gast zu einer Reservierung: zuerst Telefon, dann E-Mail, dann gleicher Name ohne Telefonnummer. */
+function findContact(r,st=S){
+  const ph=digits(r.phone), em=(r.email||'').trim().toLowerCase(), nm=(r.guest_name||'').trim().toLowerCase();
+  return (r.contact_id&&st.contacts.find(c=>c.id===r.contact_id))
+    || (ph.length>=6&&st.contacts.find(c=>digits(c.phone)===ph))
+    || (em&&st.contacts.find(c=>(c.email||'').toLowerCase()===em))
+    || st.contacts.find(c=>cname(c).toLowerCase()===nm&&(!ph||!digits(c.phone))) || null;
+}
+function ensureContact(r,st=S){
+  if(r.is_walkin) return null;
+  let c=findContact(r,st);
+  if(!c){
+    const parts=r.guest_name.trim().split(/\s+/), last=parts.pop();
+    c={id:uid(),first_name:parts.join(' '),last_name:last,company_name:'',phone:r.phone||'',email:r.email||'',birthday:'',note:'',locked:false,created_at:new Date().toISOString()};
+    st.contacts.push(c);
+  }else{ if(!c.phone&&r.phone) c.phone=r.phone; if(!c.email&&r.email) c.email=r.email; }
+  r.contact_id=c.id; return c;
+}
+function cstats(c){
+  const rs=S.reservations.filter(r=>r.contact_id===c.id), t=today();
+  const visits=rs.filter(r=>r.type==='reservation'&&r.status_guest!=='not_started');
+  return {rs,visits:visits.length,
+    upcoming:rs.filter(r=>r.type!=='canceled'&&r.status_guest==='not_started'&&r.date>=t).length,
+    noshow:rs.filter(r=>r.type==='canceled'&&r.cancel_reason==='guest_did_not_arrive').length,
+    last:visits.map(r=>r.date).sort().pop()||''};
+}
+
+function busy(tableId,date,s,e,exceptId){
+  return S.reservations.some(r=>r.type==='reservation'&&r.id!==exceptId&&r.date===date&&r.table_ids.includes(tableId)&&t2m(r.start_time)<e&&t2m(r.end_time)>s);
+}
+/* Kleinster passender freier Tisch; sonst zwei benachbarte freie Tische im selben Raum. */
+function autoAssign(date,s,e,people,exceptId,roomId){
+  const rooms=S.rooms.filter(r=>!roomId||r.id===roomId);
+  const free=new Set(rooms.flatMap(r=>r.tables).filter(t=>!busy(t.id,date,s,e,exceptId)));
+  const fit=[...free].filter(t=>t.min_capacity<=people&&t.max_capacity>=people).sort((a,b)=>a.max_capacity-b.max_capacity);
+  if(fit[0]) return [fit[0].id];
+  const combo=(S.combos||[]).filter(c=>c.min_capacity<=people&&c.max_capacity>=people&&c.table_ids.every(id=>[...free].some(t=>t.id===id))).sort((a,b)=>a.max_capacity-b.max_capacity)[0];
+  if(combo) return [...combo.table_ids];
+  let best=null;
+  for(const room of rooms) for(let i=0;i<room.tables.length-1;i++){
+    const a=room.tables[i],b=room.tables[i+1];
+    if(free.has(a)&&free.has(b)){const cap=a.max_capacity+b.max_capacity; if(cap>=people&&(!best||cap<best.cap)) best={cap,ids:[a.id,b.id]};}
+  }
+  return best?best.ids:[];
+}
+function stateOf(r){
+  if(r.type!=='reservation') return r.type;
+  if(r.status_guest==='not_started'&&r.date===today()&&nowMin()>t2m(r.start_time)+15) return 'late';
+  return r.status_guest;
+}
+const LABEL={not_started:'erwartet',late:'verspätet',arrived:'angekommen',done:'gegangen',waiting_list:'Warteliste',canceled:'storniert'};
+
+/* ---------- Anzeige ---------- */
+function render(){
+  if(GUEST) return renderGuest();
+  $('#date').value=ui.date;
+  const d=new Date(ui.date+'T12:00:00');
+  $('#dateLabel').textContent=d.toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long'})+(ui.date===today()?' · heute':'');
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
+  for(const v of ['plan','floor','cal','list','guests','stats','setup','online','mails']) $('#v-'+v).hidden=ui.view!==v;
+  renderKpis();
+  if(ui.view==='plan'){renderPlan();renderWait();}
+  if(ui.view==='floor') renderFloor();
+  if(ui.view==='cal') renderCal();
+  if(ui.view==='list') renderList();
+  if(ui.view==='setup') renderSetup();
+  if(ui.view==='online') renderOnline();
+  if(ui.view==='mails') renderMails();
+  if(ui.view==='guests') renderGuests();
+  if(ui.view==='stats') renderStats();
+}
+function renderKpis(){
+  const rs=dayRes().filter(r=>r.type==='reservation'), sum=a=>a.reduce((n,r)=>n+r.num_people,0);
+  const k=[[rs.length,'Reservierungen'],[sum(rs),'Gäste gesamt'],
+    [sum(rs.filter(r=>r.status_guest==='not_started')),'erwartet'],
+    [sum(rs.filter(r=>r.status_guest==='arrived')),'anwesend'],
+    [sum(rs.filter(r=>r.status_guest==='done')),'gegangen'],
+    [dayRes().filter(r=>r.type==='waiting_list').length,'Warteliste']];
+  if(ui.date===today()){const n=nowMin(),t=allTables(); k.push([t.filter(x=>!busy(x.id,ui.date,n,n+15)).length+' / '+t.length,'Tische frei jetzt']);}
+  $('#kpis').innerHTML=k.map(([v,l])=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join('');
+}
+function renderPlan(){
+  const from=FROM(), x=m=>(m-from)/15*PX, W=x(TO), rs=dayRes().filter(r=>r.type==='reservation');
+  if(!allTables().length){$('#plan').innerHTML='<div class="empty" style="padding:16px">Noch keine Tische angelegt. Unter „Räume &amp; Tische“ kannst du welche hinzufügen.</div>';return;}
+  let h=`<div class="pin" style="--w:${W}px;--hw:${PX*4}px"><div class="prow hours"><div class="lbl">Tisch</div><div class="track">`;
+  for(let m=Math.ceil(from/60)*60;m<TO;m+=60) h+=`<span style="left:${x(m)}px">${m2t(m)}</span>`;
+  h+='</div></div>';
+  for(const room of S.rooms){
+    h+=`<div class="prow room"><div class="lbl">${esc(room.name)}${room.is_outside?' · außen':''}</div><div class="track"></div></div>`;
+    for(const t of room.tables){
+      h+=`<div class="prow"><div class="lbl"><b>${esc(t.name)}</b><small>${t.min_capacity}–${t.max_capacity} Pers.</small></div><div class="track slot" data-act="slot" data-table="${t.id}">`;
+      for(const r of rs.filter(r=>r.table_ids.includes(t.id))){
+        const s=Math.max(t2m(r.start_time),from), e=t2m(r.end_time); if(e<=from) continue;
+        const dots=r.flags.map(f=>S.flags.find(g=>g.id===f)).filter(Boolean).map(f=>`<i class="dot" style="background:${esc(f.color)}" title="${esc(f.label)}"></i>`).join('');
+        h+=`<div class="bar ${stateOf(r)}" data-act="open" data-id="${r.id}" style="left:${x(s)+1}px;width:${x(e)-x(s)-2}px" title="${esc(r.guest_name)} · ${r.num_people} Pers. · ${r.start_time}–${r.end_time}${r.note?' · '+esc(r.note):''}"><b>${esc(r.guest_name)}${dots}</b>${r.num_people} Pers. · ${r.start_time}</div>`;
+      }
+      h+='</div></div>';
+    }
+  }
+  const n=nowMin();
+  if(ui.date===today()&&n>=from) h+=`<div class="now" style="left:${118+x(n)}px"></div>`;
+  $('#plan').innerHTML=h+'</div>';
+  if(ui.firstScroll){ui.firstScroll=false; $('#plan').scrollLeft=Math.max(0,x(ui.date===today()?n:t2m('17:00'))-PX*6);}
+}
+const card=r=>`<div class="card" data-act="open" data-id="${r.id}"><b>${esc(r.guest_name)}</b> · ${r.num_people} Pers.<br><small>${r.start_time}–${r.end_time}${r.note?' · '+esc(r.note):''}</small></div>`;
+function renderWait(){
+  const w=dayRes().filter(r=>r.type==='waiting_list').sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  const c=dayRes().filter(r=>r.type==='canceled');
+  const ns=(S.notes||[]).filter(n=>n.date===ui.date);
+  $('#wait').innerHTML=`<h3>Notizen zum Tag</h3>${ns.map(n=>`<div class="note"><span>${esc(n.text)}</span><button class="link danger" data-act="delnote" data-id="${n.id}" title="Notiz löschen">✕</button></div>`).join('')}
+    <div class="noteadd"><input id="n-text" maxlength="200" placeholder="z. B. Stammtisch, Küche bis 21 Uhr" aria-label="Neue Notiz"><button data-act="addnote">+</button></div>
+    <h3 style="margin-top:14px">Warteliste (${w.length})</h3>${w.map(card).join('')||'<div class="empty">Niemand auf der Warteliste.</div>'}
+    <h3 style="margin-top:14px">Storniert (${c.length})</h3>${c.map(card).join('')||'<div class="empty">Keine Stornos.</div>'}`;
+}
+/* ---------- Kalender ---------- */
+function renderCal(){
+  const ym=ui.calMonth||ui.date.slice(0,7), [Y,M]=ym.split('-').map(Number);
+  const first=new Date(Y,M-1,1,12), lead=(first.getDay()+6)%7, days=new Date(Y,M,0).getDate(), seats=allTables().reduce((n,t)=>n+t.max_capacity,0)||1;
+  const title=first.toLocaleDateString('de-AT',{month:'long',year:'numeric'});
+  let cells=''; for(let i=0;i<lead;i++) cells+='<div class="cday off"></div>';
+  for(let d=1;d<=days;d++){
+    const date=Y+'-'+pad(M)+'-'+pad(d), wd=((new Date(date+'T12:00:00').getDay()+6)%7)+1;
+    const rs=S.reservations.filter(r=>r.date===date&&r.type==='reservation'), g=rs.reduce((n,r)=>n+r.num_people,0), wl=S.reservations.filter(r=>r.date===date&&r.type==='waiting_list').length;
+    const closed=!S.online.times.some(t=>(t.days||[]).includes(wd))||S.locks.some(l=>l.date===date&&l.from==='00:00'&&l.to>='23:45');
+    const notes=(S.notes||[]).filter(n=>n.date===date);
+    cells+=`<button class="cday${date===today()?' today':''}${date===ui.date?' sel':''}${closed?' closed':''}" data-act="calday" data-d="${date}" title="${esc(longDate(date))}${notes.length?' · '+esc(notes.map(n=>n.text).join(' · ')):''}">
+      <b>${d}</b>${rs.length?`<span>${rs.length} Res. · ${g} Gäste</span><i style="width:${Math.min(100,Math.round(g/seats*100))}%"></i>`:`<span class="mut">${closed?'online zu':'–'}</span>`}
+      ${wl?`<small>${wl} Warteliste</small>`:''}${notes.length?`<small class="cnote">✎ ${esc(notes[0].text)}</small>`:''}</button>`;
+  }
+  $('#v-cal').innerHTML=`<div class="calhead"><button data-act="calnav" data-n="-1" aria-label="Voriger Monat">‹</button><h3 style="margin:0;min-width:170px;text-align:center">${esc(title)}</h3><button data-act="calnav" data-n="1" aria-label="Nächster Monat">›</button>
+    <button data-act="calnav" data-n="0">Heute</button></div>
+    <div class="calgrid head">${['Mo','Di','Mi','Do','Fr','Sa','So'].map(x=>`<div>${x}</div>`).join('')}</div><div class="calgrid">${cells}</div>
+    <div class="legend"><span>Balken = Auslastung gemessen an ${seats} Plätzen</span><span>„online zu“ = kein Buchungsfenster oder ganztägige Sperre</span><span>Klick auf einen Tag öffnet den Tagesplan.</span></div>`;
+}
+/* Tischkarten für den gewählten Tag (zum Ausdrucken) */
+function printCards(){
+  const rs=dayRes().filter(r=>r.type==='reservation'&&!r.is_walkin).sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  if(!rs.length){toast('An diesem Tag gibt es keine Reservierungen für Tischkarten.'); return;}
+  $('#cards').innerHTML=rs.map(r=>`<div class="tcard"><small>${esc(S.online.name)}</small><em>Reserviert</em><b>${esc(r.guest_name)}</b><span>${r.start_time} Uhr · ${r.num_people} ${r.num_people===1?'Person':'Personen'}</span><small>${esc(tableNames(r))} · ${esc(shortDate(r.date))}</small></div>`).join('');
+  document.body.classList.add('pcards'); window.print();
+}
+window.addEventListener('afterprint',()=>document.body.classList.remove('pcards'));
+/* Gäste als CSV (Semikolon, für Excel) */
+function exportCsv(){
+  const q=v=>'"'+String(v??'').replace(/"/g,'""').replace(/^([=+\-@])/,"'$1")+'"';
+  const rows=[['Vorname','Nachname','Firma','Telefon','E-Mail','Geburtstag','Notiz','Besuche','Letzter Besuch','Online gesperrt']];
+  for(const c of [...S.contacts].sort((a,b)=>cname(a).localeCompare(cname(b),'de'))){const st=cstats(c); rows.push([c.first_name,c.last_name,c.company_name,c.phone,c.email,c.birthday,c.note,st.visits,st.last,c.locked?'ja':'']);}
+  const blob=new Blob(['﻿'+rows.map(r=>r.map(q).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='gaeste-'+today()+'.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  toast(`${rows.length-1} Gäste exportiert.`);
+}
+function renderList(){
+  const F=[['all','Alle'],['reservation','Reservierungen'],['waiting_list','Warteliste'],['canceled','Storniert']];
+  const term=(ui.search||'').trim().toLowerCase(), td=digits(term);
+  const hit=r=>[r.guest_name,r.email,r.note,r.code].some(v=>(v||'').toLowerCase().includes(term))||(td.length>=3&&digits(r.phone).includes(td));
+  const rs=term?S.reservations.filter(hit).sort((a,b)=>b.date.localeCompare(a.date)||a.start_time.localeCompare(b.start_time)).slice(0,200)
+    :dayRes().filter(r=>ui.filter==='all'||r.type===ui.filter).sort((a,b)=>a.start_time.localeCompare(b.start_time)||String(a.created_at).localeCompare(String(b.created_at)));
+  const rows=rs.map(r=>{const st=stateOf(r);
+    const tags=r.flags.map(f=>S.flags.find(g=>g.id===f)).filter(Boolean).map(f=>`<span class="tag" style="background:${esc(f.color)}">${esc(f.label)}</span>`).join('');
+    return `<tr class="rowlink" data-act="open" data-id="${r.id}"><td>${term?'<b>'+shortDate(r.date)+'</b><br>':''}${r.start_time}–${r.end_time}</td><td><b>${esc(r.guest_name)}</b>${r.is_walkin?' <small>Walk-in</small>':''}${r.series_id?' <small title="Serienreservierung">↻ Serie</small>':''}${r.is_online_reservation?` <small>· online gebucht${r.source&&SOURCES[r.source]?' über '+SOURCES[r.source]:''}${r.code?' · Code '+esc(r.code):''}</small>`:''}${r.cancel_reason==='canceled_by_guest'?' <small>· vom Gast storniert</small>':''}<br><small>${esc(r.phone)}${r.email?' · '+esc(r.email):''}</small></td>
+      <td>${r.num_people}${r.num_children?` <small>(${r.num_children} Ki.)</small>`:''}</td><td>${esc(tableNames(r))||'–'}</td><td><span class="pill ${st}">${LABEL[st]}</span></td><td>${tags}${esc(r.note)}</td></tr>`}).join('');
+  const pn=(S.notes||[]).filter(n=>n.date===ui.date);
+  $('#v-list').innerHTML=`<div class="printhead"><h2>${esc(S.online.name)}</h2><p>${esc(longDate(ui.date))} · ${rs.filter(r=>r.type==='reservation').length} Reservierungen · ${rs.filter(r=>r.type==='reservation').reduce((n,r)=>n+r.num_people,0)} Gäste</p>${pn.length?'<p><b>Notizen:</b> '+pn.map(n=>esc(n.text)).join(' · ')+'</p>':''}</div>
+    <div class="chips">${F.map(([v,l])=>`<button data-act="filter" data-v="${v}" class="${ui.filter===v?'on':''}">${l}</button>`).join('')}<input type="search" id="r-search" value="${esc(ui.search||'')}" placeholder="Suche in allen Tagen: Name, Telefon, Code" aria-label="Reservierungen suchen" style="margin-left:auto;width:min(300px,100%)"><button data-act="cards">Tischkarten</button><button data-act="print">Drucken</button></div>
+    ${term?`<p class="hint" style="margin:0 0 8px">${rs.length} Treffer für „${esc(ui.search)}“ in allen geladenen Tagen. Suchfeld leeren, um wieder den Tag zu sehen.</p>`:''}
+    <div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Gast</th><th>Pers.</th><th>Tisch</th><th>Status</th><th>Bemerkung</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">Keine Einträge an diesem Tag.</td></tr>'}</tbody></table></div>`;
+}
+/* ---------- Grundriss ---------- */
+const FW=640;
+const fsize=t=>{const c=t.max_capacity; return c<=2?[84,100]:[Math.ceil(c/2)*40+24,92];};
+/* Tisch von oben: Holzplatte, Stühle rundherum; besetzte Plätze in Statusfarbe */
+function tableSvg(t,w,h,occ=0){
+  const n=clamp(t.max_capacity,1,24); let ch='', pl='', top;
+  const chair=(x,y,i,cw=24,chh=12,up=true)=>`<rect class="chair${i<occ?' on':''}" x="${x}" y="${y}" width="${cw}" height="${chh}" rx="4"/><rect class="back" x="${x+2}" y="${up?y:y+chh-3}" width="${cw-4}" height="3" rx="1.5"/>`;
+  const plate=(x,y)=>`<circle class="plate" cx="${x}" cy="${y}" r="4.5"/>`;
+  if(n<=2){
+    const cx=w/2, cy=h/2, r=30;
+    ch=chair(cx-13,cy-r-15,0,26)+(n>1?chair(cx-13,cy+r+3,1,26,12,false):'');
+    top=`<circle class="top" cx="${cx}" cy="${cy}" r="${r}"/><path class="grain" d="M${cx-22} ${cy-12}h44M${cx-28} ${cy}h56M${cx-22} ${cy+12}h44"/>`;
+  }else{
+    const k=Math.ceil(n/2), tw=w-8;
+    for(let i=0;i<n;i++){const row=i%2, cnt=row?n-k:k, j=(i-row)/2; const px=4+tw*(j+.5)/cnt; ch+=chair(px-12,row?h-14:2,i,24,12,!row); pl+=plate(px,row?h-25:25);}
+    top=`<rect class="top" x="4" y="17" width="${tw}" height="${h-34}" rx="5"/><path class="grain" d="M10 ${h/2-13}H${w-10}M10 ${h/2}H${w-10}M10 ${h/2+13}H${w-10}"/>`;
+  }
+  return `<svg class="tsvg" viewBox="0 0 ${w} ${h}" aria-hidden="true">${ch}${top}${pl}</svg>`;
+}
+/* Tische ohne Position der Reihe nach unter die bereits platzierten setzen */
+function ensurePos(){
+  let ch=false;
+  for(const room of S.rooms){
+    const miss=room.tables.filter(t=>t.x==null); if(!miss.length) continue; ch=true;
+    let y=room.tables.filter(t=>t.x!=null).reduce((m,t)=>Math.max(m,t.y+fsize(t)[1]),0)+20, x=20;
+    for(const t of miss){const [w]=fsize(t); if(x+w>FW-20){x=20;y+=100;} t.x=x; t.y=y; x+=w+30;}
+  }
+  if(ch) save();
+}
+const floorMin=()=>ui.floorTime??clamp(Math.floor((ui.date===today()?nowMin():t2m('19:00'))/15)*15,FROM(),LAST_END-15);
+function renderFloor(){
+  if(!allTables().length){$('#v-floor').innerHTML='<div class="empty">Noch keine Tische angelegt. Unter „Räume &amp; Tische“ kannst du welche hinzufügen.</div>';return;}
+  ensurePos();
+  const m=floorMin(), E=ui.floorEdit;
+  $('#v-floor').innerHTML=`<div class="floorbar">${E?'<span class="hint">Tische mit der Maus oder dem Finger an die richtige Stelle ziehen.</span>'
+    :`<label for="fl-time">Uhrzeit</label><input type="range" id="fl-time" min="${FROM()}" max="${LAST_END-15}" step="15" value="${m}"><output id="fl-out">${m2t(m)}</output>
+     <button data-act="floornow">Jetzt</button>`}
+    <button data-act="flooredit" class="${E?'primary':''}" style="margin-left:auto">${E?'Fertig':'Tische anordnen'}</button></div>
+  <div class="floors${E?' edit':''}" id="floors"></div>
+  ${E?'':`<div class="legend"><span><i class="wood"></i>frei</span><span><i style="background:var(--chair)"></i>freier Platz</span><span><i style="border:2px dashed var(--open)"></i>frei, in der nächsten Stunde reserviert</span>
+    <span><i style="background:var(--open)"></i>erwartet</span><span><i style="background:var(--late)"></i>verspätet</span><span><i style="background:var(--here)"></i>angekommen</span>
+    <span><i style="background:var(--done)"></i>gegangen</span><span>Klick auf einen Tisch öffnet oder erstellt die Reservierung.</span></div>`}`;
+  renderFloors();
+}
+function renderFloors(){
+  const m=floorMin(), E=ui.floorEdit, rs=dayRes().filter(r=>r.type==='reservation');
+  $('#floors').innerHTML=S.rooms.map(room=>{
+    let free=0;
+    const H=Math.max(220,...room.tables.map(t=>t.y+fsize(t)[1]+20));
+    const tabs=room.tables.map(t=>{
+      const [w,h]=fsize(t), x=clamp(t.x,0,FW-w), sm=t.max_capacity<=2, pos=`left:${x}px;top:${t.y}px;width:${w}px;height:${h}px`, cls='ftab'+(t.max_capacity<=2?' round':'');
+      const cap=`${t.min_capacity}–${t.max_capacity} Pers.`;
+      if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}">${tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
+      const mine=rs.filter(r=>r.table_ids.includes(t.id));
+      const cur=mine.find(r=>t2m(r.start_time)<=m&&t2m(r.end_time)>m);
+      const next=mine.filter(r=>t2m(r.start_time)>m).sort((a,b)=>a.start_time.localeCompare(b.start_time))[0];
+      if(cur){
+        const st=stateOf(cur);
+        const share=cur.table_ids.length>1?Math.ceil(cur.num_people/cur.table_ids.length):cur.num_people;
+        return `<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${tableSvg(t,w,h,st==='done'?0:share)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
+      }
+      free++;
+      const soon=next&&t2m(next.start_time)-m<=60;
+      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
+    }).join('');
+    return `<div class="floor"><h3>${esc(room.name)}${room.is_outside?' · außen':''}<small>${E?room.tables.length+' Tische':free+' von '+room.tables.length+' Tischen frei'}</small></h3>
+      <div class="fscroll"><div class="fcanvas${room.is_outside?' out':''}" data-room="${room.id}" style="height:${H}px">${tabs||'<div class="empty" style="padding:12px">Keine Tische in diesem Raum.</div>'}</div></div></div>`;
+  }).join('');
+}
+
+function renderSetup(){
+  const seats=allTables().reduce((n,t)=>n+t.max_capacity,0);
+  $('#v-setup').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+    <span>${S.rooms.length} Räume · ${allTables().length} Tische · ${seats} Sitzplätze</span><button data-act="addroom">+ Raum</button></div>
+  <div class="rooms">${S.rooms.map(r=>`<div class="roomcard">
+    <div class="roomhead"><input data-room="${r.id}" data-f="name" value="${esc(r.name)}" aria-label="Raumname">
+      <label style="white-space:nowrap;font-size:13px"><input type="checkbox" data-room="${r.id}" data-f="is_outside" ${r.is_outside?'checked':''}> außen</label>
+      <button class="link danger" data-act="delroom" data-id="${r.id}" title="Raum löschen">✕</button></div>
+    <div class="trow h"><span>Tisch</span><span>min.</span><span>max.</span><span></span></div>
+    ${r.tables.map(t=>`<div class="trow"><input data-table="${t.id}" data-f="name" value="${esc(t.name)}" aria-label="Tischname">
+      <input type="number" min="1" data-table="${t.id}" data-f="min_capacity" value="${t.min_capacity}" aria-label="Mindestbelegung">
+      <input type="number" min="1" data-table="${t.id}" data-f="max_capacity" value="${t.max_capacity}" aria-label="Höchstbelegung">
+      <button class="link danger" data-act="deltable" data-id="${t.id}" title="Tisch löschen">✕</button></div>`).join('')}
+    <button data-act="addtable" data-id="${r.id}">+ Tisch</button></div>`).join('')}</div>
+  <h3 style="margin-top:20px">Feste Tischkombinationen</h3>
+  <p class="hint" style="margin:0 0 8px">Für größere Gruppen: Diese Tische werden gemeinsam vergeben, wenn kein einzelner Tisch passt. Tische mit „+“ trennen, zum Beispiel „T7 + T8“.</p>
+  <div class="flagrows" style="max-width:520px">${(S.combos||[]).map(c=>`<div class="comborow"><input data-combo="${c.id}" data-f="tables" value="${esc(c.table_ids.map(id=>tableById(id)?.name||'?').join(' + '))}" aria-label="Tische">
+    <input type="number" min="1" data-combo="${c.id}" data-f="min_capacity" value="${c.min_capacity}" aria-label="Mindestbelegung">
+    <input type="number" min="1" data-combo="${c.id}" data-f="max_capacity" value="${c.max_capacity}" aria-label="Höchstbelegung">
+    <button class="link danger" data-act="delcombo" data-id="${c.id}" title="Kombination löschen">✕</button></div>`).join('')||'<div class="empty">Keine festen Kombinationen.</div>'}</div>
+  <button data-act="addcombo">+ Kombination</button>
+  <h3 style="margin-top:20px">Kennzeichen</h3>
+  <p class="hint" style="margin:0 0 8px">Kennzeichen lassen sich an Reservierungen vergeben, zum Beispiel Geburtstag oder Allergie.</p>
+  <div class="flagrows">${S.flags.map(f=>`<div class="flagrow"><input type="color" data-flag="${f.id}" data-f="color" value="${esc(f.color)}" aria-label="Farbe"><input data-flag="${f.id}" data-f="label" value="${esc(f.label)}" aria-label="Bezeichnung"><button class="link danger" data-act="delflag" data-id="${f.id}" title="Kennzeichen löschen">✕</button></div>`).join('')}</div>
+  <button data-act="addflag">+ Kennzeichen</button>`;
+}
+
+/* ---------- Statistik ---------- */
+const fmt=v=>Number.isInteger(v)?String(v):v.toFixed(1).replace('.',',');
+const pct=(a,b)=>b?fmt(Math.round(a/b*1000)/10)+' %':'–';
+const niceStep=x=>{const p=10**Math.floor(Math.log10(x||1)), n=x/p; return (n<=1?1:n<=2?2:n<=5?5:10)*p;};
+const tableView=(data,unit)=>`<details class="tv"><summary>Als Tabelle anzeigen</summary><table><tbody>${data.map(d=>`<tr><td>${esc(d.t||d.l)}</td><td>${fmt(d.v)}${unit?' '+unit:''}</td></tr>`).join('')}</tbody></table></details>`;
+/* Säulendiagramm: eine Farbe, Raster dezent, nur der Höchstwert ist beschriftet, Rest über Achse/Tooltip/Tabelle */
+function vbar(title,sub,data,{every=1,unit=''}={}){
+  const W=560,H=200,L=36,R=10,T=18,B=22, max=Math.max(...data.map(d=>d.v),0);
+  if(!max) return `<div class="chart"><h3>${title}</h3><p>${sub}</p><div class="empty">Keine Daten in diesem Zeitraum.</div></div>`;
+  const step=niceStep(max/3), top=Math.ceil(max/step-1e-9)*step, iw=W-L-R, ih=H-T-B, band=iw/data.length, bw=Math.min(24,Math.max(1,band-2)), y=v=>T+ih-v/top*ih;
+  let g=''; for(let v=0;v<=top+1e-9;v+=step) g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-6}" y="${y(v)+4}" text-anchor="end">${fmt(Math.round(v*10)/10)}</text>`;
+  const imax=data.findIndex(d=>d.v===max);
+  data.forEach((d,i)=>{
+    const x=L+band*i+(band-bw)/2, h=d.v/top*ih, r=Math.min(4,bw/2,h);
+    g+=`<rect class="hit" x="${L+band*i}" y="${T}" width="${band}" height="${ih}" fill="transparent" data-tip="${esc(d.t||d.l)}: ${fmt(d.v)}${unit?' '+unit:''}"/>`;
+    if(h>0) g+=`<path class="bar" d="M${x},${T+ih}v${-(h-r)}q0,${-r} ${r},${-r}h${bw-2*r}q${r},0 ${r},${r}v${h-r}z"/>`;
+    if(i%every===0) g+=`<text class="ax" x="${x+bw/2}" y="${H-6}" text-anchor="middle">${esc(d.l)}</text>`;
+    if(i===imax) g+=`<text class="val" x="${clamp(x+bw/2,L+14,W-R-14)}" y="${y(d.v)-5}" text-anchor="middle">${fmt(d.v)}</text>`;
+  });
+  return `<div class="chart"><h3>${title}</h3><p>${sub}</p><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">${g}</svg>${tableView(data,unit)}</div>`;
+}
+/* Waagrechte Balken für wenige benannte Gruppen: Wert steht am Balkenende */
+function hbar(title,sub,data,unit){
+  const max=Math.max(...data.map(d=>d.v),0), sum=data.reduce((n,d)=>n+d.v,0);
+  if(!max) return `<div class="chart"><h3>${title}</h3><p>${sub}</p><div class="empty">Keine Daten in diesem Zeitraum.</div></div>`;
+  return `<div class="chart"><h3>${title}</h3><p>${sub}</p>${data.map(d=>`<div class="hrow" data-tip="${esc(d.l)}: ${fmt(d.v)} ${unit} (${pct(d.v,sum)})"><span>${esc(d.l)}</span><span class="ht"><i style="width:${d.v/max*100}%"></i></span><span class="hv">${fmt(d.v)}<small>${pct(d.v,sum)}</small></span></div>`).join('')}</div>`;
+}
+function renderStats(){
+  const days=ui.statDays, t=today(), from=addDays(t,-(days-1)), sum=a=>a.reduce((n,r)=>n+r.num_people,0);
+  const all=S.reservations.filter(r=>r.date>=from&&r.date<=t&&r.type!=='waiting_list');
+  const real=all.filter(r=>r.type==='reservation'), booked=all.filter(r=>!r.is_walkin);
+  const noshow=all.filter(r=>r.type==='canceled'&&r.cancel_reason==='guest_did_not_arrive').length, canc=all.filter(r=>r.type==='canceled').length-noshow;
+  const online=real.filter(r=>r.is_online_reservation).length, walk=real.filter(r=>r.is_walkin).length, guests=sum(real);
+  const kpi=[[real.length,'Reservierungen'],[guests,'Gäste'],[fmt(Math.round(guests/days*10)/10),'Ø Gäste pro Tag'],[real.length?fmt(Math.round(guests/real.length*10)/10):'–','Ø Gruppengröße'],
+    [pct(online,real.length),'online gebucht'],[pct(canc,booked.length),'storniert'],[pct(noshow,booked.length),'nicht erschienen']];
+  const dayList=[...Array(days)].map((_,i)=>addDays(from,i)), by=(arr,key)=>arr.reduce((m,r)=>(m[key(r)]=(m[key(r)]||0)+r.num_people,m),{});
+  const gd=by(real,r=>r.date), perDay=dayList.map(d=>({l:d.slice(8)+'.'+d.slice(5,7)+'.',t:longDate(d),v:gd[d]||0}));
+  const gh=by(real,r=>r.start_time.slice(0,2)), hours=[]; for(let h=Math.floor(FROM()/60);h<=22;h++) hours.push({l:String(h),t:pad(h)+':00–'+pad(h)+':59 Uhr',v:gh[pad(h)]||0});
+  const WD=['Mo','Di','Mi','Do','Fr','Sa','So'], WDL=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'], wi=d=>(new Date(d+'T12:00:00').getDay()+6)%7;
+  const wn=Array(7).fill(0), wg=Array(7).fill(0); dayList.forEach(d=>{wn[wi(d)]++; wg[wi(d)]+=gd[d]||0;});
+  const wdays=WD.map((l,i)=>({l,t:WDL[i],v:wn[i]?Math.round(wg[i]/wn[i]*10)/10:0}));
+  const G=[['1–2',1,2],['3–4',3,4],['5–6',5,6],['7+',7,99]], sizes=G.map(([l,a,b])=>({l,t:l+' Personen',v:real.filter(r=>r.num_people>=a&&r.num_people<=b).length}));
+  const bySrc=k=>real.filter(r=>r.is_online_reservation&&(r.source||'website')===k).length;
+  const source=[{l:'Telefon / vor Ort',v:real.length-online-walk},...Object.entries(SOURCES).map(([k,l])=>({l:'Online · '+l,v:bySrc(k)})),{l:'Walk-in',v:walk}];
+  const gr=by(real,r=>roomOf(r.table_ids[0])?.name||'ohne Raum'), rooms=Object.entries(gr).map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v);
+  $('#v-stats').innerHTML=`<div class="chips">${[[7,'Letzte 7 Tage'],[30,'Letzte 30 Tage'],[60,'Letzte 60 Tage']].map(([n,l])=>`<button data-act="statdays" data-n="${n}" class="${days===n?'on':''}">${l}</button>`).join('')}
+      <small style="align-self:center">${esc(shortDate(from))} – ${esc(shortDate(t))}, inklusive heute</small></div>
+    <div class="kpis" style="padding:0">${kpi.map(([v,l])=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
+    <div class="charts">
+      ${vbar('Gäste pro Tag','Summe der Personen aller Reservierungen und Walk-ins',perDay,{every:Math.ceil(days/8),unit:'Gäste'})}
+      ${vbar('Stoßzeiten','Gäste nach Stunde des Reservierungsbeginns',hours,{unit:'Gäste'})}
+      ${vbar('Wochentage','Durchschnittliche Gäste je Wochentag',wdays,{unit:'Gäste'})}
+      ${vbar('Gruppengrößen','Anzahl Reservierungen nach Personenzahl',sizes,{unit:'Reservierungen'})}
+      ${hbar('Herkunft','Wie die Reservierungen entstanden sind',source,'Reservierungen')}
+      ${hbar('Räume','Gäste nach Raum (bei mehreren Tischen zählt der erste)',rooms,'Gäste')}
+    </div>
+    <p class="hint">Stornoquote und Nichterscheinen beziehen sich auf alle Reservierungen ohne Walk-ins. Die Warteliste zählt nicht mit.</p>`;
+}
+
+/* ---------- Gästekartei: Anzeige ---------- */
+let curContact=null;
+function renderGuests(){
+  const q=$('#c-search').value.trim().toLowerCase(), qd=digits(q);
+  const key=c=>(c.last_name||c.company_name||'').toLowerCase();
+  const list=S.contacts.filter(c=>!q||[cname(c),c.company_name,c.email].some(v=>(v||'').toLowerCase().includes(q))||(qd.length>=3&&digits(c.phone).includes(qd)))
+    .sort((a,b)=>key(a).localeCompare(key(b),'de')||(a.first_name||'').localeCompare(b.first_name||'','de'));
+  const rows=list.map(c=>{const s=cstats(c);
+    return `<tr class="rowlink" data-act="opencontact" data-id="${c.id}"><td><b>${esc(cname(c))}</b>${c.locked?' <span class="pill canceled">gesperrt</span>':''}${c.company_name&&cname(c)!==c.company_name?'<br><small>'+esc(c.company_name)+'</small>':''}</td>
+      <td>${esc(c.phone)}${c.email?'<br><small>'+esc(c.email)+'</small>':''}</td><td class="num">${s.visits}</td><td class="num">${s.upcoming}</td><td class="num">${s.noshow||'–'}</td><td>${shortDate(s.last)}</td><td><small>${esc(c.note)}</small></td></tr>`}).join('');
+  $('#c-rows').innerHTML=`<table><thead><tr><th>Gast</th><th>Kontakt</th><th class="num">Besuche</th><th class="num">Kommende</th><th class="num">Nicht erschienen</th><th>Letzter Besuch</th><th>Notiz</th></tr></thead>
+    <tbody>${rows||`<tr><td colspan="7" class="empty">${q?'Kein Gast gefunden.':'Noch keine Gäste angelegt.'}</td></tr>`}</tbody></table>
+    <p class="hint">${list.length} von ${S.contacts.length} Gästen. Neue Gäste entstehen automatisch beim Eintragen einer Reservierung.</p>`;
+}
+const KF=[['first','first_name'],['last','last_name'],['phone','phone'],['email','email'],['company','company_name'],['birthday','birthday'],['note','note']];
+function openContact(id){
+  const c=id?S.contacts.find(c=>c.id===id):null; curContact=c?c.id:null;
+  $('#k-title').textContent=c?cname(c):'Neuer Gast';
+  for(const [f,k] of KF) $('#k-'+f).value=c?c[k]||'':'';
+  $('#k-locked').checked=!!(c&&c.locked); $('#k-err').textContent='';
+  $('#k-mergerow').hidden=!c||S.contacts.length<2;
+  if(c) $('#k-merge').innerHTML='<option value="">– Gast wählen –</option>'+S.contacts.filter(x=>x.id!==c.id).sort((a,b)=>cname(a).localeCompare(cname(b),'de')).map(x=>`<option value="${x.id}">${esc(cname(x))}${x.phone?' · '+esc(x.phone):''}</option>`).join('');
+  $('#k-del').hidden=$('#k-res').hidden=$('#k-stats').hidden=!c;
+  let hist='';
+  if(c){
+    const s=cstats(c);
+    $('#k-stats').innerHTML=`<span><b>${s.visits}</b> Besuche</span><span><b>${s.upcoming}</b> kommende</span><span><b>${s.noshow}</b>× nicht erschienen</span><span>zuletzt: ${shortDate(s.last)}</span>`;
+    const rows=s.rs.slice().sort((a,b)=>(b.date+b.start_time).localeCompare(a.date+a.start_time)).map(r=>{const st=stateOf(r);
+      return `<tr class="rowlink" data-act="histopen" data-id="${r.id}"><td>${shortDate(r.date)}</td><td>${r.start_time}</td><td>${r.num_people} Pers.</td><td>${esc(tableNames(r))||'–'}</td><td><span class="pill ${st}">${r.type==='canceled'&&r.cancel_reason==='guest_did_not_arrive'?'nicht erschienen':LABEL[st]}</span></td></tr>`}).join('');
+    hist=`<h3 style="margin:6px 0">Verlauf</h3><div class="tablewrap" style="max-height:170px;overflow:auto"><table><tbody>${rows||'<tr><td class="empty">Noch keine Reservierungen.</td></tr>'}</tbody></table></div>`;
+  }
+  $('#k-hist').innerHTML=hist; $('#kdlg').showModal();
+}
+function saveContact(){
+  const v=f=>$('#k-'+f).value.trim();
+  if(!v('last')&&!v('company')){$('#k-err').textContent='Bitte einen Nachnamen oder eine Firma eintragen.'; return;}
+  let c=curContact&&S.contacts.find(c=>c.id===curContact);
+  if(!c){c={id:uid(),created_at:new Date().toISOString()}; S.contacts.push(c);}
+  for(const [f,k] of KF) c[k]=v(f);
+  c.locked=$('#k-locked').checked;
+  for(const r of S.reservations) if(r.contact_id===c.id){r.guest_name=cname(c); r.phone=c.phone; r.email=c.email;}
+  save(); $('#kdlg').close(); render(); toast(`${cname(c)} gespeichert.`);
+}
+/* Hinweis im Reservierungsdialog, wenn der Gast schon bekannt ist */
+function guestInfo(fill){
+  const name=$('#f-name').value.trim(), el=$('#f-guest');
+  const c=name?findContact({guest_name:name,phone:$('#f-phone').value,email:$('#f-email').value}):null;
+  if(!c){el.textContent=''; return;}
+  if(fill){ if(!$('#f-phone').value) $('#f-phone').value=c.phone; if(!$('#f-email').value) $('#f-email').value=c.email; }
+  const s=cstats(c);
+  el.innerHTML=`${c.locked?'<b style="color:var(--danger)">Achtung: Reservierungssperre.</b> ':''}Bekannter Gast: ${s.visits} ${s.visits===1?'Besuch':'Besuche'}${s.noshow?`, ${s.noshow}× nicht erschienen`:''}${s.last?', zuletzt '+shortDate(s.last):''}${c.note?' · '+esc(c.note):''}`;
+}
+
+/* ---------- Online-Buchung: Einstellungen (Personal) ---------- */
+const longDate=d=>new Date(d+'T12:00:00').toLocaleDateString(typeof LOC==='function'?LOC():'de-AT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function renderOnline(){
+  const o=S.online, up=S.reservations.filter(r=>r.is_online_reservation&&r.type!=='canceled'&&r.date>=today()).length;
+  const locks=S.locks.filter(l=>l.date>=today()).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from));
+  $('#v-online').innerHTML=`<p style="margin-top:0">${up} kommende Online-Buchung(en). <a class="guestlink" href="?gast=1" target="_blank" rel="noopener">Gäste-Ansicht in neuem Tab öffnen ↗</a></p>
+  <h3>Einbinden: Website, Google, Facebook</h3>
+  <div class="embedrow"><label for="o-url" style="font-size:13px">Öffentliche Adresse</label><input id="o-url" data-o="public_url" value="${esc(o.public_url)}" placeholder="${esc(location.origin+location.pathname)}"><span></span></div>
+  ${embedRows(o)}
+  <div class="howto"><p><b>Google:</b> Im Google-Unternehmensprofil unter „Profil bearbeiten“ → „Buchungen“ den Reservierungslink eintragen. Dann erscheint in der Google-Suche und in Maps der Knopf „Tisch reservieren“.<br>
+  <b>Facebook:</b> Auf der Facebook-Seite den Aktions-Button bearbeiten, „Jetzt buchen“ bzw. „Reservieren“ wählen und den Facebook-Link einsetzen.<br>
+  <b>Instagram:</b> Den Instagram-Link als Link im Profil hinterlegen.<br>
+  <b>Eigene Website:</b> Den iframe-Code an der Stelle einfügen, an der heute das Tablex-Formular sitzt.</p>
+  <p>Jeder Link trägt ein Kennzeichen (<code>quelle=…</code>). Damit zeigt die Statistik unter „Herkunft“, über welchen Kanal gebucht wurde.</p></div>
+  <h3>Regeln</h3>
+  <div class="orow">
+    <label class="f">Name auf der Buchungsseite<input data-o="name" value="${esc(o.name)}"></label>
+    <label class="f">Online buchbar bis … Personen<input type="number" min="1" max="50" data-o="max_pax" value="${o.max_pax}"></label>
+    <label class="f">Vorlaufzeit heute (Minuten)<input type="number" min="0" step="15" data-o="lead_minutes" value="${o.lead_minutes}"></label>
+    <label class="f">Buchbar bis … Tage im Voraus<input type="number" min="1" max="365" data-o="days_ahead" value="${o.days_ahead}"></label>
+    <label class="f">Storno durch Gast bis … Stunden vorher<input type="number" min="0" max="168" data-o="cancel_hours" value="${o.cancel_hours}"></label>
+    <label class="f">Online buchbar ab (leer = sofort)<input type="date" data-o="open_from" value="${esc(o.open_from||'')}"></label>
+    <label class="f">Höchstens … Gäste pro Stunde online (0 = kein Limit)<input type="number" min="0" max="500" data-o="limit_per_hour" value="${o.limit_per_hour||0}"></label>
+    <label class="f">Abstand der Uhrzeiten<select data-o="slot_step">${[15,30,60].map(v=>`<option value="${v}"${o.slot_step===v?' selected':''}>${v} Minuten</option>`).join('')}</select></label>
+  </div>
+  <h3>Buchbare Beginnzeiten</h3>
+  <p class="hint" style="margin:0 0 8px">Gäste können online nur in diesen Zeitfenstern einen Beginn wählen. Ein Tag ohne Haken ist ein Ruhetag für dieses Fenster.</p>
+  ${o.times.map((t,i)=>`<div class="twin"><label class="f">Bezeichnung<input data-ot="${i}" data-f="name" value="${esc(t.name)}"></label>
+    <label class="f">von<input type="time" step="900" data-ot="${i}" data-f="from" value="${t.from}"></label>
+    <label class="f">bis<input type="time" step="900" data-ot="${i}" data-f="to" value="${t.to}"></label>
+    <div class="wdays">${['Mo','Di','Mi','Do','Fr','Sa','So'].map((d,j)=>`<label><input type="checkbox" data-ot="${i}" data-wd="${j+1}"${(t.days||[]).includes(j+1)?' checked':''}>${d}</label>`).join('')}</div>
+    <button class="link danger" data-act="deltime" data-i="${i}" title="Zeitfenster löschen">✕</button></div>`).join('')||'<div class="empty">Keine Zeitfenster. Online ist nichts buchbar.</div>'}
+  <button data-act="addtime">+ Zeitfenster</button>
+  <h3>Online-Sperren</h3>
+  ${locks.map(l=>`<div class="lock"><span><b>${esc(longDate(l.date))}</b> · ${l.from==='00:00'&&l.to==='23:59'?'ganzer Tag':l.from+'–'+l.to}</span><button class="link danger" data-act="dellock" data-id="${l.id}" title="Sperre löschen">✕</button></div>`).join('')||'<div class="empty">Keine Sperren eingetragen.</div>'}
+  <div class="addlock" style="margin-top:10px">
+    <label class="f">Datum<input type="date" id="l-date" min="${today()}" value="${ui.date>=today()?ui.date:today()}"></label>
+    <label class="f">von<input type="time" id="l-from" value="00:00"></label>
+    <label class="f">bis<input type="time" id="l-to" value="23:59"></label>
+    <button data-act="addlock">Sperre hinzufügen</button>
+  </div>
+  <p class="hint">Während einer Sperre können Gäste online nicht buchen. Das Personal kann weiterhin Reservierungen eintragen.</p>`;
+}
+
+function embedRows(o){
+  const base=(o.public_url||location.origin+location.pathname).split('?')[0];
+  const row=(l,v)=>`<div class="embedrow"><span style="font-size:13px">${l}</span><input readonly value="${esc(v)}" onfocus="this.select()"><button data-act="copy" data-t="${esc(v)}">Kopieren</button></div>`;
+  const q='?gast=1'+(ONLINE&&VENUE&&VENUE.slug&&VENUE.slug!=='lue'?'&betrieb='+VENUE.slug:'');
+  return row('Google-Profil',base+q+'&quelle=google')+row('Facebook-Button',base+q+'&quelle=facebook')+row('Instagram-Profil',base+q+'&quelle=instagram')
+    +row('Website (iframe)',`<iframe src="${base}${q}&embed=1&quelle=website" title="Tisch reservieren" loading="lazy" style="width:100%;min-height:780px;border:0"></iframe>`);
+}
+/* ---------- Online-Buchung: Gäste-Ansicht ---------- */
+const g={pax:2,date:today(),room:'',time:null,done:null,mode:'book',code:'',look:null,msg:''};
+{const c=new URLSearchParams(location.search).get('code'); if(c){g.mode='manage'; g.code=c.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);}}
+/* ---------- Kundenseite: Deutsch / Englisch ----------
+   Die Seite wird auf Deutsch aufgebaut und für Englisch danach übersetzt (feste Texte per Liste, zusammengesetzte per Muster). */
+let LANG='de';
+if(GUEST){ let l=QS.get('lang'); try{l=l||localStorage.getItem('tischbuch.lang')}catch(e){} LANG=/^(de|en)$/.test(l||'')?l:((navigator.language||'de').toLowerCase().startsWith('de')?'de':'en'); }
+const LOC=()=>LANG==='en'?'en-GB':'de-AT';
+const EN={'Tisch reservieren':'Book a table','Reservierung verwalten':'Manage booking','Buchungscode':'Booking code','Telefonnummer oder E-Mail der Buchung':'Phone number or e-mail used for the booking',
+  'Reservierung anzeigen':'Show booking','← Neue Reservierung':'← New booking','Diese Reservierung ist storniert.':'This booking has been cancelled.','Reservierung stornieren':'Cancel booking',
+  'Diese Reservierung liegt in der Vergangenheit oder hat bereits begonnen.':'This booking is in the past or has already started.',
+  'Online kann diese Reservierung nicht mehr storniert werden. Bitte rufen Sie uns an.':'This booking can no longer be cancelled online. Please call us.',
+  'Reservierung storniert':'Booking cancelled','Ihre Reservierung':'Your booking','Mit diesen Angaben haben wir keine Reservierung gefunden.':'We could not find a booking with these details.',
+  'Möchten Sie Ihre Reservierung wirklich stornieren?':'Do you really want to cancel your booking?','Stornieren':'Cancel booking','Abbrechen':'Keep booking',
+  'Online-Storno ist nicht mehr möglich.':'Online cancellation is no longer possible.',
+  'Ihre Reservierung wurde storniert. Vielleicht sehen wir uns ein anderes Mal.':'Your booking has been cancelled. We hope to see you another time.',
+  'Weitere Reservierung':'Another booking','Ihr Buchungscode:':'Your booking code:',
+  'Bitte notieren Sie den Code, es wird keine Bestätigung per E-Mail verschickt.':'Please note the code; no confirmation e-mail will be sent.',
+  '1 · Personen & Tag':'1 · Guests & day','2 · Uhrzeit':'2 · Time','3 · Ihre Daten':'3 · Your details','Personen':'Guests','Tag':'Day','Heute':'Today','Anderes Datum':'Other date','Bereich':'Area','egal':'any',
+  'Freie Zeiten werden geladen …':'Loading available times …','ändern':'change','Ihre Daten':'Your details','Telefon':'Phone','E-Mail':'E-mail','Nachricht an uns (optional)':'Message to us (optional)',
+  'Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Reservierung gespeichert werden.':'I agree that my details are stored to process the booking.',
+  'Bestehende Reservierung ansehen oder stornieren':'View or cancel an existing booking',
+  'Bitte geben Sie Ihren Namen an.':'Please enter your name.','Bitte geben Sie eine Telefonnummer an.':'Please enter a phone number.','Bitte geben Sie eine gültige E-Mail-Adresse an.':'Please enter a valid e-mail address.',
+  'Bitte bestätigen Sie die Einwilligung.':'Please confirm the consent.','Diese Uhrzeit wurde gerade vergeben. Bitte wählen Sie eine andere.':'This time has just been taken. Please choose another one.',
+  'Eine Online-Buchung ist derzeit leider nicht möglich. Bitte rufen Sie uns an.':'Online booking is currently not possible. Please call us.','Bitte prüfen Sie Ihre Angaben.':'Please check your details.',
+  'Die Buchung hat nicht geklappt. Bitte versuchen Sie es noch einmal.':'The booking did not go through. Please try again.',
+  'Die Online-Reservierung ist im Moment nicht erreichbar. Bitte rufen Sie uns an.':'Online booking is currently unavailable. Please call us.',
+  'Mit diesen Kontaktdaten gibt es bereits mehrere offene Reservierungen. Bitte rufen Sie uns an.':'There are already several open bookings with these contact details. Please call us.',
+  'Mittag':'Lunch','Früher Abend':'Early evening','Abend':'Evening','Später Abend':'Late evening'};
+const hrs=n=>n+' '+(n==='1'?'hour':'hours');
+const ENRX=[[/^Danke, (.+)!$/,(m,a)=>`Thank you, ${a}!`],[/^Ihr Tisch bei (.+) ist reserviert\.$/,(m,a)=>`Your table at ${a} is reserved.`],
+  [/^Damit können Sie Ihre Reservierung bis (\d+) Stunden? vor Beginn selbst stornieren\.$/,(m,a)=>`You can use it to cancel your booking yourself up to ${hrs(a)} before it starts.`],
+  [/^Damit können Sie Ihre Reservierung bis zum Beginn selbst stornieren\.$/,()=>'You can use it to cancel your booking yourself until it starts.'],
+  [/^Sie können kostenlos bis (\d+) Stunden? vor Beginn stornieren\.$/,(m,a)=>`You can cancel free of charge up to ${hrs(a)} before the start.`],
+  [/^Sie können kostenlos bis zum Beginn stornieren\.$/,()=>'You can cancel free of charge until the start.'],
+  [/^Eine Bestätigung mit diesem Code geht an (.+?)\. \(Im Prototyp.*$/,(m,a)=>`A confirmation with this code will be sent to ${a}. (In this prototype it is not actually sent yet.)`],
+  [/^Ihre Nachricht: ([\s\S]*)$/,(m,a)=>`Your message: ${a}`],
+  [/^Für Gruppen ab (\d+) Personen fragen Sie bitte telefonisch an\.[\s\S]*$/,(m,a)=>`For groups of ${a} or more, please call us. We will be happy to arrange something suitable.`],
+  [/^Am (.+) ist online leider nichts mehr frei\. Bitte wählen Sie einen anderen Tag oder rufen Sie uns an\.$/,(m,a)=>`Unfortunately nothing is available online on ${a}. Please choose another day or call us.`],
+  [/^Online-Reservierungen sind ab (.+) möglich\.$/,(m,a)=>`Online bookings are possible from ${a}.`],
+  [/^Jetzt reservieren · (\d\d:\d\d) Uhr · (\d+) Pers\.$/,(m,a,b)=>`Book now · ${a} · ${b} ${b==='1'?'guest':'guests'}`],
+  [/^Tisch reservieren – (.+)$/,(m,a)=>`Book a table – ${a}`],[/^Reservierung verwalten – (.+)$/,(m,a)=>`Manage booking – ${a}`],[/^mehr als (\d+) Personen$/,(m,a)=>`more than ${a} guests`]];
+function T(str){
+  if(LANG!=='en'||typeof str!=='string') return str;
+  const k=str.trim(); if(!k) return str;
+  let out=null;
+  if(Object.prototype.hasOwnProperty.call(EN,k)) out=EN[k];
+  else for(const [rx,fn] of ENRX) if(rx.test(k)){out=k.replace(rx,fn); break;}
+  if(out==null) out=k.replace(/(\d\d:\d\d) Uhr/g,'$1').replace(/\b1 Person\b/g,'1 guest').replace(/(\d+) Personen/g,'$1 guests').replace(/(\d+) Pers\./g,'$1 guests');
+  return str.replace(k,()=>out);
+}
+function xl(root){
+  if(LANG!=='en'||!root) return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); let n; const nodes=[];
+  while(n=w.nextNode()) if(n.nodeValue.trim()&&!n.parentElement.closest('textarea,script,style')) nodes.push(n);
+  for(const x of nodes) x.nodeValue=T(x.nodeValue);
+  root.querySelectorAll('[aria-label]').forEach(e=>e.setAttribute('aria-label',T(e.getAttribute('aria-label'))));
+}
+function renderGuest(){
+  renderGuest0();
+  document.documentElement.lang=LANG; document.title=T(document.title);
+  xl($('#gbody'));
+  document.querySelectorAll('.glang button').forEach(b=>b.classList.toggle('on',b.dataset.l===LANG));
+  const br=(curBrand&&curBrand.b)||{}, ok=u=>typeof u==='string'&&/^https:\/\/[^"'()\s<>]+$/.test(u), en=LANG==='en';
+  $('#g-links').innerHTML=[[br.privacy,en?'Privacy policy':'Datenschutz'],[br.imprint,en?'Imprint':'Impressum']].filter(x=>ok(x[0])).map(x=>`<a href="${esc(x[0])}" target="_blank" rel="noopener">${x[1]}</a> · `).join('');
+}
+const cancelText=o=>o.cancel_hours?`bis ${o.cancel_hours} ${o.cancel_hours===1?'Stunde':'Stunden'} vor Beginn`:'bis zum Beginn';
+const canGuestCancel=r=>ONLINE&&GUEST?!!r.can_cancel:r.type==='reservation'&&r.status_guest==='not_started'&&new Date(r.date+'T'+r.start_time+':00')-Date.now()>=S.online.cancel_hours*3600e3;
+function renderManage(el,o){
+  const r=g.look!=null?(ONLINE?g.look:resById(g.look)):null;
+  const back='<p style="margin:14px 0 0"><button type="button" class="link" data-act="gbook">← Neue Reservierung</button></p>';
+  if(!r){
+    el.innerHTML=`<div class="gcard"><h1>Reservierung verwalten</h1><p class="gsub">${esc(o.name)}</p>
+      <form class="gform" id="gfind"><label class="f">Buchungscode<input id="g-code" value="${esc(g.code)}" maxlength="8" autocomplete="off" autocapitalize="characters"></label>
+      <label class="f">Telefonnummer oder E-Mail der Buchung<input id="g-key" autocomplete="off"></label>
+      <div class="err" id="g-err"></div><button type="submit" class="primary">Reservierung anzeigen</button></form>${back}</div>`; return;
+  }
+  const past=new Date(r.date+'T'+r.start_time+':00')<Date.now();
+  let info, btn='';
+  if(r.type==='canceled') info=g.msg||'Diese Reservierung ist storniert.';
+  else if(canGuestCancel(r)){info=`Sie können kostenlos ${cancelText(o)} stornieren.`; btn='<button type="button" class="danger" data-act="gcancel">Reservierung stornieren</button>';}
+  else if(past||r.status_guest!=='not_started') info='Diese Reservierung liegt in der Vergangenheit oder hat bereits begonnen.';
+  else info='Online kann diese Reservierung nicht mehr storniert werden. Bitte rufen Sie uns an.';
+  el.innerHTML=`<div class="gcard"><h1>${r.type==='canceled'?'Reservierung storniert':'Ihre Reservierung'}</h1><p class="gsub">${esc(o.name)}</p>
+    <div class="gsum"${r.type==='canceled'?' style="text-decoration:line-through"':''}><b>${esc(longDate(r.date))}</b><br>${r.start_time} Uhr · ${r.num_people} ${r.num_people===1?'Person':'Personen'} · ${esc(r.guest_name)}</div>
+    <p>${info}</p>${btn}${back}</div>`;
+}
+async function findBooking(){
+  if(ONLINE){
+    g.code=$('#g-code').value.toUpperCase().replace(/[^A-Z0-9]/g,''); g.key=$('#g-key').value.trim();
+    const {data,error}=await DB.rpc('public_get',{p_code:g.code,p_key:g.key});
+    if(error||!data){$('#g-err').textContent=T('Mit diesen Angaben haben wir keine Reservierung gefunden.'); return;}
+    g.look=data; g.msg=''; return renderGuest();
+  }
+  S=load();
+  const code=$('#g-code').value.toUpperCase().replace(/[^A-Z0-9]/g,''), key=$('#g-key').value.trim(), kd=digits(key).slice(-7);
+  g.code=code;
+  const r=S.reservations.find(r=>r.code&&r.code===code&&((kd.length===7&&digits(r.phone).slice(-7)===kd)||(key.includes('@')&&(r.email||'').toLowerCase()===key.toLowerCase())));
+  if(!r){$('#g-err').textContent=T('Mit diesen Angaben haben wir keine Reservierung gefunden.'); return;}
+  g.look=r.id; g.msg=''; renderGuest();
+}
+async function guestCancel(){
+  if(!await ask('Möchten Sie Ihre Reservierung wirklich stornieren?','Stornieren')) return;
+  if(ONLINE){
+    const {error}=await DB.rpc('public_cancel',{p_code:g.code,p_key:g.key});
+    if(error) toast('Online-Storno ist nicht mehr möglich.'); else g.msg='Ihre Reservierung wurde storniert. Vielleicht sehen wir uns ein anderes Mal.';
+    const {data}=await DB.rpc('public_get',{p_code:g.code,p_key:g.key}); if(data) g.look=data;
+    return renderGuest();
+  }
+  S=load(); const r=resById(g.look); if(!r) return renderGuest();
+  if(!canGuestCancel(r)){renderGuest(); toast('Online-Storno ist nicht mehr möglich.'); return;}
+  r.type='canceled'; r.cancel_reason='canceled_by_guest'; r.table_ids=[]; queueMail('cancel',r); save();
+  g.msg='Ihre Reservierung wurde storniert. Vielleicht sehen wir uns ein anderes Mal.'; renderGuest();
+}
+function onlineSlots(date,pax,roomId){
+  const o=S.online, dur=DUR(), n=nowMin();
+  const wd=((new Date(date+'T12:00:00').getDay()+6)%7)+1, lim=o.limit_per_hour||0;
+  const inHour=h=>S.reservations.filter(r=>r.type==='reservation'&&r.date===date&&Math.floor(t2m(r.start_time)/60)===h).reduce((n,r)=>n+r.num_people,0);
+  return o.times.filter(t=>(t.days||[1,2,3,4,5,6,7]).includes(wd)).map(t=>{const items=[];
+    for(let m=t2m(t.from);m<=t2m(t.to);m+=o.slot_step){
+      const e=Math.min(m+dur,LAST_END);
+      const ok=e>m && date>=today() && (!o.open_from||date>=o.open_from) && !(date===today()&&m<n+o.lead_minutes)
+        && !S.locks.some(l=>l.date===date&&m>=t2m(l.from)&&m<=t2m(l.to))
+        && (!lim||inHour(Math.floor(m/60))+pax<=lim)
+        && autoAssign(date,m,e,pax,null,roomId).length>0;
+      items.push({m,ok});
+    }
+    return {name:t.name,items};});
+}
+function renderGuest0(){
+  if(!ONLINE) S=load(); if(!S) return; const o=S.online, el=$('#gbody'); $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); $('#g-brand').textContent=o.name+' · Obertauern';
+  document.title='Tisch reservieren – '+o.name;
+  if(g.mode==='manage'){document.title='Reservierung verwalten – '+o.name; return renderManage(el,o);}
+  if(g.done){const r=g.done;
+    el.innerHTML=`<div class="gcard"><h1>Danke, ${esc(r.guest_name)}!</h1><p class="gsub">Ihr Tisch bei ${esc(o.name)} ist reserviert.</p>
+      <div class="gsum"><b>${esc(longDate(r.date))}</b><br>${r.start_time} Uhr · ${r.num_people} ${r.num_people===1?'Person':'Personen'}${r.note?'<br>Ihre Nachricht: '+esc(r.note):''}</div>
+      <p>Ihr Buchungscode: <b style="font-size:18px;letter-spacing:1px">${esc(r.code)}</b><br><small>Damit können Sie Ihre Reservierung ${cancelText(o)} selbst stornieren.</small></p>
+      <p><small>${r.mailed?`Eine Bestätigung mit diesem Code geht an ${esc(r.email)}. (Im Prototyp wird sie nicht wirklich verschickt, sondern nur im Postausgang abgelegt.)`:'Bitte notieren Sie den Code, es wird keine Bestätigung per E-Mail verschickt.'}</small></p>
+      <button data-act="gnew">Weitere Reservierung</button> <button data-act="gmanage" data-code="${esc(r.code)}">Reservierung verwalten</button></div>`; return;}
+  const maxDate=addDays(today(),o.days_ahead); if(g.date<today()||g.date>maxDate) g.date=today();
+  let pax=''; for(let i=1;i<=o.max_pax;i++) pax+=`<option value="${i}"${g.pax===i?' selected':''}>${i} ${i===1?'Person':'Personen'}</option>`;
+  pax+=`<option value="${o.max_pax+1}"${g.pax>o.max_pax?' selected':''}>mehr als ${o.max_pax}</option>`;
+  let h=`<div class="gcard"><h1>Tisch reservieren</h1><p class="gsub">${esc(o.name)}</p>
+    <div class="gsteps"><span class="on">1 · Personen &amp; Tag</span><span class="${g.time!==null?'on':''}">2 · Uhrzeit</span><span class="${g.time!==null?'on':''}">3 · Ihre Daten</span></div>
+    <h3 style="margin-top:0">Personen</h3>
+    <div class="gchips">${Array.from({length:o.max_pax},(_,i)=>`<button type="button" data-act="gpax" data-n="${i+1}"${g.pax===i+1?' class="on"':''} aria-label="${i+1} Personen">${i+1}</button>`).join('')}<button type="button" data-act="gpax" data-n="${o.max_pax+1}"${g.pax>o.max_pax?' class="on"':''} aria-label="mehr als ${o.max_pax} Personen">${o.max_pax}+</button></div>
+    <h3>Tag</h3>
+    <div class="gchips days">${Array.from({length:7},(_,i)=>{const d=addDays(today(),i), dt=new Date(d+'T12:00:00'); return `<button type="button" data-act="gday" data-d="${d}"${g.date===d?' class="on"':''}><small>${i===0?'Heute':dt.toLocaleDateString(LOC(),{weekday:'short'})}</small><b>${dt.getDate()}${LANG==='en'?'':'.'}</b><small>${dt.toLocaleDateString(LOC(),{month:'short'})}</small></button>`}).join('')}</div>
+    <div class="grid2" style="margin-top:12px"><label class="f">Anderes Datum<input type="date" id="g-date" min="${today()}" max="${maxDate}" value="${g.date}"></label>
+    <label class="f">Bereich<select id="g-room"><option value="">egal</option>${S.rooms.filter(r=>r.tables.length).map(r=>`<option value="${r.id}"${g.room===r.id?' selected':''}>${esc(r.name)}</option>`).join('')}</select></label></div>`;
+  if(g.pax>o.max_pax) h+=`<div class="gsum">Für Gruppen ab ${o.max_pax+1} Personen fragen Sie bitte telefonisch an. Wir stellen gerne etwas Passendes zusammen.</div>`;
+  else{
+    const groups=ONLINE?(g.slots||[]):onlineSlots(g.date,g.pax,g.room), any=groups.some(x=>x.items.some(i=>i.ok));
+    if(g.time!==null&&!groups.some(x=>x.items.some(i=>i.ok&&i.m===g.time))) g.time=null;
+    if(ONLINE&&!g.slots) h+='<div class="gsum">Freie Zeiten werden geladen …</div>';
+    else if(!any&&o.open_from&&g.date<o.open_from) h+=`<div class="gsum">Online-Reservierungen sind ab ${esc(longDate(o.open_from))} möglich.</div>`;
+    else if(!any) h+=`<div class="gsum">Am ${esc(longDate(g.date))} ist online leider nichts mehr frei. Bitte wählen Sie einen anderen Tag oder rufen Sie uns an.</div>`;
+    else for(const x of groups) if(x.items.length) h+=`<h3>${esc(x.name)}</h3><div class="gslots">${x.items.map(i=>`<button type="button" data-act="gslot" data-m="${i.m}"${g.time===i.m?' class="on"':''}${i.ok?'':' disabled'}>${m2t(i.m)}</button>`).join('')}</div>`;
+    if(g.time!==null) h+=`<div class="gpick"><span><b>${m2t(g.time)} Uhr</b> · ${esc(longDate(g.date))} · ${g.pax} ${g.pax===1?'Person':'Personen'}</span><button type="button" class="link" data-act="gslot" data-m="">ändern</button></div><form class="gform" id="gform"><h3 style="margin-bottom:0">Ihre Daten</h3>
+      <label class="f">Name<input id="g-name" autocomplete="name"></label>
+      <input id="g-web" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <div class="grid2"><label class="f">Telefon<input id="g-phone" type="tel" autocomplete="tel"></label><label class="f">E-Mail<input id="g-email" type="email" autocomplete="email"></label></div>
+      <label class="f">Nachricht an uns (optional)<textarea id="g-note" rows="2"></textarea></label>
+      <label class="consent"><input type="checkbox" id="g-ok"> Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Reservierung gespeichert werden.</label>
+      <div class="err" id="g-err"></div>
+      <button type="submit" class="primary">Jetzt reservieren · ${m2t(g.time)} Uhr · ${g.pax} Pers.</button></form>`;
+  }
+  el.innerHTML=h+'<p style="margin:16px 0 0"><button type="button" class="link" data-act="gmanage">Bestehende Reservierung ansehen oder stornieren</button></p></div>';
+}
+async function bookOnline(){
+  const err=m=>{$('#g-err').textContent=T(m)};
+  const name=$('#g-name').value.trim(), phone=$('#g-phone').value.trim(), email=$('#g-email').value.trim(), note=$('#g-note').value.trim();
+  if(!name) return err('Bitte geben Sie Ihren Namen an.');
+  if(phone.replace(/\D/g,'').length<6) return err('Bitte geben Sie eine Telefonnummer an.');
+  if(!/^\S+@\S+\.\S+$/.test(email)) return err('Bitte geben Sie eine gültige E-Mail-Adresse an.');
+  if(!$('#g-ok').checked) return err('Bitte bestätigen Sie die Einwilligung.');
+  if($('#g-web')&&$('#g-web').value) return err('Die Buchung hat nicht geklappt. Bitte versuchen Sie es noch einmal.');   // Feld, das nur Programme ausfüllen
+  if(ONLINE){
+    const btn=$('#gform button[type=submit]'); if(btn.disabled) return; btn.disabled=true; err('');
+    const {data,error}=await DB.rpc('public_book',{p_slug:VENUE_SLUG,p_date:g.date,p_start:m2t(g.time),p_pax:g.pax,p_name:name,p_phone:phone,p_email:email,p_note:note,p_room:g.room||null,p_source:SRC});
+    if(error){
+      const m=error.message||'';
+      if(m.includes('slot_unavailable')){g.time=null; toast('Diese Uhrzeit wurde gerade vergeben. Bitte wählen Sie eine andere.'); return guestSlots();}
+      btn.disabled=false;
+      return err(m.includes('too_many_bookings')?'Mit diesen Kontaktdaten gibt es bereits mehrere offene Reservierungen. Bitte rufen Sie uns an.':m.includes('booking_not_possible')?'Eine Online-Buchung ist derzeit leider nicht möglich. Bitte rufen Sie uns an.':m.includes('invalid_input')?'Bitte prüfen Sie Ihre Angaben.':'Die Buchung hat nicht geklappt. Bitte versuchen Sie es noch einmal.');
+    }
+    g.done={...data,note,mailed:true}; g.time=null; return renderGuest();
+  }
+  S=load();
+  const known=findContact({guest_name:name,phone,email});
+  if(known&&known.locked) return err('Eine Online-Buchung ist derzeit leider nicht möglich. Bitte rufen Sie uns an.');
+  const slot=onlineSlots(g.date,g.pax,g.room).flatMap(x=>x.items).find(i=>i.m===g.time);
+  const e=Math.min(g.time+DUR(),LAST_END), ids=slot&&slot.ok?autoAssign(g.date,g.time,e,g.pax,null,g.room):[];
+  if(!ids.length){g.time=null; renderGuest(); toast('Diese Uhrzeit wurde gerade vergeben. Bitte wählen Sie eine andere.'); return;}
+  const r={id:uid(),type:'reservation',guest_name:name,phone,email,num_people:g.pax,num_children:0,date:g.date,start_time:m2t(g.time),end_time:m2t(e),
+    note,status_guest:'not_started',flags:[],table_ids:ids,is_walkin:false,is_online_reservation:true,source:SRC,cancel_reason:'',created_at:new Date().toISOString()};
+  r.code=mkCode(S);
+  S.reservations.push(r); ensureContact(r); r.mailed=queueMail('confirm',r); save(); g.done=r; g.time=null; renderGuest();
+}
+
+/* ---------- Dialog Reservierung ---------- */
+function timeOptions(sel,from,to,val){
+  let h=''; for(let m=from;m<=to;m+=15) h+=`<option${m2t(m)===val?' selected':''}>${m2t(m)}</option>`;
+  sel.innerHTML=h; if(sel.value!==val) sel.value=m2t(clamp(t2m(val),from,to));
+}
+function openRes(id,preset={}){
+  const r=id?resById(id):null; curId=r?r.id:null;
+  const from=FROM();
+  const start=r?r.start_time:(preset.start||m2t(clamp(Math.ceil((ui.date===today()?nowMin():t2m('19:00'))/15)*15,from,LAST_END-15)));
+  const end=r?r.end_time:m2t(Math.min(t2m(start)+DUR(),LAST_END));
+  $('#d-title').textContent=r?(r.is_walkin?'Walk-in':'Reservierung')+' bearbeiten':'Neue Reservierung';
+  const pc=preset.contact;
+  $('#f-name').value=r?r.guest_name:(pc?cname(pc):''); $('#f-phone').value=r?r.phone:(pc?pc.phone:''); $('#f-email').value=r?r.email||'':(pc?pc.email:'');
+  $('#dl-contacts').innerHTML=S.contacts.map(c=>`<option value="${esc(cname(c))}">${esc(c.phone)}</option>`).join('');
+  $('#f-date').value=r?r.date:ui.date;
+  timeOptions($('#f-start'),Math.min(from,t2m(start)),LAST_END-15,start);
+  timeOptions($('#f-end'),Math.min(from,t2m(start))+15,LAST_END,end);
+  $('#f-start').dataset.prev=start;
+  $('#f-people').value=r?r.num_people:2; $('#f-children').value=r?r.num_children:0; $('#f-note').value=r?r.note:'';
+  $('#f-flags').innerHTML=S.flags.map(f=>`<label class="tchip"><input type="checkbox" value="${f.id}" ${r&&r.flags.includes(f.id)?'checked':''}> ${esc(f.label)}</label>`).join('');
+  pickSel=r?[...r.table_ids]:(preset.table?[preset.table]:[]);
+  $('#f-err').textContent=''; $('#d-cancel').hidden=true;
+  $('#d-series').hidden=!!r; $('#f-repeat').value='none'; $('#f-until').value=''; seriesHint();
+  const ser=r&&r.series_id?seriesOf(r):[], fut=r?ser.filter(x=>x.date>r.date&&x.type!=='canceled').length:0;
+  $('#f-seriesinfo').hidden=!ser.length;
+  if(ser.length) $('#f-seriesinfo').textContent=`↻ Teil einer Serie (${RULE[r.series_rule]?.[1]||''}) · Termin ${ser.indexOf(r)+1} von ${ser.length} · Änderungen gelten nur für diesen Termin.`;
+  $('#f-allseries').checked=false; $('#l-allseries').hidden=!fut; $('#l-allseries span').textContent=`auch die ${fut} folgenden Termine der Serie stornieren`;
+  const st=$('#d-state'); st.hidden=!r;
+  if(r){
+    const s=stateOf(r); let b='';
+    if(r.type==='reservation'){
+      if(r.status_guest==='not_started') b+='<button type="button" class="primary" data-act="st" data-s="arrived">Gäste sind da</button>';
+      if(r.status_guest==='arrived') b+='<button type="button" class="primary" data-act="st" data-s="done">Gäste sind gegangen</button>';
+      if(r.status_guest!=='not_started') b+='<button type="button" data-act="st" data-s="not_started">Status zurücksetzen</button>';
+    }
+    if(r.type==='canceled') b+=`<small>Grund: ${r.cancel_reason==='guest_did_not_arrive'?'Gast nicht erschienen':r.cancel_reason==='canceled_by_guest'?'Vom Gast online storniert':'Anderer Grund'}. Speichern stellt die Reservierung wieder her.</small>`;
+    if(r.type==='waiting_list') b+='<small>Tisch wählen und speichern, um die Reservierung zu platzieren.</small>';
+    st.innerHTML=`<span class="pill ${s}">${LABEL[s]}</span>${b}`;
+  }
+  $('#b-cancel').hidden=!r||r.type==='canceled';
+  $('#b-save').textContent=r&&r.type==='canceled'?'Wiederherstellen':'Speichern';
+  $('#d-log').hidden=!(r&&ONLINE); $('#d-log').open=false; $('#f-log').textContent='';
+  if(r&&ONLINE) DB.from('res_log').select('at,actor,action,detail').eq('reservation_id',r.id).order('at',{ascending:false}).limit(50).then(({data})=>{
+    if(curId!==r.id) return;
+    $('#f-log').innerHTML=(data||[]).map(l=>`<div><b>${new Date(l.at).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</b> · ${esc(l.action)}${l.detail?' · '+esc(l.detail):''} <small>(${esc(l.actor)})</small></div>`).join('')||'<div>Noch keine Einträge.</div>';
+  });
+  renderPicker(); guestInfo(false); $('#dlg').showModal(); if(!r) $('#f-name').focus();
+}
+function formTimes(){return {date:$('#f-date').value,s:t2m($('#f-start').value),e:t2m($('#f-end').value),p:parseInt($('#f-people').value,10)||0};}
+/* ---------- Serienreservierungen ---------- */
+const RULE={daily:[1,'täglich'],weekly:[7,'wöchentlich'],biweekly:[14,'alle 2 Wochen']}, SERIES_MAX=60;
+function seriesDates(date,rule,until){
+  const out=[]; if(!RULE[rule]||!date||!until) return out;
+  for(let d=date;d<=until&&out.length<SERIES_MAX;d=addDays(d,RULE[rule][0])) out.push(d);
+  return out;
+}
+const seriesOf=r=>S.reservations.filter(x=>x.series_id&&x.series_id===r.series_id).sort((a,b)=>a.date.localeCompare(b.date));
+function seriesHint(){
+  const rule=$('#f-repeat').value, date=$('#f-date').value, u=$('#f-until');
+  $('#l-until').hidden=rule==='none';
+  if(rule==='none'){$('#f-serieshint').textContent=''; return;}
+  u.min=date; if(!u.value||u.value<date) u.value=addDays(date,RULE[rule][0]*4);
+  const ds=seriesDates(date,rule,u.value), more=addDays(ds[ds.length-1],RULE[rule][0])<=u.value;
+  $('#f-serieshint').textContent=`Ergibt ${ds.length} ${ds.length===1?'Termin':'Termine'}, letzter am ${shortDate(ds[ds.length-1])}.`+(more?` Mehr als ${SERIES_MAX} Termine pro Serie sind nicht möglich.`:'')+' Ist der Tisch an einem Termin belegt, wird ein anderer gesucht oder der Termin kommt auf die Warteliste.';
+}
+function renderPicker(){
+  const {date,s,e,p}=formTimes(), sel=new Set(pickSel);
+  $('#f-tables').innerHTML=S.rooms.map(r=>`<div class="proom">${esc(r.name)}<br>${r.tables.map(t=>{
+    const b=busy(t.id,date,s,e,curId); if(b) sel.delete(t.id);
+    return `<label class="tchip${b?' busy':''}"><input type="checkbox" value="${t.id}"${sel.has(t.id)?' checked':''}${b?' disabled':''}> ${esc(t.name)} <small>${t.min_capacity}–${t.max_capacity}</small></label>`}).join('')}</div>`).join('')||'<div class="empty">Keine Tische angelegt.</div>';
+  pickSel=[...sel];
+  const cap=pickSel.reduce((n,id)=>n+(tableById(id)?.max_capacity||0),0);
+  $('#f-hint').textContent=!pickSel.length?'Kein Tisch gewählt – die Reservierung kommt auf die Warteliste.':cap<p?`Achtung: Die gewählten Tische haben nur ${cap} Plätze für ${p} Personen.`:`${cap} Plätze gewählt.`;
+}
+function saveRes(){
+  const {date,s,e,p}=formTimes(), name=$('#f-name').value.trim(), err=m=>{$('#f-err').textContent=m};
+  if(!name) return err('Bitte einen Namen eintragen.');
+  if(!date) return err('Bitte ein Datum wählen.');
+  if(p<1) return err('Die Personenzahl muss mindestens 1 sein.');
+  if(e<=s) return err('Das Ende muss nach dem Beginn liegen.');
+  if(pickSel.some(id=>busy(id,date,s,e,curId))) return err('Ein gewählter Tisch ist in dieser Zeit schon belegt.');
+  let r=curId?resById(curId):null; const isNew=!r, again=!!r&&r.type==='canceled';
+  if(isNew){r={id:uid(),status_guest:'not_started',is_walkin:false,cancel_reason:'',created_at:new Date().toISOString()}; S.reservations.push(r);}
+  if(r.type==='canceled'){r.status_guest='not_started'; r.cancel_reason='';}
+  Object.assign(r,{guest_name:name,phone:$('#f-phone').value.trim(),email:$('#f-email').value.trim(),date,start_time:m2t(s),end_time:m2t(e),num_people:p,
+    num_children:clamp(parseInt($('#f-children').value,10)||0,0,p),note:$('#f-note').value.trim(),
+    flags:[...document.querySelectorAll('#f-flags input:checked')].map(i=>i.value),table_ids:[...pickSel],type:pickSel.length?'reservation':'waiting_list'});
+  if(r.type==='waiting_list') r.status_guest='not_started';
+  const linked=r.contact_id&&S.contacts.find(c=>c.id===r.contact_id);
+  if(linked&&cname(linked).toLowerCase()!==name.toLowerCase()) r.contact_id=null; // Name geändert: neu zuordnen
+  ensureContact(r);
+  const rule=isNew?$('#f-repeat').value:'none'; let made=0, waiting=0;
+  if(rule!=='none'){
+    r.series_id=uid(); r.series_rule=rule;
+    for(const d of seriesDates(date,rule,$('#f-until').value).slice(1)){
+      let ids=pickSel.length&&!pickSel.some(id=>busy(id,d,s,e))?[...pickSel]:autoAssign(d,s,e,p);
+      S.reservations.push({...r,id:uid(),date:d,flags:[...r.flags],table_ids:ids,type:ids.length?'reservation':'waiting_list'});
+      made++; if(!ids.length) waiting++;
+    }
+  }
+  const conf=(isNew||again)?[r,...(r.series_id&&isNew?seriesOf(r).filter(x=>x!==r):[])].filter(x=>x.type==='reservation'):[];
+  const ml=conf.length&&queueMail('confirm',r,conf)?' Bestätigung liegt im Postausgang.':'';
+  save(); $('#dlg').close(); ui.date=date; render();
+  toast((made?`${name}: Serie mit ${made+1} Terminen angelegt${waiting?`, davon ${waiting} auf der Warteliste`:''}.`
+    :r.type==='waiting_list'?`${name} steht auf der Warteliste.`:`${name} · ${tableNames(r)} gespeichert.`)+ml);
+}
+function setStatus(s){
+  const r=resById(curId); if(!r) return; r.status_guest=s;
+  if(s==='done'&&r.date===today()){const n=nowMin(),a=t2m(r.start_time),b=t2m(r.end_time); if(n>a&&n<b) r.end_time=m2t(Math.max(a+15,Math.ceil(n/15)*15));}
+  save(); $('#dlg').close(); render(); toast(`${r.guest_name}: ${LABEL[s]}.`);
+}
+function cancelRes(){
+  const r=resById(curId); if(!r) return;
+  const all=$('#f-allseries').checked&&r.series_id?seriesOf(r).filter(x=>x.date>=r.date&&x.type!=='canceled'):[r];
+  const told=all.filter(x=>x.type==='reservation');
+  for(const x of all){x.type='canceled'; x.cancel_reason=$('#f-reason').value; x.table_ids=[];}
+  if($('#f-reason').value!=='guest_did_not_arrive'&&told.length) queueMail('cancel',r,told);
+  save(); $('#dlg').close(); render(); toast(all.length>1?`${all.length} Termine der Serie ${r.guest_name} storniert.`:`Reservierung ${r.guest_name} storniert.`);
+}
+
+/* ---------- Walk-in ---------- */
+let walk=null;
+function openWalk(){
+  const from=FROM(), s=clamp(Math.floor(nowMin()/15)*15,from,LAST_END-15), e=Math.min(s+DUR(),LAST_END);
+  walk={s,e}; $('#w-err').textContent='';
+  $('#w-time').textContent=`Heute, ${m2t(s)}–${m2t(e)}. Die Gäste werden sofort als „angekommen“ eingetragen.`;
+  fillWalk(); $('#wdlg').showModal();
+}
+function fillWalk(){
+  const p=parseInt($('#w-people').value,10)||1, d=today();
+  const free=allTables().filter(t=>!busy(t.id,d,walk.s,walk.e)), best=autoAssign(d,walk.s,walk.e,p)[0];
+  $('#w-table').innerHTML=free.map(t=>`<option value="${t.id}"${t.id===best?' selected':''}>${esc(t.name)} · ${esc(roomOf(t.id).name)} (${t.min_capacity}–${t.max_capacity})</option>`).join('')||'<option value="">Kein Tisch frei</option>';
+}
+function saveWalk(){
+  const p=parseInt($('#w-people').value,10)||0, t=$('#w-table').value;
+  if(p<1) return $('#w-err').textContent='Die Personenzahl muss mindestens 1 sein.';
+  if(!t) return $('#w-err').textContent='Im Moment ist kein Tisch frei.';
+  S.reservations.push({id:uid(),type:'reservation',guest_name:'Walk-in',phone:'',num_people:p,num_children:0,date:today(),start_time:m2t(walk.s),end_time:m2t(walk.e),
+    note:'',status_guest:'arrived',flags:[],table_ids:[t],is_walkin:true,cancel_reason:'',created_at:new Date().toISOString()});
+  save(); $('#wdlg').close(); ui.date=today(); render(); toast(`Walk-in mit ${p} Pers. an ${tableById(t).name} platziert.`);
+}
+
+/* ---------- Räume & Tische ---------- */
+function dropTables(ids){
+  let moved=0;
+  for(const r of S.reservations){const before=r.table_ids.length; r.table_ids=r.table_ids.filter(id=>!ids.includes(id));
+    if(before&&!r.table_ids.length&&r.type==='reservation'){r.type='waiting_list'; r.status_guest='not_started'; moved++;}}
+  return moved;
+}
+const usedBy=ids=>S.reservations.filter(r=>r.type==='reservation'&&r.date>=today()&&r.table_ids.some(id=>ids.includes(id))).length;
+
+/* ---------- Hilfen ---------- */
+let toastT;
+function toast(m){const t=$('#toast'); t.textContent=GUEST?T(m):m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2600);}
+function ask(text,yes='Ja'){
+  return new Promise(res=>{const d=$('#cdlg'); $('#c-text').textContent=GUEST?T(text):text; $('#c-yes').textContent=GUEST?T(yes):yes; $('#c-no').textContent=GUEST?T('Abbrechen'):'Abbrechen';
+    const done=v=>{d.close(); $('#c-yes').onclick=$('#c-no').onclick=d.oncancel=null; res(v)};
+    $('#c-yes').onclick=()=>done(true); $('#c-no').onclick=()=>done(false); d.oncancel=()=>done(false); d.showModal();});
+}
+
+/* ---------- Ereignisse ---------- */
+document.addEventListener('click',async ev=>{
+  const el=ev.target.closest('[data-act]'); if(!el) return;
+  const a=el.dataset.act, id=el.dataset.id;
+  if(a==='day'){ui.date=addDays(ui.date,+el.dataset.n); render();}
+  else if(a==='today'){ui.date=today(); ui.firstScroll=true; render();}
+  else if(a==='view'){ui.view=el.dataset.v; if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7); if(ui.view==='plan') ui.firstScroll=true; render();}
+  else if(a==='filter'){ui.filter=el.dataset.v; render();}
+  else if(a==='ftab'){ if(id) openRes(id); else openRes(null,{table:el.dataset.table,start:m2t(floorMin())}); }
+  else if(a==='flooredit'){ui.floorEdit=!ui.floorEdit; render();}
+  else if(a==='floornow'){ui.date=today(); ui.floorTime=null; render();}
+  else if(a==='new') openRes(null);
+  else if(a==='walkin') openWalk();
+  else if(a==='open') openRes(id);
+  else if(a==='slot'){
+    const x=ev.clientX-el.getBoundingClientRect().left, m=clamp(FROM()+Math.floor(x/PX)*15,FROM(),LAST_END-15);
+    openRes(null,{table:el.dataset.table,start:m2t(m)});
+  }
+  else if(a==='close') el.closest('dialog').close();
+  else if(a==='auto'){
+    const {date,s,e,p}=formTimes(), ids=autoAssign(date,s,e,p,curId);
+    if(ids.length){pickSel=ids; renderPicker();} else {pickSel=[]; renderPicker(); $('#f-hint').textContent='Kein passender Tisch frei – beim Speichern kommt die Reservierung auf die Warteliste.';}
+  }
+  else if(a==='st') setStatus(el.dataset.s);
+  else if(a==='cancelask') $('#d-cancel').hidden=!$('#d-cancel').hidden;
+  else if(a==='cancelok') cancelRes();
+  else if(a==='addroom'){S.rooms.push({id:uid(),name:'Neuer Raum',is_outside:false,tables:[]}); save(); render();}
+  else if(a==='addtable'){const r=S.rooms.find(r=>r.id===id); r.tables.push({id:uid(),name:'Tisch '+(r.tables.length+1),min_capacity:2,max_capacity:4}); save(); render();}
+  else if(a==='deltable'||a==='delroom'){
+    const ids=a==='deltable'?[id]:S.rooms.find(r=>r.id===id).tables.map(t=>t.id), n=usedBy(ids);
+    const what=a==='deltable'?`Tisch „${tableById(id).name}“`:`Raum „${S.rooms.find(r=>r.id===id).name}“ mit ${ids.length} Tischen`;
+    if(!await ask(`${what} löschen?`+(n?` ${n} kommende Reservierung(en) sind betroffen und kommen auf die Warteliste, wenn sie keinen anderen Tisch haben.`:''),'Löschen')) return;
+    const moved=dropTables(ids);
+    if(a==='deltable') roomOf(id).tables=roomOf(id).tables.filter(t=>t.id!==id); else S.rooms=S.rooms.filter(r=>r.id!==id);
+    save(); render(); toast(moved?`${moved} Reservierung(en) auf die Warteliste verschoben.`:'Gelöscht.');
+  }
+  else if(a==='mailopen') openMail(id);
+  else if(a==='print') window.print();
+  else if(a==='cards') printCards();
+  else if(a==='csv') exportCsv();
+  else if(a==='calday'){ui.date=el.dataset.d; ui.view='plan'; ui.firstScroll=true; render();}
+  else if(a==='calnav'){const n=+el.dataset.n; if(!n){ui.calMonth=today().slice(0,7);} else {const [y,m]=(ui.calMonth||ui.date.slice(0,7)).split('-').map(Number), d=new Date(y,m-1+n,1,12); ui.calMonth=d.getFullYear()+'-'+pad(d.getMonth()+1);} render();}
+  else if(a==='addcombo'){const t=allTables(); if(t.length<2){toast('Dafür braucht es mindestens zwei Tische.');} else {(S.combos??=[]).push({id:uid(),table_ids:[t[0].id,t[1].id],min_capacity:t[0].max_capacity+1,max_capacity:t[0].max_capacity+t[1].max_capacity}); save(); render();}}
+  else if(a==='delcombo'){S.combos=S.combos.filter(c=>c.id!==id); save(); render();}
+  else if(a==='addflag'){S.flags.push({id:uid(),label:'Neues Kennzeichen',color:'#928370'}); save(); render();}
+  else if(a==='delflag'){ if(await ask('Dieses Kennzeichen löschen? Es wird auch von allen Reservierungen entfernt.','Löschen')){S.flags=S.flags.filter(f=>f.id!==id); for(const r of S.reservations) if(r.flags&&r.flags.includes(id)) r.flags=r.flags.filter(x=>x!==id); save(); render();} }
+  else if(a==='addnote'){const t=$('#n-text').value.trim(); if(t){(S.notes??=[]).push({id:uid(),date:ui.date,text:t}); save(); render();}}
+  else if(a==='delnote'){S.notes=(S.notes||[]).filter(n=>n.id!==id); save(); render();}
+  else if(a==='addtime'){S.online.times.push({id:uid(),name:'Neues Zeitfenster',from:'18:00',to:'20:00',days:[1,2,3,4,5,6,7]}); save(); render();}
+  else if(a==='deltime'){ if(await ask('Dieses Zeitfenster löschen? Online ist dann zu diesen Zeiten nichts mehr buchbar.','Löschen')){S.online.times.splice(+el.dataset.i,1); save(); render();} }
+  else if(a==='logout'){ await DB.auth.signOut(); location.reload(); }
+  else if(a==='forgot'){
+    const mail=$('#l-mail').value.trim(), e=$('#l-err');
+    if(!validMail(mail)){e.textContent='Bitte zuerst oben die E-Mail-Adresse eintragen.'; return;}
+    el.disabled=true;
+    const {error}=await DB.auth.resetPasswordForEmail(mail,{redirectTo:location.origin+location.pathname});
+    el.disabled=false;
+    e.textContent=error?((error.status===429||/rate|seconds/i.test(error.message||''))?'Zu viele Anfragen. Bitte ein paar Minuten warten und erneut versuchen.':'Das hat nicht geklappt: '+error.message)
+      :'Wenn diese Adresse einen Zugang hat, kommt gleich eine E-Mail mit einem Link. Bitte auch im Spam-Ordner nachsehen.';
+  }
+  else if(a==='copy'){ try{await navigator.clipboard.writeText(el.dataset.t); toast('In die Zwischenablage kopiert.');}catch(e){toast('Kopieren nicht möglich. Bitte den Text markieren und kopieren.');} }
+  else if(a==='mailclear'){ if(await ask('Alle E-Mails im Postausgang entfernen?','Leeren')){S.mails=[]; save(); render();} }
+  else if(a==='statdays'){ui.statDays=+el.dataset.n; render();}
+  else if(a==='newcontact') openContact(null);
+  else if(a==='opencontact') openContact(id);
+  else if(a==='histopen'){$('#kdlg').close(); openRes(id);}
+  else if(a==='resfor'){const c=S.contacts.find(c=>c.id===curContact); $('#kdlg').close(); openRes(null,{contact:c});}
+  else if(a==='merge'){
+    const keep=S.contacts.find(c=>c.id===curContact), other=S.contacts.find(c=>c.id===$('#k-merge').value);
+    if(!keep||!other){$('#k-err').textContent='Bitte zuerst den doppelten Eintrag auswählen.'; return;}
+    if(!await ask(`„${cname(other)}“ in „${cname(keep)}“ zusammenführen? Alle Reservierungen wandern zu „${cname(keep)}“, der andere Eintrag wird gelöscht.`,'Zusammenführen')) return;
+    for(const k of ['first_name','last_name','company_name','phone','email','birthday']) if(!keep[k]&&other[k]) keep[k]=other[k];
+    if(other.note) keep.note=[keep.note,other.note].filter(Boolean).join(' · ');
+    keep.locked=!!(keep.locked||other.locked);
+    let n=0; for(const r of S.reservations) if(r.contact_id===other.id){r.contact_id=keep.id; n++;}
+    S.contacts=S.contacts.filter(c=>c.id!==other.id); save(); render(); openContact(keep.id); toast(`Zusammengeführt, ${n} Reservierungen übernommen.`);
+  }
+  else if(a==='delcontact'){
+    const c=S.contacts.find(c=>c.id===curContact); if(!c) return;
+    if(!await ask(`Gast „${cname(c)}“ aus der Kartei löschen? Die Reservierungen bleiben erhalten.`,'Löschen')) return;
+    for(const r of S.reservations) if(r.contact_id===c.id) r.contact_id=null;
+    S.contacts=S.contacts.filter(x=>x.id!==c.id); save(); $('#kdlg').close(); render(); toast('Gast gelöscht.');
+  }
+  else if(a==='gslot'){g.time=el.dataset.m===''?null:+el.dataset.m; renderGuest(); $('#g-name')?.focus();}
+  else if(a==='gpax'){g.pax=+el.dataset.n; g.time=null; gRefresh();}
+  else if(a==='gday'){g.date=el.dataset.d; g.time=null; gRefresh();}
+  else if(a==='gnew'){g.done=null; gRefresh();}
+  else if(a==='glang'){LANG=el.dataset.l==='en'?'en':'de'; try{localStorage.setItem('tischbuch.lang',LANG)}catch(e){} renderGuest();}
+  else if(a==='gmanage'){g.mode='manage'; g.look=null; g.msg=''; g.done=null; g.code=el.dataset.code||''; renderGuest(); $(g.code?'#g-key':'#g-code')?.focus();}
+  else if(a==='gbook'){g.mode='book'; g.look=null; g.code=''; gRefresh();}
+  else if(a==='gcancel') guestCancel();
+  else if(a==='addlock'){
+    const date=$('#l-date').value, from=$('#l-from').value||'00:00', to=$('#l-to').value||'23:59';
+    if(!date) return toast('Bitte ein Datum für die Sperre wählen.');
+    if(to<=from) return toast('Das Ende der Sperre muss nach dem Beginn liegen.');
+    S.locks.push({id:uid(),date,from,to}); save(); render(); toast('Online-Sperre eingetragen.');
+  }
+  else if(a==='dellock'){S.locks=S.locks.filter(l=>l.id!==id); save(); render();}
+  else if(a==='reset'){ if(await ask('Alle Änderungen verwerfen und die Beispieldaten neu laden?','Zurücksetzen')){S=seed(); save(); ui.date=today(); ui.firstScroll=true; render(); toast('Beispieldaten neu geladen.');} }
+});
+$('#date').addEventListener('change',e=>{if(e.target.value){ui.date=e.target.value; render();}});
+$('#v-floor').addEventListener('input',e=>{ if(e.target.id==='fl-time'){ui.floorTime=+e.target.value; $('#fl-out').textContent=m2t(ui.floorTime); renderFloors();} });
+let drag=null;
+$('#v-floor').addEventListener('pointerdown',e=>{
+  const el=e.target.closest('[data-drag]'); if(!el||!ui.floorEdit) return;
+  const t=tableById(el.dataset.drag), c=el.parentElement;
+  drag={el,t,dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,maxX:FW-el.offsetWidth};
+  el.setPointerCapture(e.pointerId); el.classList.add('drag'); e.preventDefault();
+});
+$('#v-floor').addEventListener('pointermove',e=>{
+  if(!drag) return;
+  const x=clamp(Math.round((e.clientX-drag.dx)/10)*10,0,drag.maxX), y=clamp(Math.round((e.clientY-drag.dy)/10)*10,0,600);
+  drag.el.style.left=x+'px'; drag.el.style.top=y+'px'; drag.x=x; drag.y=y;
+  const c=drag.el.parentElement, need=y+drag.el.offsetHeight+20; if(need>c.offsetHeight) c.style.height=need+'px';
+});
+const dragEnd=()=>{ if(!drag) return; if(drag.x!=null){drag.t.x=drag.x; drag.t.y=drag.y; save();} drag=null; renderFloors(); };
+$('#v-floor').addEventListener('pointerup',dragEnd);
+$('#v-floor').addEventListener('pointercancel',dragEnd);
+$('#resform').addEventListener('submit',e=>{e.preventDefault(); saveRes();});
+document.addEventListener('input',e=>{ if(e.target.id==='r-search'){ui.search=e.target.value; const p=e.target.selectionStart; renderList(); const i=$('#r-search'); i.focus(); try{i.setSelectionRange(p,p)}catch(_){} } });
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='n-text'){e.preventDefault(); document.querySelector('[data-act=addnote]').click();} });
+$('#np-show').addEventListener('change',e=>{$('#np-pass').type=e.target.checked?'text':'password';});
+$('#newpassform').addEventListener('submit',async e=>{
+  e.preventDefault(); $('#np-err').textContent='';
+  const {error}=await DB.auth.updateUser({password:$('#np-pass').value});
+  if(error){$('#np-err').textContent='Das Passwort konnte nicht gespeichert werden: '+error.message; return;}
+  $('#np-pass').value=''; $('#newpassform').hidden=true; $('#loginform').hidden=false; toast('Neues Passwort gespeichert.'); await enter();
+});
+$('#l-show').addEventListener('change',e=>{$('#l-pass').type=e.target.checked?'text':'password';});
+$('#loginform').addEventListener('submit',async e=>{
+  e.preventDefault(); $('#l-err').textContent='';
+  const {error}=await DB.auth.signInWithPassword({email:$('#l-mail').value.trim(),password:$('#l-pass').value});
+  if(error){
+    const m=(error.message||'').toLowerCase();
+    $('#l-err').textContent=m.includes('invalid login')?'E-Mail oder Passwort stimmt nicht. Tipp: „Passwort anzeigen“ anhaken und auf Groß-/Kleinschreibung achten.'
+      :m.includes('not confirmed')?'Diese E-Mail-Adresse ist noch nicht bestätigt.'
+      :error.status===429||m.includes('rate')?'Zu viele Versuche. Bitte ein paar Minuten warten.'
+      :m.includes('fetch')||m.includes('network')?'Keine Verbindung zur Datenbank. Bitte Internetverbindung prüfen.'
+      :'Anmeldung fehlgeschlagen: '+(error.message||'unbekannter Fehler');
+    return;
+  }
+  $('#l-pass').value=''; await enter();
+});
+$('#walkform').addEventListener('submit',e=>{e.preventDefault(); saveWalk();});
+$('#w-people').addEventListener('input',fillWalk);
+$('#f-start').addEventListener('change',e=>{
+  const prev=t2m(e.target.dataset.prev), dur=t2m($('#f-end').value)-prev, s=t2m(e.target.value);
+  e.target.dataset.prev=e.target.value; $('#f-end').value=m2t(clamp(s+(dur>0?dur:DUR()),s+15,LAST_END)); renderPicker();
+});
+for(const i of ['#f-date','#f-end','#f-people']) $(i).addEventListener('change',renderPicker);
+for(const i of ['#f-date','#f-repeat','#f-until']) $(i).addEventListener('change',seriesHint);
+$('#f-tables').addEventListener('change',()=>{pickSel=[...document.querySelectorAll('#f-tables input:checked')].map(i=>i.value); renderPicker();});
+$('#v-setup').addEventListener('change',e=>{
+  const el=e.target, f=el.dataset.f; if(!f) return;
+  if(el.dataset.combo){const c=S.combos.find(x=>x.id===el.dataset.combo);
+    if(f==='tables'){const names=el.value.split(/[+,;]/).map(x=>x.trim().toLowerCase()).filter(Boolean), ids=names.map(n=>allTables().find(t=>t.name.toLowerCase()===n)?.id);
+      if(ids.length<2||ids.some(x=>!x)||new Set(ids).size!==ids.length){toast('Bitte mindestens zwei vorhandene Tische angeben, mit „+“ getrennt.'); return render();}
+      c.table_ids=ids;}
+    else{c[f]=Math.max(1,parseInt(el.value,10)||1); if(c.min_capacity>c.max_capacity){if(f==='min_capacity') c.max_capacity=c.min_capacity; else c.min_capacity=c.max_capacity;}}
+  }
+  else if(el.dataset.flag){const fl=S.flags.find(x=>x.id===el.dataset.flag); if(f==='color'){if(/^#[0-9a-f]{6}$/i.test(el.value)) fl.color=el.value;} else fl.label=el.value.trim()||fl.label;}
+  else if(el.dataset.room){const r=S.rooms.find(r=>r.id===el.dataset.room); r[f]=f==='is_outside'?el.checked:(el.value.trim()||r.name);}
+  else{const t=tableById(el.dataset.table);
+    if(f==='name') t.name=el.value.trim()||t.name; else t[f]=Math.max(1,parseInt(el.value,10)||1);
+    if(t.min_capacity>t.max_capacity){if(f==='min_capacity') t.max_capacity=t.min_capacity; else t.min_capacity=t.max_capacity;}
+  }
+  save(); render();
+});
+
+$('#v-online').addEventListener('change',e=>{
+  const el=e.target, o=S.online;
+  if(el.dataset.o){const k=el.dataset.o;
+    if(k==='name') o.name=el.value.trim()||o.name;
+    else if(k==='open_from') o.open_from=/^\d{4}-\d\d-\d\d$/.test(el.value)?el.value:'';
+    else if(k==='public_url') o.public_url=/^https?:\/\//.test(el.value.trim())?el.value.trim():'';
+    else{const lim={max_pax:[1,50],lead_minutes:[0,1440],days_ahead:[1,365],slot_step:[15,60],cancel_hours:[0,168],limit_per_hour:[0,500]}[k]; o[k]=clamp(parseInt(el.value,10)||lim[0],lim[0],lim[1]);}
+  }else if(el.dataset.ot!==undefined){
+    const t=o.times[+el.dataset.ot];
+    if(el.dataset.wd){const d=+el.dataset.wd, set=new Set(t.days||[]); el.checked?set.add(d):set.delete(d); t.days=[...set].sort();}
+    else if(el.dataset.f==='name') t.name=el.value.trim()||t.name;
+    else{const old=t[el.dataset.f]; if(!el.value) return render();
+      t[el.dataset.f]=el.value; if(t.to<t.from){t[el.dataset.f]=old; toast('„bis“ darf nicht vor „von“ liegen.');}}
+  }else return;
+  save(); render();
+});
+$('#v-mails').addEventListener('change',e=>{
+  const k=e.target.dataset.m; if(!k) return;
+  S.mailcfg[k]=k==='signature'?e.target.value.trim():e.target.checked; save(); render();
+});
+/* Tooltip für Diagramme */
+document.addEventListener('mousemove',e=>{
+  const el=e.target.closest&&e.target.closest('[data-tip]'), tip=$('#tip');
+  if(!el){tip.style.display='none'; return;}
+  tip.textContent=el.dataset.tip; tip.style.display='block';
+  tip.style.left=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-8)+'px'; tip.style.top=Math.max(8,e.clientY-tip.offsetHeight-10)+'px';
+});
+$('#kform').addEventListener('submit',e=>{e.preventDefault(); saveContact();});
+$('#c-search').addEventListener('input',renderGuests);
+$('#f-name').addEventListener('change',()=>guestInfo(true));
+for(const i of ['#f-phone','#f-email']) $(i).addEventListener('change',()=>guestInfo(false));
+$('#guest').addEventListener('change',e=>{
+  const i=e.target.id;
+  if(i==='g-pax') g.pax=+e.target.value; else if(i==='g-date'){if(!e.target.value) return; g.date=e.target.value;} else if(i==='g-room') g.room=e.target.value; else return;
+  g.time=null; gRefresh();
+});
+$('#guest').addEventListener('submit',e=>{e.preventDefault(); if(e.target.id==='gfind') findBooking(); else bookOnline();});
+/* Änderungen aus einem anderen Tab (z. B. neue Online-Buchung) übernehmen */
+window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.querySelector('dialog[open]')){ S=load(); if(GUEST?(g.mode==='book'&&g.time===null)||g.look!=null:ui.view==='plan'||ui.view==='list'||ui.view==='mails'||(ui.view==='floor'&&!ui.floorEdit)) render(); } });
+
+if(ONLINE) startOnline(); else {S=load(); render();}
+setInterval(()=>{ if(ONLINE&&!GUEST){ if(shadow) bump(); return; } if(GUEST){ if(g.mode==='book'&&g.time===null&&!g.done) render(); } else if(!document.querySelector('dialog[open]')&&(ui.view==='plan'||ui.view==='list'||(ui.view==='floor'&&!ui.floorEdit))) render(); },60000);
+</script>
+</body>
+</html>
