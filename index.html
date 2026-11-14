@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Tischbuch – LÜ Burger &amp; Grill</title>
+<title>Tischbuch – Lürzer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;600&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -166,7 +166,8 @@ details.tv td:last-child{text-align:right}
 .lock{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-bottom:6px;max-width:460px}
 .addlock{display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px}
 .addlock label{flex:1;min-width:110px}
-body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main{display:none}
+body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main,
+body.hub>header,body.hub>.kpis,body.hub>nav,body.hub>main{display:none}
 #guest{max-width:580px;margin:0 auto;padding:24px 16px 40px}
 .gcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
 .gcard h1{margin:0 0 2px;font-size:24px}
@@ -363,6 +364,20 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
 }
 #venue-sel{width:auto;max-width:230px;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:0;padding:6px 8px;color:var(--ink)}
 #brandname{font-size:18px;letter-spacing:.08em}
+#hub{position:fixed;inset:0;z-index:99;background:linear-gradient(160deg,#2a2e2c 0%,#4a5348 45%,#3d4540 100%);color:#f4f1ec;overflow:auto;padding:28px 16px 40px}
+#hub .hub-inner{max-width:920px;margin:0 auto}
+#hub h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,42px);margin:0 0 6px;letter-spacing:.04em}
+#hub .hub-sub{opacity:.85;margin:0 0 28px;font-size:15px;max-width:36em}
+#hub .hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px}
+#hub .hub-card{display:flex;flex-direction:column;gap:10px;padding:18px 16px;border:1px solid rgba(244,241,236,.28);border-radius:12px;background:rgba(0,0,0,.22);text-decoration:none;color:inherit;min-height:168px;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+#hub .hub-card:hover{transform:translateY(-2px);border-color:rgba(244,241,236,.55);background:rgba(0,0,0,.32)}
+#hub .hub-card img{height:36px;width:auto;align-self:flex-start;filter:brightness(0) invert(1);opacity:.95}
+#hub .hub-card b{font-family:var(--serif);font-size:20px;letter-spacing:.03em}
+#hub .hub-card span{font-size:13px;opacity:.8;line-height:1.35}
+#hub .hub-card em{margin-top:auto;font-style:normal;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;opacity:.9}
+#hub .hub-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-top:1px solid rgba(244,241,236,.2);padding-top:18px;font-size:14px}
+#hub .hub-foot button,#hub .hub-foot a{color:#f4f1ec;border-color:rgba(244,241,236,.45)}
+#hub .hub-foot a{text-decoration:none;padding:7px 12px;border:1px solid rgba(244,241,236,.45);border-radius:8px}
 #login{position:fixed;inset:0;z-index:100;background:var(--brand);display:grid;place-items:center;padding:16px;overflow:auto}
 #login form{background:var(--panel);border-radius:3px;padding:28px;width:min(380px,100%);display:grid;gap:12px;box-shadow:0 12px 44px rgba(0,0,0,.25)}
 #login h1{margin:0;font-family:var(--serif);font-weight:600;font-size:26px;letter-spacing:.04em;color:var(--taupe)}
@@ -531,8 +546,23 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
   </form>
 </dialog>
 
+<div id="hub" hidden>
+  <div class="hub-inner">
+    <h1>Tischbuch</h1>
+    <p class="hub-sub">Tischreservierung für die Häuser der Lürzer-Gruppe in Obertauern. Wählen Sie ein Restaurant für die Gäste-Buchung oder melden Sie sich als Personal an.</p>
+    <div class="hub-grid" id="hub-grid"></div>
+    <div class="hub-foot">
+      <span>Personal · Tagesplan, Grundriss, Online-Buchung</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="?demo=1&betrieb=lue">Personal-Demo</a>
+        <button type="button" data-act="stafflogin">Personal anmelden</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="login" hidden><form id="loginform">
   <h1>Tischbuch</h1><small id="login-sub">Anmeldung für das Personal</small>
+  <button type="button" class="link" data-act="backhub" style="justify-self:start;padding:0">← Zur Übersicht</button>
   <label class="f">E-Mail<input id="l-mail" type="email" autocomplete="username" required></label>
   <label class="f">Passwort<input id="l-pass" type="password" autocomplete="current-password" required></label>
   <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="l-show"> Passwort anzeigen</label>
@@ -562,7 +592,7 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
 
 <script>
 'use strict';
-const KEY='tischbuch.v1', PX=22, TO=1440, LAST_END=1425; // spätestes Ende 23:45
+const KEY='tischbuch.v1.'+(/^[a-z0-9-]{1,40}$/.test(new URLSearchParams(location.search).get('betrieb')||'')?new URLSearchParams(location.search).get('betrieb'):'lue'), PX=22, TO=1440, LAST_END=1425; // spätestes Ende 23:45
 const $=(s,r=document)=>r.querySelector(s);
 const pad=n=>String(n).padStart(2,'0');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -590,6 +620,21 @@ const VENUE_SLUG=/^[a-z0-9-]{1,40}$/.test(QS.get('betrieb')||'')?QS.get('betrieb
 const RECOVERY=/type=recovery/.test(location.hash);   // Rücksprung aus der E-Mail „Passwort zurücksetzen“
 const ONLINE=!QS.has('demo')&&!!window.supabase;
 const DB=ONLINE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
+/* Stammdaten der drei Häuser (Hub, Demo-Branding, Embed-Links). Live-Daten kommen aus Supabase. */
+const VENUES={
+  lue:{slug:'lue',name:'LÜ – Burger & Grill',short:'LÜ Burger & Grill',blurb:'Burger, Grill & Bar · Obertauern',
+    brand:{hero:'https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg',logo:'https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg',imprint:'https://www.xn--l-eha.at/impressum/',privacy:'https://www.xn--l-eha.at/datenschutz/',tagline:'Happiness is burger-shaped'}},
+  steinbock:{slug:'steinbock',name:'STEINBOCK. Wirtshaus am Tauern',short:'Restaurant Steinbock',blurb:'Wirtshaus am Tauern · Obertauern',
+    brand:{dark:{'--brand':'#36434b','--taupe':'#b9c4cb','--accent':'#e8344f','--series':'#9fb0bb'},hero:'https://www.steinbock-obertauern.at/wp-content/uploads/2020/07/dsc01629-1-1536x1024.jpg',logo:'https://www.steinbock-obertauern.at/wp-content/uploads/2025/07/steinbock-logo-4c-gray.png',vars:{'--beige':'#e9ecee','--brand':'#4b5c66','--serif':'"Open Sans Condensed", "Arial Narrow", sans-serif','--taupe':'#4b5c66','--accent':'#dd052b','--series':'#4b5c66','--accent-ink':'#ffffff'},imprint:'https://www.steinbock-obertauern.at/impressum/',privacy:'https://www.steinbock-obertauern.at/datenschutz/',tagline:'Bock auf gutes Essen?'}},
+  mundwerk:{slug:'mundwerk',name:'Mundwerk',short:'Mundwerk',blurb:'Fresh. Food. Fast. · Obertauern',
+    brand:{dark:{'--taupe':'#dedc00','--accent':'#dedc00','--series':'#7bc8c5','--accent-ink':'#12120d'},logo:'https://www.meinmundwerk.at/wp-content/uploads/2020/05/mundwerk-logo.svg',vars:{'--beige':'#dedc00','--brand':'#7bc8c5','--serif':'Raleway, "Avenir Next", Avenir, system-ui, sans-serif','--taupe':'#12120d','--accent':'#12120d','--series':'#3a9c98','--hero-ink':'#12120d','--title-bg':'#12120d','--brand-ink':'#12120d','--title-ink':'#dedc00','--accent-ink':'#dedc00','--hero-shade':'none'},imprint:'https://www.meinmundwerk.at/impressum/',privacy:'https://www.meinmundwerk.at/datenschutz/',tagline:'Fresh. Food. Fast.'}}
+};
+const VENUE_META=VENUES[VENUE_SLUG]||VENUES.lue;
+const guestPath=(slug,extra='')=>{
+  const q=new URLSearchParams({gast:'1',betrieb:slug||VENUE_SLUG});
+  if(extra) for(const [k,v] of new URLSearchParams(extra.replace(/^\?/,''))) q.set(k,v);
+  return location.pathname+'?'+q.toString();
+};
 const uid=()=>crypto.randomUUID();
 const hm=t=>(t||'').slice(0,5);
 let VENUE=null, shadow=null, syncQ=Promise.resolve(), syncBusy=0, pendingMails=[];
@@ -722,21 +767,44 @@ function bump(){
     if(JSON.stringify(shadow)!==before||ui.view==='mails') render();
   },600);
 }
-function showLogin(msg=''){ $('#login').hidden=false; $('#l-err').textContent=msg; }
+function showHub(){
+  document.body.classList.add('hub'); document.body.classList.remove('guest');
+  $('#hub').hidden=false; $('#login').hidden=true;
+  const grid=$('#hub-grid');
+  if(grid&&!grid.dataset.ready){
+    grid.dataset.ready='1';
+    grid.innerHTML=Object.values(VENUES).map(v=>`<div class="hub-card" style="cursor:default">
+      <img src="${esc(v.brand.logo||'')}" alt="" onerror="this.hidden=true">
+      <b>${esc(v.short)}</b><span>${esc(v.blurb)}</span>
+      <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:8px">
+        <a href="${esc(guestPath(v.slug))}" style="color:inherit;font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:13px;text-decoration:none">Tisch reservieren →</a>
+        <a href="?demo=1&gast=1&betrieb=${esc(v.slug)}" style="color:inherit;opacity:.75;font-size:12px;text-decoration:underline">Demo</a>
+      </div></div>`).join('');
+  }
+  document.title='Tischbuch – Lürzer';
+}
+function showLogin(msg=''){
+  document.body.classList.add('hub'); document.body.classList.remove('guest');
+  $('#hub').hidden=true; $('#login').hidden=false; $('#loginform').hidden=false; $('#newpassform').hidden=true;
+  $('#l-err').textContent=msg; document.title='Tischbuch – Anmeldung';
+}
 async function enter(){
-  const {data,error}=await DB.from('venues').select('id,name').order('name');
+  const {data,error}=await DB.from('venues').select('id,name,slug').order('name');
   if(error||!data||!data.length){ await DB.auth.signOut(); return showLogin('Dieser Benutzer ist keinem Betrieb zugeordnet.'); }
   let saved=null; try{saved=localStorage.getItem('tischbuch.venue')}catch(e){}
-  VENUE={id:(data.find(v=>v.id===saved)||data[0]).id};
+  const want=QS.get('betrieb'), bySlug=want&&data.find(v=>v.slug===want);
+  VENUE={id:(bySlug||data.find(v=>v.id===saved)||data[0]).id};
   const sel=$('#venue-sel'); sel.hidden=data.length<2;
   sel.innerHTML=data.map(v=>`<option value="${v.id}"${v.id===VENUE.id?' selected':''}>${esc(v.name)}</option>`).join('');
   sel.onchange=()=>{ try{localStorage.setItem('tischbuch.venue',sel.value)}catch(e){} location.reload(); };
   try{await dbLoad();}catch(e){console.error(e); return showLogin('Die Daten konnten nicht geladen werden: '+(e.message||e));}
   applyBrand(VENUE.brand,VENUE.name);
-  $('#login').hidden=true; $('#b-logout').hidden=false;
+  document.body.classList.remove('hub','guest');
+  $('#hub').hidden=true; $('#login').hidden=true; $('#b-logout').hidden=false;
   $('.brand span').textContent='Online';
   $('.foot span').textContent='Verbunden mit der Online-Datenbank. Änderungen werden sofort gespeichert.';
   $('.foot [data-act=reset]').hidden=true;
+  document.title='Tischbuch – '+(VENUE.name||'Online');
   render();
   const f='venue_id=eq.'+VENUE.id;
   DB.channel('tischbuch')
@@ -750,10 +818,10 @@ async function startOnline(){
   const {data}=await DB.auth.getSession();
   if(RECOVERY){
     history.replaceState(null,'',location.pathname+location.search);
-    if(data&&data.session){ $('#login').hidden=false; $('#loginform').hidden=true; $('#newpassform').hidden=false; $('#np-pass').focus(); return; }
+    if(data&&data.session){ $('#hub').hidden=true; $('#login').hidden=false; $('#loginform').hidden=true; $('#newpassform').hidden=false; $('#np-pass').focus(); return; }
     return showLogin('Der Link zum Zurücksetzen ist abgelaufen oder wurde schon benutzt. Bitte „Passwort vergessen?“ erneut anklicken.');
   }
-  if(data&&data.session) await enter(); else showLogin();
+  if(data&&data.session) await enter(); else showHub();
 }
 /* Kundenseite: nur die öffentlichen Funktionen der Datenbank */
 async function guestStart(){
@@ -761,6 +829,7 @@ async function guestStart(){
   const {data,error}=await DB.rpc('public_config',{p_slug:VENUE_SLUG});
   if(error||!data){ $('#gbody').innerHTML='<div class="gcard"><h1>Tisch reservieren</h1><div class="gsum">Die Online-Reservierung ist im Moment nicht erreichbar. Bitte rufen Sie uns an.</div></div>'; xl($('#gbody')); return; }
   applyBrand(data.brand,data.name);
+  document.title='Reservieren – '+(data.name||VENUE_META.short);
   S={online:{name:data.name,max_pax:data.max_pax,days_ahead:data.days_ahead,cancel_hours:data.cancel_hours,open_from:data.open_from||'',times:[]},
      rooms:data.rooms.map(r=>({id:r.id,name:r.name,tables:[1]})),locks:[],reservations:[],contacts:[]};
   guestSlots();
@@ -790,9 +859,13 @@ function applyBrand(b,name){
   document.querySelectorAll('img[data-logo]').forEach(i=>{ if(okUrl(b.logo)){i.hidden=false; if(i.src!==b.logo) i.src=b.logo;} else i.hidden=true; });
   const bn=$('#brandname'); bn.hidden=okUrl(b.logo); bn.textContent=curBrand.name.split(/[.–-]/)[0].trim();
   $('.gtitle').textContent=b.tagline||curBrand.name;
+  const gl=$('#g-links'); if(gl){
+    const imprint=b.imprint, privacy=b.privacy;
+    gl.innerHTML=(imprint?`<a href="${esc(imprint)}" target="_blank" rel="noopener">Impressum</a> · `:'')+(privacy?`<a href="${esc(privacy)}" target="_blank" rel="noopener">Datenschutz</a> · `:'');
+  }
 }
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name); });
-const onlineDefaults=()=>({name:'LÜ – Burger & Grill',public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
+const onlineDefaults=()=>({name:VENUE_META.name,public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
   limit_per_hour:0,open_from:'',times:[{id:'zt1',name:'Mittag',from:'11:30',to:'14:00',days:[1,2,3,4,5,6,7]},{id:'zt2',name:'Abend',from:'17:30',to:'21:00',days:[1,2,3,4,5,6,7]}]});
 /* ---------- E-Mails (werden nur erzeugt und im Postausgang abgelegt, nicht verschickt) ---------- */
 const mailDefaults=()=>({confirm:true,cancel:true,signature:'Herzliche Grüße\nIhr Team'});
@@ -1322,7 +1395,8 @@ const longDate=d=>new Date(d+'T12:00:00').toLocaleDateString(typeof LOC==='funct
 function renderOnline(){
   const o=S.online, up=S.reservations.filter(r=>r.is_online_reservation&&r.type!=='canceled'&&r.date>=today()).length;
   const locks=S.locks.filter(l=>l.date>=today()).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from));
-  $('#v-online').innerHTML=`<p style="margin-top:0">${up} kommende Online-Buchung(en). <a class="guestlink" href="?gast=1" target="_blank" rel="noopener">Gäste-Ansicht in neuem Tab öffnen ↗</a></p>
+  const guestHref=ONLINE&&VENUE&&VENUE.slug?guestPath(VENUE.slug):guestPath(VENUE_SLUG);
+  $('#v-online').innerHTML=`<p style="margin-top:0">${up} kommende Online-Buchung(en). <a class="guestlink" href="${esc(guestHref)}" target="_blank" rel="noopener">Gäste-Ansicht in neuem Tab öffnen ↗</a></p>
   <h3>Einbinden: Website, Google, Facebook</h3>
   <div class="embedrow"><label for="o-url" style="font-size:13px">Öffentliche Adresse</label><input id="o-url" data-o="public_url" value="${esc(o.public_url)}" placeholder="${esc(location.origin+location.pathname)}"><span></span></div>
   ${embedRows(o)}
@@ -1364,7 +1438,8 @@ function renderOnline(){
 function embedRows(o){
   const base=(o.public_url||location.origin+location.pathname).split('?')[0];
   const row=(l,v)=>`<div class="embedrow"><span style="font-size:13px">${l}</span><input readonly value="${esc(v)}" onfocus="this.select()"><button data-act="copy" data-t="${esc(v)}">Kopieren</button></div>`;
-  const q='?gast=1'+(ONLINE&&VENUE&&VENUE.slug&&VENUE.slug!=='lue'?'&betrieb='+VENUE.slug:'');
+  const slug=(ONLINE&&VENUE&&VENUE.slug)||VENUE_SLUG||'lue';
+  const q='?gast=1&betrieb='+encodeURIComponent(slug);
   return row('Google-Profil',base+q+'&quelle=google')+row('Facebook-Button',base+q+'&quelle=facebook')+row('Instagram-Profil',base+q+'&quelle=instagram')
     +row('Website (iframe)',`<iframe src="${base}${q}&embed=1&quelle=website" title="Tisch reservieren" loading="lazy" style="width:100%;min-height:780px;border:0"></iframe>`);
 }
@@ -1778,7 +1853,9 @@ document.addEventListener('click',async ev=>{
   else if(a==='delnote'){S.notes=(S.notes||[]).filter(n=>n.id!==id); save(); render();}
   else if(a==='addtime'){S.online.times.push({id:uid(),name:'Neues Zeitfenster',from:'18:00',to:'20:00',days:[1,2,3,4,5,6,7]}); save(); render();}
   else if(a==='deltime'){ if(await ask('Dieses Zeitfenster löschen? Online ist dann zu diesen Zeiten nichts mehr buchbar.','Löschen')){S.online.times.splice(+el.dataset.i,1); save(); render();} }
-  else if(a==='logout'){ await DB.auth.signOut(); location.reload(); }
+  else if(a==='logout'){ await DB.auth.signOut(); location.href=location.pathname; }
+  else if(a==='stafflogin') showLogin();
+  else if(a==='backhub') showHub();
   else if(a==='forgot'){
     const mail=$('#l-mail').value.trim(), e=$('#l-err');
     if(!validMail(mail)){e.textContent='Bitte zuerst oben die E-Mail-Adresse eintragen.'; return;}
@@ -1937,7 +2014,15 @@ $('#guest').addEventListener('submit',e=>{e.preventDefault(); if(e.target.id==='
 /* Änderungen aus einem anderen Tab (z. B. neue Online-Buchung) übernehmen */
 window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.querySelector('dialog[open]')){ S=load(); if(GUEST?(g.mode==='book'&&g.time===null)||g.look!=null:ui.view==='plan'||ui.view==='list'||ui.view==='mails'||(ui.view==='floor'&&!ui.floorEdit)) render(); } });
 
-if(ONLINE) startOnline(); else {S=load(); render();}
+if(ONLINE) startOnline();
+else {
+  S=load();
+  applyBrand(VENUE_META.brand,VENUE_META.name);
+  document.title=(GUEST?'Reservieren':'Tischbuch')+' – '+VENUE_META.short+(GUEST?'':' · Demo');
+  $('.brand span').textContent='Demo · '+VENUE_META.short;
+  if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }
+  render();
+}
 setInterval(()=>{ if(ONLINE&&!GUEST){ if(shadow) bump(); return; } if(GUEST){ if(g.mode==='book'&&g.time===null&&!g.done) render(); } else if(!document.querySelector('dialog[open]')&&(ui.view==='plan'||ui.view==='list'||(ui.view==='floor'&&!ui.floorEdit))) render(); },60000);
 </script>
 </body>
