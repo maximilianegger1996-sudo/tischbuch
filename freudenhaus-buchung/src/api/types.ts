@@ -189,7 +189,7 @@ export type WintersteigerExport = {
 };
 
 export interface BookingProvider {
-  readonly id: "rentbuddy" | "wintersteiger";
+  readonly id: "rentbuddy" | "wintersteiger" | "demo";
   readonly label: string;
   loadSite(): Promise<SiteSettings>;
   loadLocations(): Promise<Location[]>;
