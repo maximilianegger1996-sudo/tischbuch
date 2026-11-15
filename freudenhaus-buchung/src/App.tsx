@@ -395,20 +395,35 @@ function StepLocation() {
   );
 }
 
+function personLabel(
+  person: { id: string; kind: string },
+  persons: Array<{ id: string; kind: string }>,
+) {
+  if (person.kind === "adult") {
+    const n = persons.filter((p) => p.kind === "adult").findIndex((p) => p.id === person.id) + 1;
+    return `Erwachsener ${n}`;
+  }
+  const kids = persons.filter((p) => p.kind !== "adult");
+  const n = kids.findIndex((p) => p.id === person.id) + 1;
+  return person.kind === "youth" ? `Jugendliche/r ${n}` : `Kind ${n}`;
+}
+
+function hasPackage(person: { lines: Array<{ productId: string }> }) {
+  return !!findPackageForLines(person.lines.map((l) => l.productId));
+}
+
 function PackageCard({
   pack,
   active,
   products,
   kindCode,
   onSelect,
-  onClear,
 }: {
   pack: RentalPackage;
   active: boolean;
   products: Product[];
   kindCode: string;
   onSelect: () => void;
-  onClear: () => void;
 }) {
   const ski = products.find((p) => p.id === pack.skiProductId);
   // Prefer a single model photo over the product collage (less visual clutter).
@@ -417,7 +432,7 @@ function PackageCard({
     <button
       type="button"
       className={`pack-card${active ? " active" : ""}`}
-      onClick={() => (active ? onClear() : onSelect())}
+      onClick={onSelect}
     >
       {img ? <img src={img} alt="" /> : <div className="pack-ph" />}
       <div className="pack-body">
@@ -425,7 +440,7 @@ function PackageCard({
         <h3>{pack.title}</h3>
         <p className="muted">{pack.subtitle}</p>
         <div className="price">{packageDailyLabel(pack, products, kindCode)}</div>
-        <span className="pack-cta">{active ? "Ausgewählt · tippen zum Entfernen" : "Auswählen"}</span>
+        <span className="pack-cta">{active ? "Zugewiesen · tippen zum Ändern" : "Auswählen"}</span>
       </div>
     </button>
   );
@@ -436,48 +451,98 @@ function StepProducts() {
     quoteLoading,
     draft,
     products,
-    applyPackage,
+    applyPackageToPersons,
     clearPackage,
     setModel,
     clearModel,
     toggleProduct,
+    activePersonId,
+    setActivePersonId,
   } = useBooking();
-  const [activePerson, setActivePerson] = useState(draft.persons[0]?.id);
   const [showExtras, setShowExtras] = useState(false);
-  const person = draft.persons.find((p) => p.id === activePerson) || draft.persons[0];
+  const [assignPack, setAssignPack] = useState<RentalPackage | null>(null);
+  const [assignIds, setAssignIds] = useState<string[]>([]);
+
+  const person = draft.persons.find((p) => p.id === activePersonId) || draft.persons[0];
   const kindCode = person?.kind === "youth" ? "2" : person?.kind === "kid" ? "3" : "1";
   const activePack = findPackageForLines(person?.lines.map((l) => l.productId) || []);
   const skiLine = person?.lines.find((l) =>
     PACKAGES.some((p) => p.skiProductId === l.productId),
   );
   const skiProduct = products.find((p) => p.id === skiLine?.productId);
-
   const extras = curatedExtras(products);
+  const missing = draft.persons.filter((p) => !hasPackage(p));
+  const nextMissing = missing.find((p) => p.id !== person?.id) || missing[0];
+
+  const openAssign = (pack: RentalPackage) => {
+    const without = draft.persons.filter((p) => !hasPackage(p)).map((p) => p.id);
+    const initial =
+      without.length > 0
+        ? without
+        : person
+          ? [person.id]
+          : draft.persons.map((p) => p.id);
+    setAssignIds(initial);
+    setAssignPack(pack);
+  };
+
+  const confirmAssign = () => {
+    if (!assignPack || !assignIds.length) return;
+    applyPackageToPersons(assignIds, assignPack, products);
+    const stillOpen = draft.persons.find((p) => !assignIds.includes(p.id) && !hasPackage(p));
+    const focus =
+      stillOpen || draft.persons.find((p) => assignIds.includes(p.id)) || draft.persons[0];
+    if (focus) setActivePersonId(focus.id);
+    setAssignPack(null);
+  };
+
+  const toggleAssignId = (id: string) => {
+    setAssignIds((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
+  };
 
   return (
     <section className="step-stage anim-rise">
       <div className="stage-head">
         <h2>Dein Paket</h2>
-        <p>Nur vier klare Pakete — Ski/Board + Schuh + Helm. Modell optional darunter.</p>
+        <p>Paket wählen und den Personen zuweisen — wie bei Rent Buddy.</p>
       </div>
-      <div className="person-tabs">
-        {draft.persons.map((p, i) => (
+
+      <div className="person-tabs" id="rfh-person-tabs">
+        {draft.persons.map((p) => {
+          const packTitle = findPackageForLines(p.lines.map((l) => l.productId))?.title.replace(
+            "Paket ",
+            "",
+          );
+          const label = personLabel(p, draft.persons);
+          return (
+            <button
+              key={p.id}
+              type="button"
+              className={`${p.id === person?.id ? "active" : ""}${hasPackage(p) ? " done" : " todo"}`}
+              onClick={() => setActivePersonId(p.id)}
+            >
+              {packTitle ? `${label} · ${packTitle}` : label}
+            </button>
+          );
+        })}
+      </div>
+
+      {missing.length > 0 && hasPackage(person!) && nextMissing && nextMissing.id !== person?.id && (
+        <div className="person-handoff anim-rise">
+          <div>
+            <strong>{personLabel(person!, draft.persons)} ist ausgerüstet</strong>
+            <p className="muted">Als Nächstes: {personLabel(nextMissing, draft.persons)}</p>
+          </div>
           <button
-            key={p.id}
             type="button"
-            className={p.id === person?.id ? "active" : ""}
-            onClick={() => setActivePerson(p.id)}
+            className="btn accent"
+            onClick={() => setActivePersonId(nextMissing.id)}
           >
-            {(() => {
-              const packTitle = findPackageForLines(p.lines.map((l) => l.productId))?.title.replace(
-                "Paket ",
-                "",
-              );
-              return packTitle ? `Person ${i + 1} · ${packTitle}` : `Person ${i + 1}`;
-            })()}
+            Weiter zu {personLabel(nextMissing, draft.persons)}
           </button>
-        ))}
-      </div>
+        </div>
+      )}
+
       {quoteLoading && <div className="muted">Preise werden geladen…</div>}
       <div className="pack-grid">
         {PACKAGES.map((pack) => (
@@ -487,17 +552,26 @@ function StepProducts() {
             active={activePack?.id === pack.id}
             products={products}
             kindCode={kindCode}
-            onSelect={() => person && applyPackage(person.id, pack, products)}
-            onClear={() => person && clearPackage(person.id)}
+            onSelect={() => openAssign(pack)}
           />
         ))}
       </div>
 
+      {activePack && (
+        <button
+          type="button"
+          className="linkish"
+          onClick={() => person && clearPackage(person.id)}
+        >
+          Paket von {personLabel(person!, draft.persons)} entfernen
+        </button>
+      )}
+
       {activePack && skiProduct && skiProduct.models.length > 0 && (
         <div className="model-panel anim-rise">
           <div className="model-head">
-            <strong>Modell (optional)</strong>
-            <span className="muted">max. {skiProduct.models.length} · tippen = wählen/abwählen</span>
+            <strong>Modell für {personLabel(person!, draft.persons)} (optional)</strong>
+            <span className="muted">max. {skiProduct.models.length}</span>
           </div>
           <div className="model-grid">
             {skiProduct.models.map((m) => {
@@ -563,7 +637,9 @@ function StepProducts() {
       {extras.length > 0 && (
         <>
           <button type="button" className="linkish" onClick={() => setShowExtras((v) => !v)}>
-            {showExtras ? "Extras ausblenden" : `Extras dazu (${extras.length})`}
+            {showExtras
+              ? "Extras ausblenden"
+              : `Extras für ${personLabel(person!, draft.persons)} (${extras.length})`}
           </button>
           {showExtras && (
             <div className="product-grid" style={{ marginTop: "0.75rem" }}>
@@ -590,6 +666,52 @@ function StepProducts() {
             </div>
           )}
         </>
+      )}
+
+      {assignPack && (
+        <div className="assign-overlay" role="dialog" aria-modal="true">
+          <div className="assign-panel anim-rise">
+            <div className="assign-kicker">Personen zuweisen</div>
+            <h3>{assignPack.title}</h3>
+            <p className="muted">
+              Wähle bitte die gewünschten Personen für dieses Paket aus. Modell kannst du danach
+              optional festlegen.
+            </p>
+            <div className="assign-list">
+              {draft.persons.map((p) => {
+                const on = assignIds.includes(p.id);
+                const k = p.kind === "youth" ? "2" : p.kind === "kid" ? "3" : "1";
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={`assign-row${on ? " active" : ""}`}
+                    onClick={() => toggleAssignId(p.id)}
+                  >
+                    <span className={`assign-check${on ? " on" : ""}`} aria-hidden />
+                    <span className="assign-name">{personLabel(p, draft.persons)}</span>
+                    <span className="assign-price">
+                      {packageDailyLabel(assignPack, products, k)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="assign-actions">
+              <button type="button" className="btn ghost" onClick={() => setAssignPack(null)}>
+                Abbrechen
+              </button>
+              <button
+                type="button"
+                className="btn accent"
+                disabled={!assignIds.length}
+                onClick={confirmAssign}
+              >
+                Weiter
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );
@@ -803,18 +925,36 @@ function StepReview() {
 }
 
 function FooterBar() {
-  const { step, back, next, draft, quote } = useBooking();
+  const { step, back, next, draft, quote, setActivePersonId } = useBooking();
+  const missingProducts = draft.persons.filter((p) => !hasPackage(p));
+  const nextMissing = missingProducts[0];
+  const allEquipped = missingProducts.length === 0;
+
   const canNext = useMemo(() => {
     if (step === "people") return draft.persons.length > 0;
     if (step === "dates") return !!(draft.from && draft.to);
     if (step === "location") return !!draft.locationId;
-    if (step === "products") return draft.persons.some((p) => p.lines.length);
+    if (step === "products") return draft.persons.some((p) => hasPackage(p));
     if (step === "details") {
       const m = draft.persons[0];
       return !!(m?.firstName && m?.lastName && m?.email && draft.termsAccepted);
     }
     return false;
   }, [step, draft]);
+
+  const productsNextLabel =
+    step === "products" && !allEquipped && nextMissing
+      ? `Weiter zu ${personLabel(nextMissing, draft.persons)}`
+      : "Weiter";
+
+  const onNext = () => {
+    if (step === "products" && !allEquipped && nextMissing) {
+      setActivePersonId(nextMissing.id);
+      document.getElementById("rfh-person-tabs")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    next();
+  };
 
   if (step === "review" || step === "people") return null;
 
@@ -829,8 +969,8 @@ function FooterBar() {
           <button type="button" className="btn ghost" onClick={back}>
             Zurück
           </button>
-          <button type="button" className="btn" disabled={!canNext} onClick={next}>
-            Weiter
+          <button type="button" className="btn" disabled={!canNext} onClick={onNext}>
+            {productsNextLabel}
           </button>
         </div>
       </div>

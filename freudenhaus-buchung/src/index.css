@@ -597,6 +597,119 @@ main {
   border-color: var(--ink);
 }
 
+.person-tabs button.todo:not(.active) {
+  border-style: dashed;
+}
+
+.person-tabs button.done:not(.active)::after {
+  content: " ✓";
+  color: var(--pink);
+}
+
+.person-handoff {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--pink);
+  background: color-mix(in srgb, var(--pink) 8%, white);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.person-handoff p {
+  margin: 0.15rem 0 0;
+}
+
+.assign-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: #0a0a0a66;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.assign-panel {
+  width: min(440px, 100%);
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 1.25rem 1.25rem 1.1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.assign-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pink);
+  font-weight: 800;
+}
+
+.assign-panel h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.assign-list {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+}
+
+.assign-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: var(--paper-alt);
+  padding: 0.85rem 0.95rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.assign-row.active {
+  border-color: var(--ink);
+  background: #fff;
+}
+
+.assign-check {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1.5px solid var(--line-strong);
+  background: #fff;
+}
+
+.assign-check.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.assign-name {
+  font-weight: 700;
+}
+
+.assign-price {
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.assign-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+}
+
 .product-grid {
   display: grid;
   gap: 0.85rem;

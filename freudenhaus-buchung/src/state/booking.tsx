@@ -61,7 +61,10 @@ type Ctx = {
   ) => void;
   clearModel: (personId: string, productId: string) => void;
   applyPackage: (personId: string, pack: RentalPackage, products: Product[]) => void;
+  applyPackageToPersons: (personIds: string[], pack: RentalPackage, products: Product[]) => void;
   clearPackage: (personId: string) => void;
+  activePersonId: string | null;
+  setActivePersonId: (id: string) => void;
   updatePerson: (personId: string, patch: Partial<BookingPerson>) => void;
   resetBooking: () => void;
   setRemark: (v: string) => void;
@@ -84,6 +87,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const [quote, setQuote] = useState<PriceQuote | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [activePersonId, setActivePersonId] = useState<string | null>(null);
   const [draft, setDraft] = useState<BookingDraft>({
     from: null,
     to: null,
@@ -97,6 +101,16 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     newsletter: false,
     termsAccepted: false,
   });
+
+  useEffect(() => {
+    if (!draft.persons.length) {
+      setActivePersonId(null);
+      return;
+    }
+    if (!activePersonId || !draft.persons.some((p) => p.id === activePersonId)) {
+      setActivePersonId(draft.persons[0].id);
+    }
+  }, [draft.persons, activePersonId]);
 
   useEffect(() => {
     let alive = true;
@@ -291,20 +305,29 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   };
 
   const applyPackage = (personId: string, pack: RentalPackage, catalog: Product[]) => {
+    applyPackageToPersons([personId], pack, catalog);
+  };
+
+  const applyPackageToPersons = (
+    personIds: string[],
+    pack: RentalPackage,
+    catalog: Product[],
+  ) => {
+    const target = new Set(personIds);
     const ids = [pack.skiProductId, pack.bootProductId, pack.helmProductId];
+    const packLines = ids.map((id) => {
+      const prod = catalog.find((x) => x.id === id);
+      return {
+        productId: id,
+        count: 1,
+        title: prod?.title || id,
+      };
+    });
     setDraft((d) => ({
       ...d,
       persons: d.persons.map((p) => {
-        if (p.id !== personId) return p;
+        if (!target.has(p.id)) return p;
         const keep = p.lines.filter((l) => !isPackageProductId(l.productId));
-        const packLines = ids.map((id) => {
-          const prod = catalog.find((x) => x.id === id);
-          return {
-            productId: id,
-            count: 1,
-            title: prod?.title || id,
-          };
-        });
         return { ...p, lines: [...keep, ...packLines] };
       }),
     }));
@@ -406,7 +429,10 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     setModel,
     clearModel,
     applyPackage,
+    applyPackageToPersons,
     clearPackage,
+    activePersonId,
+    setActivePersonId,
     updatePerson,
     resetBooking,
     setRemark: (v) => setDraft((d) => ({ ...d, remark: v })),
