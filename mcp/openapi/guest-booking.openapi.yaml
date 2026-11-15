@@ -1,0 +1,229 @@
+openapi: 3.1.0
+info:
+  title: Tischbuch Guest Booking API
+  description: |
+    Guest-safe reservation API for LÜ, Steinbock, and Mundwerk.
+    Same public_* RPCs as the website (anon/publishable key only). No staff tools.
+    Use with ChatGPT Custom GPT Actions, or any HTTP client.
+    MCP clients should prefer POST /mcp (Streamable HTTP) instead.
+  version: 0.2.0
+servers:
+  - url: https://YOUR_HOST
+    description: Replace with your Docker / Cloudflare Worker URL after deploy
+paths:
+  /health:
+    get:
+      operationId: health
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /howto:
+    get:
+      operationId: howto
+      summary: Short DE/EN guest booking how-to for assistants
+      parameters:
+        - name: lang
+          in: query
+          schema:
+            type: string
+            enum: [de, en]
+            default: de
+      responses:
+        '200':
+          description: How-to text
+  /api/venues:
+    get:
+      operationId: list_venues
+      summary: List venues (lue, steinbock, mundwerk)
+      responses:
+        '200':
+          description: Venue list
+  /api/venues/{slug}/config:
+    get:
+      operationId: get_venue_config
+      summary: Public booking config for a venue
+      parameters:
+        - $ref: '#/components/parameters/slug'
+      responses:
+        '200':
+          description: Config
+  /api/venues/{slug}/availability:
+    get:
+      operationId: check_availability
+      summary: Check free online slots
+      parameters:
+        - $ref: '#/components/parameters/slug'
+        - $ref: '#/components/parameters/date'
+        - $ref: '#/components/parameters/pax'
+        - $ref: '#/components/parameters/room_id'
+      responses:
+        '200':
+          description: Slots
+  /api/venues/{slug}/propose:
+    get:
+      operationId: propose_slots
+      summary: Propose free times with guest-facing hints
+      parameters:
+        - $ref: '#/components/parameters/slug'
+        - $ref: '#/components/parameters/date'
+        - $ref: '#/components/parameters/pax'
+        - $ref: '#/components/parameters/room_id'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 5
+      responses:
+        '200':
+          description: Proposals
+  /api/reservations:
+    post:
+      operationId: create_reservation
+      summary: Create reservation (only after guest consent)
+      x-openai-isConsequential: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReservation'
+      responses:
+        '200':
+          description: Created
+  /api/reservations/{code}:
+    get:
+      operationId: get_reservation
+      summary: Get reservation by code + phone or email
+      parameters:
+        - $ref: '#/components/parameters/code'
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Phone or email used at booking
+      responses:
+        '200':
+          description: Reservation
+  /api/reservations/{code}/cancel:
+    post:
+      operationId: cancel_reservation
+      summary: Cancel within online cancel window
+      x-openai-isConsequential: true
+      parameters:
+        - $ref: '#/components/parameters/code'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [key]
+              properties:
+                key:
+                  type: string
+                  description: Phone or email
+      responses:
+        '200':
+          description: Cancelled
+  /api/reservations/{code}/modify:
+    post:
+      operationId: modify_reservation
+      summary: Modify = cancel + rebook (confirm_replace must be true)
+      x-openai-isConsequential: true
+      parameters:
+        - $ref: '#/components/parameters/code'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModifyReservation'
+      responses:
+        '200':
+          description: Rebooked
+components:
+  parameters:
+    slug:
+      name: slug
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [lue, steinbock, mundwerk]
+    date:
+      name: date
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{4}-\d{2}-\d{2}$'
+      description: YYYY-MM-DD
+    pax:
+      name: pax
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+    room_id:
+      name: room_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    code:
+      name: code
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 4
+  schemas:
+    CreateReservation:
+      type: object
+      required: [slug, date, start, pax, name, phone, email]
+      properties:
+        slug:
+          type: string
+          enum: [lue, steinbock, mundwerk]
+        date:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        start:
+          type: string
+          description: HH:MM
+        pax:
+          type: integer
+          minimum: 1
+          maximum: 50
+        name:
+          type: string
+        phone:
+          type: string
+          minLength: 6
+        email:
+          type: string
+          format: email
+        note:
+          type: string
+        room_id:
+          type: string
+          format: uuid
+    ModifyReservation:
+      allOf:
+        - $ref: '#/components/schemas/CreateReservation'
+        - type: object
+          required: [key, confirm_replace]
+          properties:
+            key:
+              type: string
+              description: Phone or email of the existing booking
+            confirm_replace:
+              type: boolean
+              description: Must be true after guest confirms cancel+rebook
