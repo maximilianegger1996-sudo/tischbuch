@@ -489,9 +489,8 @@ function StepProducts() {
   const confirmAssign = () => {
     if (!assignPack || !assignIds.length) return;
     applyPackageToPersons(assignIds, assignPack, products);
-    const stillOpen = draft.persons.find((p) => !assignIds.includes(p.id) && !hasPackage(p));
-    const focus =
-      stillOpen || draft.persons.find((p) => assignIds.includes(p.id)) || draft.persons[0];
+    // Stay on first assigned person so the handoff CTA to the next guest is visible.
+    const focus = draft.persons.find((p) => assignIds.includes(p.id)) || draft.persons[0];
     if (focus) setActivePersonId(focus.id);
     setAssignPack(null);
   };
@@ -925,31 +924,38 @@ function StepReview() {
 }
 
 function FooterBar() {
-  const { step, back, next, draft, quote, setActivePersonId } = useBooking();
+  const { step, back, next, draft, quote, setActivePersonId, activePersonId } = useBooking();
   const missingProducts = draft.persons.filter((p) => !hasPackage(p));
   const nextMissing = missingProducts[0];
   const allEquipped = missingProducts.length === 0;
+  const activeMissing =
+    missingProducts.find((p) => p.id === activePersonId) || nextMissing;
 
   const canNext = useMemo(() => {
     if (step === "people") return draft.persons.length > 0;
     if (step === "dates") return !!(draft.from && draft.to);
     if (step === "location") return !!draft.locationId;
-    if (step === "products") return draft.persons.some((p) => hasPackage(p));
+    if (step === "products") {
+      // Advance person-by-person; only leave the step when everyone has a package.
+      return allEquipped || draft.persons.some((p) => hasPackage(p));
+    }
     if (step === "details") {
       const m = draft.persons[0];
       return !!(m?.firstName && m?.lastName && m?.email && draft.termsAccepted);
     }
     return false;
-  }, [step, draft]);
+  }, [step, draft, allEquipped]);
 
   const productsNextLabel =
-    step === "products" && !allEquipped && nextMissing
-      ? `Weiter zu ${personLabel(nextMissing, draft.persons)}`
+    step === "products" && !allEquipped && activeMissing
+      ? activePersonId === activeMissing.id
+        ? `${personLabel(activeMissing, draft.persons)} ausrüsten`
+        : `Weiter zu ${personLabel(activeMissing, draft.persons)}`
       : "Weiter";
 
   const onNext = () => {
-    if (step === "products" && !allEquipped && nextMissing) {
-      setActivePersonId(nextMissing.id);
+    if (step === "products" && !allEquipped && activeMissing) {
+      setActivePersonId(activeMissing.id);
       document.getElementById("rfh-person-tabs")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
