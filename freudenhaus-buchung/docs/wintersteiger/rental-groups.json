@@ -1,0 +1,528 @@
+[
+  {
+    "er_rentalgroupid": 1,
+    "rentalgroupname": "Ski Platin",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Ski",
+    "modelCount": 53,
+    "sizeCount": 39,
+    "sampleModels": [
+      {
+        "id": 1710,
+        "name": "CLOUD Q14 RVSK S",
+        "brand": "Atomic",
+        "year": "26/27"
+      },
+      {
+        "id": 1676,
+        "name": "MONTERO AX",
+        "brand": "STÖCKLI",
+        "year": "25/26"
+      },
+      {
+        "id": 1662,
+        "name": "PINK SPEED POP",
+        "brand": "AK",
+        "year": "25/26"
+      },
+      {
+        "id": 1739,
+        "name": "PINK SPEED POP",
+        "brand": "AK",
+        "year": "26/27"
+      },
+      {
+        "id": 1679,
+        "name": "REDSTER G9",
+        "brand": "Atomic",
+        "year": "25/26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 2,
+    "rentalgroupname": "Ski Gold",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Ski",
+    "modelCount": 28,
+    "sizeCount": 24,
+    "sampleModels": [
+      {
+        "id": 1634,
+        "name": "CLOUD C9 RVSK LIGHT",
+        "brand": "Atomic",
+        "year": "25/26"
+      },
+      {
+        "id": 1667,
+        "name": "BLUR 76 W",
+        "brand": "K2",
+        "year": "25/26"
+      },
+      {
+        "id": 1537,
+        "name": "Redster G8 RVSK C",
+        "brand": "Atomic",
+        "year": "24/25"
+      },
+      {
+        "id": 1686,
+        "name": "ES/MAX N°14",
+        "brand": "Salomon",
+        "year": "26/27"
+      },
+      {
+        "id": 1708,
+        "name": "CLOUD C9 RVSK LIGHT",
+        "brand": "Atomic",
+        "year": "26/27"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 3,
+    "rentalgroupname": "Ski Silber",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Ski",
+    "modelCount": 43,
+    "sizeCount": 24,
+    "sampleModels": [
+      {
+        "id": 1399,
+        "name": "JR Racetiger",
+        "brand": "Völkl",
+        "year": "22/23"
+      },
+      {
+        "id": 1733,
+        "name": "RACETIGER JR 130",
+        "brand": "Völkl",
+        "year": "26/27"
+      },
+      {
+        "id": 1550,
+        "name": "Redster X2 100-120",
+        "brand": "Atomic",
+        "year": "24/25"
+      },
+      {
+        "id": 1652,
+        "name": "REDSTER X2 130-150",
+        "brand": "Atomic",
+        "year": "25/26"
+      },
+      {
+        "id": 1659,
+        "name": "MAVEN GIRL 100-120",
+        "brand": "Atomic",
+        "year": "25/26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 6,
+    "rentalgroupname": "Skischuh",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Skischuh",
+    "modelCount": 111,
+    "sizeCount": 21,
+    "sampleModels": [
+      {
+        "id": 1334,
+        "name": "Speedmachine 120",
+        "brand": "Nordica",
+        "year": "20/21"
+      },
+      {
+        "id": 1706,
+        "name": "SPEEDMACHINE 3 110 R BOA (GW)",
+        "brand": "Nordica",
+        "year": "26/27"
+      },
+      {
+        "id": 1645,
+        "name": "HAWX PRIME R100",
+        "brand": "Atomic",
+        "year": "25/26"
+      },
+      {
+        "id": 1726,
+        "name": "NEXUS R100",
+        "brand": "Atomic",
+        "year": "26/27"
+      },
+      {
+        "id": 1588,
+        "name": "Magna PRO GW",
+        "brand": "Atomic",
+        "year": "24/25"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 18,
+    "rentalgroupname": "Snowboard",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Snowboard",
+    "modelCount": 5,
+    "sizeCount": 15,
+    "sampleModels": [
+      {
+        "id": 1735,
+        "name": "SUPER 8 RTL",
+        "brand": "Salomon",
+        "year": "26/27"
+      },
+      {
+        "id": 1395,
+        "name": "El Capitan",
+        "brand": "Salomon",
+        "year": "22/23"
+      },
+      {
+        "id": 1736,
+        "name": "WILD CARD",
+        "brand": "Salomon",
+        "year": "26/27"
+      },
+      {
+        "id": 1396,
+        "name": "Wildcard",
+        "brand": "Salomon",
+        "year": "22/23"
+      },
+      {
+        "id": 1607,
+        "name": "WILDCARD",
+        "brand": "Salomon",
+        "year": "25/26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 21,
+    "rentalgroupname": "Snowboard Boot",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "SB Boots",
+    "modelCount": 14,
+    "sizeCount": 42,
+    "sampleModels": [
+      {
+        "id": 1426,
+        "name": "Faction RTL Boa",
+        "brand": "Salomon",
+        "year": "22/23"
+      },
+      {
+        "id": 99,
+        "name": "K2 Mini Turbo SB Boot",
+        "brand": "K2",
+        "year": "2009"
+      },
+      {
+        "id": 98,
+        "name": "K2 Vandal Rental SB Boot",
+        "brand": "K2",
+        "year": "2009"
+      },
+      {
+        "id": 1734,
+        "name": "FACTION RTL BOA",
+        "brand": "Salomon",
+        "year": "26/27"
+      },
+      {
+        "id": 1184,
+        "name": "Vandal Boa Rental",
+        "brand": "K2",
+        "year": "18/19"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 24,
+    "rentalgroupname": "Schneeschuhe",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 3,
+    "sizeCount": 0,
+    "sampleModels": [
+      {
+        "id": 1571,
+        "name": "Flex RDG24",
+        "brand": "Tubbs",
+        "year": "24/25"
+      },
+      {
+        "id": 174,
+        "name": "Tubbs TRK24 M.",
+        "brand": "Tubbs",
+        "year": "2009"
+      },
+      {
+        "id": 1572,
+        "name": "Flex RDG22",
+        "brand": "Tubbs",
+        "year": "24/25"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 32,
+    "rentalgroupname": "Ski Depot 2er",
+    "rentalgrouptype": "D",
+    "typeofequipmentname": "Skidepot 2er",
+    "modelCount": 0,
+    "sizeCount": 0,
+    "sampleModels": []
+  },
+  {
+    "er_rentalgroupid": 35,
+    "rentalgroupname": "Skihelm",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 7,
+    "sizeCount": 6,
+    "sampleModels": [
+      {
+        "id": 1616,
+        "name": "SAVOR R BLACK",
+        "brand": "Atomic",
+        "year": "25/26"
+      },
+      {
+        "id": 1720,
+        "name": "SAVOR R BLACK",
+        "brand": "Atomic",
+        "year": "26/27"
+      },
+      {
+        "id": 1617,
+        "name": "SAVOR R GREY",
+        "brand": "Atomic",
+        "year": "25/26"
+      },
+      {
+        "id": 1437,
+        "name": "Mentor Jr.",
+        "brand": "Atomic",
+        "year": "20/21"
+      },
+      {
+        "id": 1619,
+        "name": "FOUR JR R PINK",
+        "brand": "Atomic",
+        "year": "25/26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 36,
+    "rentalgroupname": "Stöcke",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 2,
+    "sizeCount": 0,
+    "sampleModels": [
+      {
+        "id": 205,
+        "name": "Exel Carbon",
+        "brand": "",
+        "year": "2009"
+      },
+      {
+        "id": 1360,
+        "name": "Komperdell Stock",
+        "brand": "Komperdell",
+        "year": "2019"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 65,
+    "rentalgroupname": "Van Deer Ski",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Ski",
+    "modelCount": 1,
+    "sizeCount": 1,
+    "sampleModels": [
+      {
+        "id": 927,
+        "name": "TEST SKI",
+        "brand": "Atomic",
+        "year": "2017"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 70,
+    "rentalgroupname": "Ski Depot 4er",
+    "rentalgrouptype": "D",
+    "typeofequipmentname": "Skidepot 4er",
+    "modelCount": 0,
+    "sizeCount": 0,
+    "sampleModels": []
+  },
+  {
+    "er_rentalgroupid": 72,
+    "rentalgroupname": "Santa Cruz Premium Te",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "MTB-TEST",
+    "modelCount": 0,
+    "sizeCount": 0,
+    "sampleModels": []
+  },
+  {
+    "er_rentalgroupid": 73,
+    "rentalgroupname": "Premium MTB Te",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "MTB-TEST",
+    "modelCount": 1,
+    "sizeCount": 0,
+    "sampleModels": [
+      {
+        "id": 1449,
+        "name": "Jam 6.9",
+        "brand": "Focus",
+        "year": "22/23"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 80,
+    "rentalgroupname": "Skischloss",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 2,
+    "sizeCount": 1,
+    "sampleModels": [
+      {
+        "id": 1506,
+        "name": "Skischloss Schloss gross",
+        "brand": "Epm Sports",
+        "year": "23/24"
+      },
+      {
+        "id": 1745,
+        "name": "KEYLOCK",
+        "brand": "Epm Sports",
+        "year": "26/27"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 81,
+    "rentalgroupname": "Rückenprotektor",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 9,
+    "sizeCount": 9,
+    "sampleModels": [
+      {
+        "id": 1682,
+        "name": "LITE-PRO Protector Vest - Women",
+        "brand": "Body Glove",
+        "year": "25/26"
+      },
+      {
+        "id": 1516,
+        "name": "Protector Vest",
+        "brand": "Body Glove",
+        "year": "22/23"
+      },
+      {
+        "id": 1680,
+        "name": "LITE-PRO Protector Vest",
+        "brand": "Body Glove",
+        "year": "25/26"
+      },
+      {
+        "id": 1684,
+        "name": "POWER-PRO Protector Vest - Women",
+        "brand": "Body Glove",
+        "year": "2025/26"
+      },
+      {
+        "id": 1681,
+        "name": "LITE-PRO Protector Vest - Men",
+        "brand": "Body Glove",
+        "year": "25/26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 82,
+    "rentalgroupname": "Rodel",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 1,
+    "sizeCount": 1,
+    "sampleModels": [
+      {
+        "id": 1573,
+        "name": "Kathrein Rodel",
+        "brand": "Epm Sports",
+        "year": "24/25"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 83,
+    "rentalgroupname": "Skibrille",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 4,
+    "sizeCount": 2,
+    "sampleModels": [
+      {
+        "id": 1578,
+        "name": "Target Line M",
+        "brand": "Oakley",
+        "year": "24/25"
+      },
+      {
+        "id": 1586,
+        "name": "Wetzel",
+        "brand": "",
+        "year": "24/25"
+      },
+      {
+        "id": 1580,
+        "name": "Target Line L",
+        "brand": "Oakley",
+        "year": "24/25"
+      },
+      {
+        "id": 1691,
+        "name": "Target Line M",
+        "brand": "Oakley",
+        "year": "25/26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 87,
+    "rentalgroupname": "Prot TE",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 1,
+    "sizeCount": 0,
+    "sampleModels": [
+      {
+        "id": 1692,
+        "name": "Prot TE",
+        "brand": "",
+        "year": "26"
+      }
+    ]
+  },
+  {
+    "er_rentalgroupid": 91,
+    "rentalgroupname": "Depot",
+    "rentalgrouptype": "R",
+    "typeofequipmentname": "Sonstige",
+    "modelCount": 0,
+    "sizeCount": 0,
+    "sampleModels": []
+  }
+]

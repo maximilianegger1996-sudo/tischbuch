@@ -609,13 +609,14 @@ function StepReview() {
   if (result?.ok) {
     return (
       <section className="panel success-card stack">
-        <h2>Bereit für Wintersteiger</h2>
+        <h2>Wintersteiger EasyRest</h2>
         <p className="lede">
-          Die Buchung wurde als Export vorbereitet ({result.bookingId}). Provider: {providerLabel}.
+          Vorgang {result.bookingId} · {providerLabel}
         </p>
         <div className="notice">
-          Bis zum Cutover läuft der Katalog noch über Rent Buddy. Der Abschluss schreibt einen
-          Easyreservation-kompatiblen Payload (localStorage / Response), nicht die alte Oppwa-Zahlung.
+          Katalog/Preise/Verfügbarkeit laufen über EasyRest (Proxy). Ohne{" "}
+          <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run (keine Live-Buchung in
+          Easyrent).
         </div>
         <pre
           style={{

@@ -56,6 +56,21 @@ npm run easyrest:smoke
 Das Smoke-Script **blockiert** `http://` mit Access-ID. Details: `docs/wintersteiger/connectivity-report.md`.  
 Access-ID nur serverseitig — nicht als `VITE_`-Variable in die SPA.
 
+### Live-Proxy (Dev/Preview)
+
+Vite-Middleware `/api/easyrest/*` → EasyRest HTTPS, Access-ID nur am Server.
+
+Live getestet gegen eure Installation:
+
+| Call | Ergebnis |
+| --- | --- |
+| `GET /reservation/reservablearticles` | 786 Artikel, u. a. Ski Platin/Gold/Silber |
+| `POST /reservation/getavailcount` | z. B. Platin 23.–31.12. Filiale 1 → 165 |
+| `POST /reservation/calculateprices` | gleiches Beispiel → **€ 285** |
+| `POST /reservation/insertupdatereservation` | Dry-Run bis `EASYREST_LIVE_BOOK=1` |
+
+OpenAPI 1.0.0.15: `docs/wintersteiger/easyrest-1.0.0.15.swagger.json`
+
 ## Hinweis Backend
 
 Rent-Buddy bleibt bis zum Cutover Katalog-/Preisquelle für die SPA. EasyRest-Credentials gehören **nicht** ins Repo.
