@@ -7,7 +7,7 @@
 <title>Tischbuch – Lürzer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Libre+Bodoni:wght@400;600&family=Open+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Libre+Bodoni:wght@400;600&family=Open+Sans:wght@300;400;500;600;700&family=Open+Sans+Condensed:wght@300;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root{
@@ -261,6 +261,15 @@ body.embed{background:transparent}
 body.embed .ghero,body.embed .gfoot{display:none}
 body.embed #gbody{margin:0 auto;padding:0}
 body.embed .gcard{box-shadow:none;border:1px solid var(--line)}
+/* Steinbock: Website-Typo (Open Sans Condensed Headlines, Open Sans Body) */
+body[data-venue=steinbock]{letter-spacing:.01em}
+body[data-venue=steinbock] .gtitle,body[data-venue=steinbock] .gcard h1,body[data-venue=steinbock] .gcard h3,
+body[data-venue=steinbock] .gkick,body[data-venue=steinbock] .gsteps{font-family:var(--serif);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+body[data-venue=steinbock] .gtitle{letter-spacing:.12em}
+body[data-venue=steinbock] .gcard,body[data-venue=steinbock] .gcard p,body[data-venue=steinbock] .gsum,body[data-venue=steinbock] .gsub,
+body[data-venue=steinbock] button,body[data-venue=steinbock] input,body[data-venue=steinbock] select,body[data-venue=steinbock] textarea{font-family:var(--sans)}
+body[data-venue=steinbock] button{text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+body[data-venue=steinbock].embed .gcard{border-color:#cfd5d9;border-radius:2px}
 .embedrow{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:8px;max-width:820px}
 .embedrow input,.embedrow textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 @media (max-width:620px){.embedrow{grid-template-columns:1fr}}
@@ -619,25 +628,31 @@ const VENUE_SLUG=/^[a-z0-9-]{1,40}$/.test(QS.get('betrieb')||'')?QS.get('betrieb
 const RECOVERY=/type=recovery/.test(location.hash);   // Rücksprung aus der E-Mail „Passwort zurücksetzen“
 const ONLINE=!QS.has('demo')&&!!window.supabase;
 const DB=ONLINE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
-/* Körper-Schrift aus Brand (Supabase venues.brand); Fallback = Jost */
-const BODY_FONT='Jost', BODY_FONT_SPEC='Jost:wght@300;400;500;600;700', BODY_SANS='Jost, system-ui, -apple-system, "Segoe UI", sans-serif';
-const withBodyFont=b=>{
-  const brand={...(b||{})}, vars={...(brand.vars||{})};
-  if(!vars['--sans']) vars['--sans']=BODY_SANS;
-  brand.vars=vars;
-  const fonts=Array.isArray(brand.fonts)?[...brand.fonts]:[];
-  if(!fonts.some(f=>String(f).toLowerCase().includes(BODY_FONT.toLowerCase()))) fonts.unshift(BODY_FONT_SPEC);
-  brand.fonts=fonts;
+/* Schriften je Haus (venues.brand.fonts + vars.--sans/--serif). Hub-Fallback = Jost. */
+const FONT_PRESETS={
+  lue:{fonts:['Jost:wght@300;400;500;600;700','Libre Bodoni:wght@400;600'],
+    vars:{'--sans':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif','--serif':'"Libre Bodoni", "Bodoni 72", Didot, Georgia, serif'}},
+  /* Steinbock Website: Open Sans (Fließtext) + Open Sans Condensed (Überschriften/UI) */
+  steinbock:{fonts:['Open Sans:wght@300;400;500;600;700','Open Sans Condensed:wght@300;700'],
+    vars:{'--sans':'"Open Sans", Helvetica, Arial, sans-serif','--serif':'"Open Sans Condensed", "Arial Narrow", Arial, Tahoma, sans-serif'}},
+  mundwerk:{fonts:['Jost:wght@300;400;500;600;700','Libre Bodoni:wght@400;600'],
+    vars:{'--sans':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif','--serif':'"Libre Bodoni", Didot, Georgia, serif'}}
+};
+const normalizeBrand=(b,slug)=>{
+  const preset=FONT_PRESETS[slug]||FONT_PRESETS.lue, brand={...(b||{})};
+  /* Preset gewinnt bei --sans/--serif/fonts (pro Haus); Farben etc. bleiben aus der DB */
+  brand.vars={...(brand.vars||{}),...(preset.vars||{})};
+  brand.fonts=[...(preset.fonts||[])];
   return brand;
 };
 /* Stammdaten der drei Häuser (Hub, Demo-Branding, Embed-Links). Live-Daten kommen aus Supabase. */
 const VENUES={
   lue:{slug:'lue',name:'LÜ – Burger & Grill',short:'LÜ Burger & Grill',blurb:'Burger, Grill & Bar · Obertauern',
-    brand:withBodyFont({hero:'https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg',logo:'https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg',imprint:'https://www.xn--l-eha.at/impressum/',privacy:'https://www.xn--l-eha.at/datenschutz/',tagline:'Happiness is burger-shaped'})},
+    brand:normalizeBrand({hero:'https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg',logo:'https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg',imprint:'https://www.xn--l-eha.at/impressum/',privacy:'https://www.xn--l-eha.at/datenschutz/',tagline:'Happiness is burger-shaped'},'lue')},
   steinbock:{slug:'steinbock',name:'STEINBOCK. Wirtshaus am Tauern',short:'Restaurant Steinbock',blurb:'Wirtshaus am Tauern · Obertauern',
-    brand:withBodyFont({dark:{'--brand':'#36434b','--taupe':'#b9c4cb','--accent':'#e8344f','--series':'#9fb0bb'},hero:'https://www.steinbock-obertauern.at/wp-content/uploads/2020/07/dsc01629-1-1536x1024.jpg',logo:'https://www.steinbock-obertauern.at/wp-content/uploads/2025/07/steinbock-logo-4c-gray.png',vars:{'--beige':'#e9ecee','--brand':'#4b5c66','--serif':'"Open Sans Condensed", "Arial Narrow", sans-serif','--taupe':'#4b5c66','--accent':'#dd052b','--series':'#4b5c66','--accent-ink':'#ffffff'},imprint:'https://www.steinbock-obertauern.at/impressum/',privacy:'https://www.steinbock-obertauern.at/datenschutz/',tagline:'Bock auf gutes Essen?'})},
+    brand:normalizeBrand({dark:{'--brand':'#36434b','--taupe':'#b9c4cb','--accent':'#e8344f','--series':'#9fb0bb'},hero:'https://www.steinbock-obertauern.at/wp-content/uploads/2020/07/dsc01629-1-1536x1024.jpg',logo:'https://www.steinbock-obertauern.at/wp-content/uploads/2025/07/steinbock-logo-4c-gray.png',vars:{'--beige':'#e9ecee','--brand':'#4b5c66','--taupe':'#4b5c66','--accent':'#dd052b','--series':'#4b5c66','--accent-ink':'#ffffff'},imprint:'https://www.steinbock-obertauern.at/impressum/',privacy:'https://www.steinbock-obertauern.at/datenschutz/',tagline:'Bock auf gutes Essen?'},'steinbock')},
   mundwerk:{slug:'mundwerk',name:'Mundwerk',short:'Mundwerk',blurb:'Fresh. Food. Fast. · Obertauern',
-    brand:withBodyFont({dark:{'--taupe':'#dedc00','--accent':'#dedc00','--series':'#7bc8c5','--accent-ink':'#12120d'},logo:'https://www.meinmundwerk.at/wp-content/uploads/2020/05/mundwerk-logo.svg',vars:{'--beige':'#dedc00','--brand':'#7bc8c5','--serif':'"Libre Bodoni", Didot, Georgia, serif','--taupe':'#12120d','--accent':'#12120d','--series':'#3a9c98','--hero-ink':'#12120d','--title-bg':'#12120d','--brand-ink':'#12120d','--title-ink':'#dedc00','--accent-ink':'#dedc00','--hero-shade':'none'},imprint:'https://www.meinmundwerk.at/impressum/',privacy:'https://www.meinmundwerk.at/datenschutz/',tagline:'Fresh. Food. Fast.'})}
+    brand:normalizeBrand({dark:{'--taupe':'#dedc00','--accent':'#dedc00','--series':'#7bc8c5','--accent-ink':'#12120d'},logo:'https://www.meinmundwerk.at/wp-content/uploads/2020/05/mundwerk-logo.svg',vars:{'--beige':'#dedc00','--brand':'#7bc8c5','--taupe':'#12120d','--accent':'#12120d','--series':'#3a9c98','--hero-ink':'#12120d','--title-bg':'#12120d','--brand-ink':'#12120d','--title-ink':'#dedc00','--accent-ink':'#dedc00','--hero-shade':'none'},imprint:'https://www.meinmundwerk.at/impressum/',privacy:'https://www.meinmundwerk.at/datenschutz/',tagline:'Fresh. Food. Fast.'},'mundwerk')}
 };
 const VENUE_META=VENUES[VENUE_SLUG]||VENUES.lue;
 const guestPath=(slug,extra='')=>{
@@ -779,7 +794,7 @@ function bump(){
 }
 function showHub(){
   document.body.classList.add('hub'); document.body.classList.remove('guest');
-  applyBrand(withBodyFont({tagline:'Tischbuch'}), 'Tischbuch');
+  applyBrand(normalizeBrand({tagline:'Tischbuch'},'lue'), 'Tischbuch', 'lue');
   $('#hub').hidden=false; $('#login').hidden=true;
   const grid=$('#hub-grid');
   if(grid&&!grid.dataset.ready){
@@ -810,7 +825,7 @@ async function enter(){
   sel.onchange=()=>{ try{localStorage.setItem('tischbuch.venue',sel.value)}catch(e){} location.reload(); };
   try{await dbLoad();}catch(e){console.error(e); return showLogin('Die Daten konnten nicht geladen werden: '+(e.message||e));}
   await ensureVenueBodyFonts();
-  applyBrand(VENUE.brand,VENUE.name);
+  applyBrand(VENUE.brand,VENUE.name,VENUE.slug);
   document.body.classList.remove('hub','guest');
   $('#hub').hidden=true; $('#login').hidden=true; $('#b-logout').hidden=false;
   $('.brand span').textContent='Online';
@@ -840,7 +855,7 @@ async function guestStart(){
   $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED);
   const {data,error}=await DB.rpc('public_config',{p_slug:VENUE_SLUG});
   if(error||!data){ $('#gbody').innerHTML='<div class="gcard"><h1>Tisch reservieren</h1><div class="gsum">Die Online-Reservierung ist im Moment nicht erreichbar. Bitte rufen Sie uns an.</div></div>'; xl($('#gbody')); return; }
-  applyBrand(data.brand,data.name);
+  applyBrand(data.brand,data.name,VENUE_SLUG);
   document.title='Reservieren – '+(data.name||VENUE_META.short);
   S={online:{name:data.name,max_pax:data.max_pax,days_ahead:data.days_ahead,cancel_hours:data.cancel_hours,open_from:data.open_from||'',times:[]},
      rooms:data.rooms.map(r=>({id:r.id,name:r.name,tables:[1]})),locks:[],reservations:[],contacts:[]};
@@ -873,8 +888,10 @@ function loadBrandFonts(b){
   if(!link){ link=document.createElement('link'); link.id='brand-fonts'; link.rel='stylesheet'; document.head.appendChild(link); }
   if(href) link.href=href; else link.removeAttribute('href');
 }
-function applyBrand(b,name){
-  curBrand={b:withBodyFont(b||{}),name:name||''}; b=curBrand.b;
+function applyBrand(b,name,slug){
+  const s=slug||(VENUE&&VENUE.slug)||VENUE_SLUG||'lue';
+  curBrand={b:normalizeBrand(b||{},s),name:name||'',slug:s}; b=curBrand.b;
+  document.body.dataset.venue=s;
   loadBrandFonts(b);
   const dark=matchMedia('(prefers-color-scheme:dark)').matches, vars={...(b.vars||{}),...(dark?b.dark||{}:{})}, st=document.documentElement.style;
   const okUrl=u=>typeof u==='string'&&/^https:\/\/[^"'()\s]+$/.test(u);
@@ -888,13 +905,13 @@ function applyBrand(b,name){
     gl.innerHTML=(imprint?`<a href="${esc(imprint)}" target="_blank" rel="noopener">Impressum</a> · `:'')+(privacy?`<a href="${esc(privacy)}" target="_blank" rel="noopener">Datenschutz</a> · `:'');
   }
 }
-/* Schreibt Jost in venues.brand, falls noch nicht gesetzt (Personal hat Schreibrecht) */
+/* Schreibt fehlende Brand-Schriften je Haus in venues.brand (Personal hat Schreibrecht) */
 async function ensureVenueBodyFonts(){
   if(!DB||GUEST) return;
   try{
-    const rows=await one(DB.from('venues').select('id,brand'));
+    const rows=await one(DB.from('venues').select('id,slug,brand'));
     for(const row of rows||[]){
-      const cur=row.brand||{}, next=withBodyFont(cur);
+      const slug=row.slug||'lue', cur=row.brand||{}, next=normalizeBrand(cur,slug);
       if(JSON.stringify(cur)===JSON.stringify(next)) continue;
       const {error}=await DB.from('venues').update({brand:next}).eq('id',row.id);
       if(error){ console.warn('brand font migrate', row.id, error); continue; }
@@ -902,7 +919,7 @@ async function ensureVenueBodyFonts(){
     }
   }catch(e){ console.warn('brand font migrate', e); }
 }
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name); });
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name,curBrand.slug); });
 const onlineDefaults=()=>({name:VENUE_META.name,public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
   limit_per_hour:0,open_from:'',times:[{id:'zt1',name:'Mittag',from:'11:30',to:'14:00',days:[1,2,3,4,5,6,7]},{id:'zt2',name:'Abend',from:'17:30',to:'21:00',days:[1,2,3,4,5,6,7]}]});
 /* ---------- E-Mails (werden nur erzeugt und im Postausgang abgelegt, nicht verschickt) ---------- */
@@ -2055,7 +2072,7 @@ window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.queryS
 if(ONLINE) startOnline();
 else {
   S=load();
-  applyBrand(VENUE_META.brand,VENUE_META.name);
+  applyBrand(VENUE_META.brand,VENUE_META.name,VENUE_SLUG);
   document.title=(GUEST?'Reservieren':'Tischbuch')+' – '+VENUE_META.short+(GUEST?'':' · Demo');
   $('.brand span').textContent='Demo · '+VENUE_META.short;
   if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }

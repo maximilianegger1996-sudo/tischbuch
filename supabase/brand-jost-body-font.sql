@@ -1,32 +1,39 @@
--- Body font Jost for all three venues (venues.brand)
--- Run in the Supabase SQL editor if staff auto-migrate has not run yet.
--- Safe to re-run: merges fonts + vars.--sans without wiping other brand fields.
+-- Per-venue body/display fonts in venues.brand
+-- Run in Supabase SQL editor if staff auto-migrate has not run yet.
+-- Safe to re-run.
 
+-- LÜ + Mundwerk: Jost body, Libre Bodoni display
 UPDATE public.venues AS v
 SET brand = jsonb_set(
   jsonb_set(
     COALESCE(v.brand, '{}'::jsonb),
     '{fonts}',
-    (
-      SELECT COALESCE(jsonb_agg(to_jsonb(f) ORDER BY ord), '[]'::jsonb)
-      FROM (
-        SELECT f, MIN(ord) AS ord
-        FROM (
-          SELECT 'Jost:wght@300;400;500;600;700'::text AS f, 0 AS ord
-          UNION ALL
-          SELECT value #>> '{}', 1 + ordinality
-          FROM jsonb_array_elements(COALESCE(v.brand->'fonts', '[]'::jsonb)) WITH ORDINALITY
-          WHERE lower(value #>> '{}') NOT LIKE '%jost%'
-        ) s
-        GROUP BY f
-      ) u
-    ),
+    '["Jost:wght@300;400;500;600;700","Libre Bodoni:wght@400;600"]'::jsonb,
     true
   ),
   '{vars}',
   COALESCE(v.brand->'vars', '{}'::jsonb) || jsonb_build_object(
-    '--sans', COALESCE(v.brand#>>'{vars,--sans}', 'Jost, system-ui, -apple-system, "Segoe UI", sans-serif')
+    '--sans', 'Jost, system-ui, -apple-system, "Segoe UI", sans-serif',
+    '--serif', '"Libre Bodoni", "Bodoni 72", Didot, Georgia, serif'
   ),
   true
 )
-WHERE v.slug IN ('lue', 'steinbock', 'mundwerk');
+WHERE v.slug IN ('lue', 'mundwerk');
+
+-- Steinbock: Open Sans body + Open Sans Condensed display (matches steinbock-obertauern.at)
+UPDATE public.venues AS v
+SET brand = jsonb_set(
+  jsonb_set(
+    COALESCE(v.brand, '{}'::jsonb),
+    '{fonts}',
+    '["Open Sans:wght@300;400;500;600;700","Open Sans Condensed:wght@300;700"]'::jsonb,
+    true
+  ),
+  '{vars}',
+  COALESCE(v.brand->'vars', '{}'::jsonb) || jsonb_build_object(
+    '--sans', '"Open Sans", Helvetica, Arial, sans-serif',
+    '--serif', '"Open Sans Condensed", "Arial Narrow", Arial, Tahoma, sans-serif'
+  ),
+  true
+)
+WHERE v.slug = 'steinbock';
