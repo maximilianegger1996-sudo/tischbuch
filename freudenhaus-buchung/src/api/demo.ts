@@ -15,6 +15,7 @@ import type {
 import { BRANCH_META, ONLINE_BRANCH_ORDER, SITE_DEFAULT, SPECIALS_DEFAULT } from "./mapping";
 import { assetUrl } from "./assets";
 import { enrichCategoriesWithMedia } from "./product-media";
+import { filterOnlineCatalog } from "../lib/catalog";
 
 function euros(n: number): Money {
   return { amountCents: Math.round(n * 100), currency: "EUR" };
@@ -28,6 +29,10 @@ const DEMO_DAILY: Record<string, number> = {
   "18": 35,
   "21": 18,
   "35": 12,
+  "47": 8,
+  "44": 12,
+  "43": 5,
+  "49": 6,
 };
 
 function demoCategories(): Category[] {
@@ -137,13 +142,71 @@ function demoCategories(): Category[] {
     models: [],
   };
 
-  return enrichCategoriesWithMedia([
-    { id: "1", title: "Ski", products: skiProducts },
-    { id: "2", title: "Skischuh", products: [boot] },
-    { id: "3", title: "Snowboard", products: [board[0]] },
-    { id: "4", title: "SB Boots", products: [board[1]] },
-    { id: "5", title: "Helm", products: [helm] },
-  ]);
+  const extras: Product[] = [
+    {
+      id: "47",
+      externalKey: "47",
+      title: "Skibrille",
+      subtitle: "Demo",
+      categoryId: "6",
+      categoryTitle: "Extras",
+      modelRequired: false,
+      bullets: [],
+      displayDaily: { "1": euros(8), "2": euros(6), "3": euros(5) },
+      accessories: [],
+      models: [],
+    },
+    {
+      id: "44",
+      externalKey: "44",
+      title: "Rückenprotektor",
+      subtitle: "Demo",
+      categoryId: "6",
+      categoryTitle: "Extras",
+      modelRequired: false,
+      bullets: [],
+      displayDaily: { "1": euros(12), "2": euros(10), "3": euros(8) },
+      accessories: [],
+      models: [],
+    },
+    {
+      id: "43",
+      externalKey: "43",
+      title: "Skischloss",
+      subtitle: "Demo",
+      categoryId: "6",
+      categoryTitle: "Extras",
+      modelRequired: false,
+      bullets: [],
+      displayDaily: { "1": euros(5), "2": euros(5), "3": euros(5) },
+      accessories: [],
+      models: [],
+    },
+    {
+      id: "49",
+      externalKey: "49",
+      title: "Depot",
+      subtitle: "Demo",
+      categoryId: "6",
+      categoryTitle: "Extras",
+      modelRequired: false,
+      bullets: [],
+      displayDaily: { "1": euros(6), "2": euros(6), "3": euros(6) },
+      accessories: [],
+      models: [],
+    },
+  ];
+
+  return filterOnlineCatalog(
+    enrichCategoriesWithMedia([
+      { id: "1", title: "Ski", products: skiProducts },
+      { id: "2", title: "Skischuh", products: [boot] },
+      { id: "3", title: "Snowboard", products: [board[0]] },
+      { id: "4", title: "SB Boots", products: [board[1]] },
+      { id: "5", title: "Helm", products: [helm] },
+      { id: "6", title: "Extras", products: extras },
+    ]),
+  );
 }
 
 function demoLocations(): Location[] {

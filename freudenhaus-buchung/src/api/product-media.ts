@@ -30,6 +30,8 @@ function enrichProduct(product: Product): Product {
   const mediaRow = byTitle.get(product.title.toLowerCase());
   if (!mediaRow) return product;
 
+  const curatedMedia = mediaRow.models.filter((m) => m.image).slice(0, 4);
+
   const models: ProductModel[] =
     product.models.length > 0
       ? product.models.map((m) => {
@@ -37,7 +39,10 @@ function enrichProduct(product: Product): Product {
             mediaRow.models.find(
               (x) =>
                 x.title.toLowerCase() === m.title.toLowerCase() ||
-                (x.brand && m.brand && x.brand.toLowerCase() === m.brand.toLowerCase() && x.title.includes(m.title)),
+                (x.brand &&
+                  m.brand &&
+                  x.brand.toLowerCase() === m.brand.toLowerCase() &&
+                  x.title.includes(m.title)),
             ) ||
             mediaRow.models.find((x) => m.title.toLowerCase().includes(x.title.toLowerCase()));
           return {
@@ -47,7 +52,7 @@ function enrichProduct(product: Product): Product {
             variants: m.variants.length ? m.variants : hit?.variants || [],
           };
         })
-      : mediaRow.models.map((m) => ({
+      : curatedMedia.map((m) => ({
           id: m.id,
           title: m.title,
           brand: m.brand,

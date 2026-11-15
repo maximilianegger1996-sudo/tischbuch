@@ -13,8 +13,10 @@ import type {
   WintersteigerExport,
 } from "./types";
 import { rentBuddyProvider } from "./rentbuddy";
+import { demoQuote } from "./demo";
 import { BRANCH_META, ONLINE_BRANCH_ORDER, SITE_DEFAULT, SPECIALS_DEFAULT } from "./mapping";
 import { enrichCategoriesWithMedia } from "./product-media";
+import { filterOnlineCatalog } from "../lib/catalog";
 
 function euros(n: number): Money {
   return { amountCents: Math.round(n * 100), currency: "EUR" };
@@ -171,7 +173,9 @@ export const wintersteigerProvider: BookingProvider = {
     }
     try {
       const { reservablearticle } = await easyrest.reservableArticles();
-      const categories = enrichCategoriesWithMedia(buildCatalog(reservablearticle));
+      const categories = filterOnlineCatalog(
+        enrichCategoriesWithMedia(buildCatalog(reservablearticle)),
+      );
 
       let cartTotal: Money | null = null;
       if (draft.locationId && draft.persons.some((p) => p.lines.length)) {
@@ -216,8 +220,17 @@ export const wintersteigerProvider: BookingProvider = {
         cartDiscount: null,
       };
     } catch (e) {
-      console.warn("EasyRest quote failed, fallback Rent Buddy", e);
-      return rentBuddyProvider.quote(draft);
+      console.warn("EasyRest quote failed, fallback Rent Buddy / Demo", e);
+      try {
+        const q = await rentBuddyProvider.quote(draft);
+        return {
+          ...q,
+          categories: filterOnlineCatalog(enrichCategoriesWithMedia(q.categories)),
+        };
+      } catch (e2) {
+        console.warn("Rent Buddy quote failed, fallback Demo", e2);
+        return demoQuote(draft);
+      }
     }
   },
 

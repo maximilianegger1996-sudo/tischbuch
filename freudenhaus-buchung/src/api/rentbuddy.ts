@@ -14,6 +14,8 @@ import type {
   Special,
   WintersteigerExport,
 } from "./types";
+import { enrichCategoriesWithMedia } from "./product-media";
+import { filterOnlineCatalog } from "../lib/catalog";
 
 const HOST = "https://freudenhaus.rentbuddy.solutions";
 const LANG = "de";
@@ -226,11 +228,12 @@ export const rentBuddyProvider: BookingProvider = {
       return { categories: [], rate: null, rates: [], cartTotal: null, cartList: null, cartDiscount: null };
     }
     const data = await postJson<any>(`/api/prices`, bookingBody(draft));
-    const categories: Category[] = (data.categories || []).map((c: any) => ({
+    const rawCategories: Category[] = (data.categories || []).map((c: any) => ({
       id: String(c.id),
       title: c.title,
       products: (c.products || []).map((p: any) => mapProduct(p, String(c.id), c.title)),
     }));
+    const categories = filterOnlineCatalog(enrichCategoriesWithMedia(rawCategories));
     return {
       categories,
       rate: data.rate

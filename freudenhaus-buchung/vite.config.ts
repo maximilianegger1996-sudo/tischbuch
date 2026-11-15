@@ -2,7 +2,11 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { easyrestProxy } from "./vite-easyrest-proxy.ts";
 
+/** GitHub Pages project site: /tischbuch/rentfreudenhaus/ — override with VITE_BASE=./ for relative. */
+const base = process.env.VITE_BASE || "/";
+
 export default defineConfig({
+  base,
   plugins: [react(), easyrestProxy()],
   server: {
     host: true,

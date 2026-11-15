@@ -8,6 +8,8 @@ import {
   packageDailyLabel,
   type RentalPackage,
 } from "./lib/packages";
+import { curatedExtras } from "./lib/catalog";
+import { assetUrl } from "./api/assets";
 import type { Product } from "./api";
 
 const DOW = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -48,17 +50,6 @@ function personSummary(draft: ReturnType<typeof useBooking>["draft"]) {
   return { detail: parts.join(" · ") || "—" };
 }
 
-function TrustStrip() {
-  return (
-    <div className="trust-strip">
-      <span>−20 % / −10 % online</span>
-      <span>Vortag ab 15:00</span>
-      <span>4,8★ Google</span>
-      <span>Kinder &lt;11 gratis*</span>
-    </div>
-  );
-}
-
 function TopBar() {
   const { draft, quote, locations, setStep, step } = useBooking();
   const people = personSummary(draft);
@@ -89,12 +80,8 @@ function TopBar() {
   return (
     <header className="topbar">
       <a className="brand" href="#top" onClick={() => setStep("people")}>
-        <img src="/brand/logo-mark.svg" alt="FREUDENHAUS" />
-        <span className="brand-mark">
-          Rent
-          <br />
-          freudenhaus
-        </span>
+        <img src={assetUrl("brand/logo-mark.svg")} alt="FREUDENHAUS" />
+        <span className="brand-mark">Rentfreudenhaus</span>
       </a>
       <div className="progress-slots">
         {slots.map((s) => (
@@ -133,7 +120,7 @@ function StepPeople() {
       }
     >
       <div className="brand-float">
-        <img src="/brand/logo-white.svg" alt="FREUDENHAUS" />
+        <img src={assetUrl("brand/logo-white.svg")} alt="FREUDENHAUS" />
       </div>
       <div className="people-center anim-rise">
         <p className="hero-kicker">Mehr Piste. Weniger Gepäck.</p>
@@ -220,28 +207,28 @@ function monthLabel(d: Date) {
   return d.toLocaleDateString("de-AT", { month: "long", year: "numeric" });
 }
 
+function addDays(d: Date, n: number) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+
 function StepDates() {
-  const { draft, setDates, site, next } = useBooking();
+  const { draft, setDates, site } = useBooking();
   const seasonStart = site?.seasonStart ? new Date(site.seasonStart) : new Date(2026, 10, 20);
   const seasonEnd = site?.seasonEnd ? new Date(site.seasonEnd) : new Date(2027, 3, 14);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const minDate = seasonStart > today ? seasonStart : today;
 
-  const months: Date[] = [];
-  {
-    let cur = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-    const last = new Date(seasonEnd.getFullYear(), seasonEnd.getMonth(), 1);
-    while (cur <= last && months.length < 8) {
-      months.push(new Date(cur));
-      cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
-    }
-  }
+  const [viewStart, setViewStart] = useState(() => new Date(minDate));
+  const WINDOW = 14;
+  const days = Array.from({ length: WINDOW }, (_, i) => addDays(viewStart, i)).filter(
+    (d) => d <= seasonEnd,
+  );
 
-  const [cursor, setCursor] = useState(() => months[0] || new Date(minDate.getFullYear(), minDate.getMonth(), 1));
-  const daysInMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
-  const days: Date[] = [];
-  for (let d = 1; d <= daysInMonth; d++) days.push(new Date(cursor.getFullYear(), cursor.getMonth(), d));
+  const canPrev = addDays(viewStart, -7) >= addDays(minDate, -6);
+  const canNext = addDays(viewStart, WINDOW) <= seasonEnd;
 
   const onPick = (d: Date) => {
     const v = iso(d);
@@ -263,6 +250,11 @@ function StepDates() {
   const bird =
     draft.from && draft.to ? earlyBirdPercent(parseIso(draft.from), today) : 0;
 
+  const rangeLabel =
+    days.length > 0
+      ? `${days[0].toLocaleDateString("de-AT", { day: "numeric", month: "short" })} – ${days[days.length - 1].toLocaleDateString("de-AT", { day: "numeric", month: "short" })}`
+      : monthLabel(viewStart);
+
   return (
     <>
       <div
@@ -276,26 +268,28 @@ function StepDates() {
       <section className="step-stage anim-rise">
         <div className="stage-head">
           <h2>Wähle deinen Leihzeitraum</h2>
-          <p>Tippe Start- und Endtag. Online-Frühbucher siehst du direkt auf den Tagen.</p>
+          <p>Start- und Endtag tippen — Online-Rabatt siehst du direkt auf den Tagen.</p>
         </div>
-        <TrustStrip />
-        <div className="month-rail">
-          {months.map((m) => (
-            <button
-              key={iso(m)}
-              type="button"
-              className={
-                m.getFullYear() === cursor.getFullYear() && m.getMonth() === cursor.getMonth()
-                  ? "active"
-                  : ""
-              }
-              onClick={() => setCursor(m)}
-            >
-              {monthLabel(m)}
-            </button>
-          ))}
+        <div className="date-nav">
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={!canPrev}
+            onClick={() => setViewStart(addDays(viewStart, -7))}
+          >
+            ←
+          </button>
+          <strong>{rangeLabel}</strong>
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={!canNext}
+            onClick={() => setViewStart(addDays(viewStart, 7))}
+          >
+            →
+          </button>
         </div>
-        <div className="day-grid">
+        <div className="day-grid day-grid-compact">
           {days.map((d) => {
             const disabled = d < minDate || d > seasonEnd;
             const pct = disabled ? 0 : earlyBirdPercent(d, today);
@@ -311,15 +305,13 @@ function StepDates() {
                 <span className="dow">{DOW[(d.getDay() + 6) % 7]}</span>
                 <span className="num">{d.getDate()}</span>
                 <span className="badge">
-                  {disabled
-                    ? "nicht verfügbar"
-                    : selected && draft.from === iso(d) && !draft.to
-                      ? "1. Tag"
-                      : selected && draft.to === iso(d)
-                        ? `${daysBetween(draft.from!, draft.to)}. Tag`
-                        : pct
-                          ? `−${pct}%`
-                          : "·"}
+                  {selected && draft.from === iso(d) && !draft.to
+                    ? "Start"
+                    : selected && draft.to === iso(d)
+                      ? `${daysBetween(draft.from!, draft.to)} T`
+                      : pct
+                        ? `−${pct}%`
+                        : "·"}
                 </span>
               </button>
             );
@@ -329,13 +321,8 @@ function StepDates() {
           {draft.from && draft.to
             ? `${daysBetween(draft.from, draft.to)} Tage${bird ? ` · −${bird}% Online` : ""}`
             : draft.from
-              ? "2. Tag tippen"
-              : "1. Tag tippen"}
-        </div>
-        <div className="center-cta">
-          <button type="button" className="btn" disabled={!draft.from || !draft.to} onClick={next}>
-            Weiter zum Abholort
-          </button>
+              ? "Endtag tippen"
+              : "Starttag tippen"}
         </div>
       </section>
     </>
@@ -360,7 +347,6 @@ function StepLocation() {
         <h2>Wähle deinen Abholort</h2>
         <p>Fünf Stationen an der Piste — Abholung dort, wo du in den Lift steigst.</p>
       </div>
-      <TrustStrip />
       <div className="field loc-search">
         <label>Suche Hotel / Ort</label>
         <input
@@ -426,34 +412,25 @@ function PackageCard({
 }) {
   const ski = products.find((p) => p.id === pack.skiProductId);
   return (
-    <div className={`pack-card${active ? " active" : ""}`}>
+    <button
+      type="button"
+      className={`pack-card${active ? " active" : ""}`}
+      onClick={() => (active ? onClear() : onSelect())}
+    >
       {ski?.image ? <img src={ski.image} alt="" /> : <div className="pack-ph" />}
       <div className="pack-body">
         {pack.highlight ? <span className="tag">{pack.highlight}</span> : null}
         <h3>{pack.title}</h3>
         <p className="muted">{pack.subtitle}</p>
         <div className="price">{packageDailyLabel(pack, products, kindCode)}</div>
-        <ul className="bullets">
-          <li>Ski/Board + Schuh + Helm</li>
-          <li>Modell optional im nächsten Schritt</li>
-          <li>Online-Rabatt schon eingerechnet*</li>
-        </ul>
-        <button
-          type="button"
-          className={`btn${active ? " accent" : ""}`}
-          style={{ padding: "12px 20px" }}
-          onClick={() => (active ? onClear() : onSelect())}
-        >
-          {active ? "Paket entfernen" : "Paket wählen"}
-        </button>
+        <span className="pack-cta">{active ? "Ausgewählt · tippen zum Entfernen" : "Auswählen"}</span>
       </div>
-    </div>
+    </button>
   );
 }
 
 function StepProducts() {
   const {
-    quote,
     quoteLoading,
     draft,
     products,
@@ -462,7 +439,6 @@ function StepProducts() {
     setModel,
     clearModel,
     toggleProduct,
-    next,
   } = useBooking();
   const [activePerson, setActivePerson] = useState(draft.persons[0]?.id);
   const [showExtras, setShowExtras] = useState(false);
@@ -474,17 +450,14 @@ function StepProducts() {
   );
   const skiProduct = products.find((p) => p.id === skiLine?.productId);
 
-  const extras = (quote?.categories || [])
-    .flatMap((c) => c.products)
-    .filter((p) => !PACKAGES.some((pack) => [pack.skiProductId, pack.bootProductId, pack.helmProductId].includes(p.id)));
+  const extras = curatedExtras(products);
 
   return (
     <section className="step-stage anim-rise">
       <div className="stage-head">
         <h2>Dein Paket</h2>
-        <p>Ein Klick: Ski/Board + Schuh + Helm. Modell kannst du optional dazunehmen.</p>
+        <p>Nur vier klare Pakete — Ski/Board + Schuh + Helm. Modell optional darunter.</p>
       </div>
-      <TrustStrip />
       <div className="person-tabs">
         {draft.persons.map((p, i) => (
           <button
@@ -493,8 +466,13 @@ function StepProducts() {
             className={p.id === person?.id ? "active" : ""}
             onClick={() => setActivePerson(p.id)}
           >
-            Person {i + 1}
-            {p.lines.length ? ` · Paket` : ""}
+            {(() => {
+              const packTitle = findPackageForLines(p.lines.map((l) => l.productId))?.title.replace(
+                "Paket ",
+                "",
+              );
+              return packTitle ? `Person ${i + 1} · ${packTitle}` : `Person ${i + 1}`;
+            })()}
           </button>
         ))}
       </div>
@@ -516,8 +494,8 @@ function StepProducts() {
       {activePack && skiProduct && skiProduct.models.length > 0 && (
         <div className="model-panel anim-rise">
           <div className="model-head">
-            <strong>Ski-/Board-Modell</strong>
-            <span className="muted">optional — tippen zum Abwählen</span>
+            <strong>Modell (optional)</strong>
+            <span className="muted">max. {skiProduct.models.length} · tippen = wählen/abwählen</span>
           </div>
           <div className="model-grid">
             {skiProduct.models.map((m) => {
@@ -547,7 +525,6 @@ function StepProducts() {
                   {m.image ? <img src={m.image} alt="" /> : <div className="model-ph" />}
                   <span className="model-brand">{m.brand || " "}</span>
                   <span className="model-title">{m.title}</span>
-                  {on ? <span className="model-off">Abwählen</span> : null}
                 </button>
               );
             })}
@@ -581,48 +558,37 @@ function StepProducts() {
         </div>
       )}
 
-      <button type="button" className="linkish" onClick={() => setShowExtras((v) => !v)}>
-        {showExtras ? "Extras ausblenden" : "Extras / einzeln dazu (Brille, Protektor…)"}
-      </button>
-      {showExtras && (
-        <div className="product-grid" style={{ marginTop: "0.75rem" }}>
-          {extras.map((product) => {
-            const selected = person?.lines.some((l) => l.productId === product.id);
-            return (
-              <div key={product.id} className={`product-card${selected ? " is-on" : ""}`}>
-                {product.image ? <img src={product.image} alt="" /> : <div className="ph" />}
-                <div className="body">
-                  <h3>{product.title}</h3>
-                  <div className="price">ab {euroDaily(product, kindCode)} / Tag</div>
-                  <button
-                    type="button"
-                    className={`btn${selected ? " accent" : ""}`}
-                    style={{ padding: "12px 20px", marginTop: "0.35rem" }}
-                    onClick={() => person && toggleProduct(person.id, product)}
-                  >
-                    {selected ? "Entfernen" : "Hinzufügen"}
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {extras.length > 0 && (
+        <>
+          <button type="button" className="linkish" onClick={() => setShowExtras((v) => !v)}>
+            {showExtras ? "Extras ausblenden" : `Extras dazu (${extras.length})`}
+          </button>
+          {showExtras && (
+            <div className="product-grid" style={{ marginTop: "0.75rem" }}>
+              {extras.map((product) => {
+                const selected = person?.lines.some((l) => l.productId === product.id);
+                return (
+                  <div key={product.id} className={`product-card${selected ? " is-on" : ""}`}>
+                    {product.image ? <img src={product.image} alt="" /> : <div className="ph" />}
+                    <div className="body">
+                      <h3>{product.title}</h3>
+                      <div className="price">ab {euroDaily(product, kindCode)} / Tag</div>
+                      <button
+                        type="button"
+                        className={`btn${selected ? " accent" : ""}`}
+                        style={{ padding: "12px 20px", marginTop: "0.35rem" }}
+                        onClick={() => person && toggleProduct(person.id, product)}
+                      >
+                        {selected ? "Entfernen" : "Hinzufügen"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
-
-      <div className="conv-cta">
-        <div>
-          <div className="muted tiny-label">Aktuelle Summe</div>
-          <strong className="sum-pulse">{formatMoney(quote?.cartTotal)}</strong>
-        </div>
-        <button
-          type="button"
-          className="btn accent"
-          disabled={!draft.persons.some((p) => p.lines.length)}
-          onClick={next}
-        >
-          Weiter zu den Daten
-        </button>
-      </div>
     </section>
   );
 }
@@ -639,7 +605,6 @@ function StepDetails() {
         <h2>Fast geschafft</h2>
         <p>Nur die wichtigsten Daten — Zahlung folgt im nächsten Schritt.</p>
       </div>
-      <TrustStrip />
       {draft.persons.map((p, i) => (
         <div
           key={p.id}
