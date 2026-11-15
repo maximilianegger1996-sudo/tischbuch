@@ -14,7 +14,7 @@
     "deploy:cf": "npx --yes wrangler@4 deploy"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
