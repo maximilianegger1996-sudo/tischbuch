@@ -1761,7 +1761,7 @@ function onlineInboxLists(){
   const seenO=new Set(m.seenOnline||[]), seenC=new Set(m.seenCancel||[]);
   const from=addDays(today(),-14);
   const pending=(S.reservations||[]).filter(r=>r.is_online_reservation&&r.type!=='canceled'&&r.date>=today()&&!seenO.has(r.id)&& (r.type==='waiting_list'||r.status_guest==='not_started'));
-  const cancels=(S.reservations||[]).filter(r=>r.type==='canceled'&&r.date>=from&&(r.cancel_reason==='canceled_by_guest'||r.is_online_reservation)&&!seenC.has(r.id));
+  const cancels=(S.reservations||[]).filter(r=>r.type==='canceled'&&r.date>=from&&r.cancel_reason==='canceled_by_guest'&&!seenC.has(r.id));
   return {pending,cancels,badge:pending.length+cancels.length};
 }
 function updateOnlineBadge(){
