@@ -41,6 +41,21 @@ npm run preview
 
 Domain-Typen in `src/api/types.ts` nutzen Wintersteiger-Begriffe (`Filiale`, `Verleihgruppe`, Export-Payload). Der Rent-Buddy-Adapter mappt IDs/Preise live; `wintersteiger.ts` bereitet den Import-Payload vor, bis die Easyreservation-Credentials angebunden sind.
 
+## EasyRest (Wintersteiger)
+
+Live-Installation (Obertauern):
+
+- Klartext-Katalog: `http://89.26.17.53:11122/easyrest/rest` (kein Key senden)
+- **TLS:** `https://89.26.17.53:11133/easyrest/rest/easyrest` (Zertifikat derzeit abgelaufen/self-signed)
+
+```bash
+cp .env.example .env   # EASYREST_ACCESS_ID setzen, nie committen
+npm run easyrest:smoke
+```
+
+Das Smoke-Script **blockiert** `http://` mit Access-ID. Details: `docs/wintersteiger/connectivity-report.md`.  
+Access-ID nur serverseitig — nicht als `VITE_`-Variable in die SPA.
+
 ## Hinweis Backend
 
-Das bestehende Rent-Buddy-Backend bleibt bis zum Cutover die Datenquelle. Zugangsdaten gehören **nicht** ins Repo.
+Rent-Buddy bleibt bis zum Cutover Katalog-/Preisquelle für die SPA. EasyRest-Credentials gehören **nicht** ins Repo.
