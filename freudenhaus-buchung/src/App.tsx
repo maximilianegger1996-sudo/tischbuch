@@ -99,7 +99,7 @@ function StepPeople() {
         <div className="hero-copy">
           <span className="eyebrow">Obertauern · Online reservieren</span>
           <h1>Mehr Piste. Weniger Gepäck.</h1>
-          <p>Neue Buchungsstrecke für FREUDENHAUS — vorbereitet für den Übergang zu Wintersteiger Easyrent.</p>
+          <p>Neue Buchungsstrecke für FREUDENHAUS — angebunden an Easyrent.</p>
           <button type="button" className="btn" onClick={next}>
             Jetzt starten
           </button>
@@ -397,7 +397,7 @@ function StepProducts() {
                     </button>
                     {selected && product.models.length > 0 && (
                       <div className="model-box">
-                        <div className="muted">Modell & Länge (optional, Wintersteiger-Forecast)</div>
+                        <div className="muted">Modell & Länge (optional, Easyrent-Verfügbarkeit)</div>
                         <select
                           value={line?.modelId || ""}
                           onChange={(e) => {
@@ -480,7 +480,7 @@ function StepDetails() {
     <section className="panel stack">
       <div>
         <h2>Deine Daten</h2>
-        <p className="lede">Für die Übergabe an Wintersteiger Easyrent brauchen wir korrekte Gästedaten.</p>
+        <p className="lede">Für die Übergabe an Easyrent brauchen wir korrekte Gästedaten.</p>
       </div>
       {draft.persons.map((p, i) => (
         <div key={p.id} className="stack" style={{ borderTop: i ? "1px solid var(--line)" : undefined, paddingTop: i ? "1rem" : 0 }}>
@@ -609,12 +609,12 @@ function StepReview() {
   if (result?.ok) {
     return (
       <section className="panel success-card stack">
-        <h2>Wintersteiger EasyRest</h2>
+        <h2>Easyrent</h2>
         <p className="lede">
           Vorgang {result.bookingId} · {providerLabel}
         </p>
         <div className="notice">
-          Katalog/Preise/Verfügbarkeit laufen über EasyRest (Proxy). Ohne{" "}
+          Katalog/Preise/Verfügbarkeit laufen über die Easyrent-API (Proxy). Ohne{" "}
           <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run (keine Live-Buchung in
           Easyrent).
         </div>
@@ -669,7 +669,7 @@ function StepReview() {
       )}
       {result && !result.ok && <div className="error">{result.message}</div>}
       <button type="button" className="btn" disabled={submitting} onClick={onSubmit}>
-        {submitting ? "Wird übertragen…" : "Für Wintersteiger vorbereiten"}
+        {submitting ? "Wird übertragen…" : "An Easyrent senden"}
       </button>
     </section>
   );

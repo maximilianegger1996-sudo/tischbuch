@@ -1,4 +1,4 @@
-/** Domain model aligned to Wintersteiger Easyrent concepts for the cutover. */
+/** Domain model aligned to Easyrent concepts for the cutover. */
 
 export type PersonKind = "adult" | "youth" | "kid";
 

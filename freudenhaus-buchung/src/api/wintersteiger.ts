@@ -116,7 +116,7 @@ function toInsertPayload(draft: BookingDraft) {
 
 export const wintersteigerProvider: BookingProvider = {
   id: "wintersteiger",
-  label: "Wintersteiger Easyrent (Live via Proxy)",
+  label: "Easyrent (Live via Proxy)",
 
   async loadSite(): Promise<SiteSettings> {
     // Branding still from public Rent Buddy site settings

@@ -1,29 +1,37 @@
 # FREUDENHAUS Buchungstrecke
 
-Neue Kunden-Buchungsstrecke für **FREUDENHAUS Rent** (Obertauern), gebaut für den Übergang von **Rent Buddy online** zu **Wintersteiger Easyrent / Easyreservation**.
+Neue Kunden-Buchungsstrecke für **FREUDENHAUS Rent** (Obertauern), gebaut für den Übergang von **Rent Buddy online** zu **Easyrent** (Wintersteiger Sports).
+
+## Namensklärung
+
+| Begriff | Bedeutung |
+| --- | --- |
+| **Easyrent** | Verleihsoftware / Zielsystem |
+| **EasyRest** | REST-API von Easyrent (`/easyrest/rest/…`) |
+| Rent Buddy | bisherige Online-Buchung (wird abgelöst) |
 
 ## Status
 
-| Schritt | Quelle heute | Ziel nach Cutover |
+| Schritt | Quelle heute | Ziel |
 | --- | --- | --- |
-| Katalog, Preise, Stock, Filialen | Rent Buddy API (`freudenhaus.rentbuddy.solutions`) | Wintersteiger Easyreservation |
-| Abschluss | Wintersteiger-Export-Payload (kein Oppwa) | Native Easyreservation-Buchung + Zahlung |
+| Katalog, Preise, Stock, Filialen | Easyrent-API (HTTPS Proxy) | Easyrent |
+| Abschluss | Dry-Run (`EASYREST_LIVE_BOOK=0`) | Live `insertupdatereservation` + Zahlung |
 
-Provider umschalten:
+Provider:
 
 ```bash
-VITE_BOOKING_PROVIDER=wintersteiger  # default
-VITE_BOOKING_PROVIDER=rentbuddy      # alter Checkout-Pfad (POST /api/reservation)
+VITE_BOOKING_PROVIDER=easyrent   # alias: wintersteiger
+VITE_BOOKING_PROVIDER=rentbuddy  # alter Pfad
 ```
 
 ## Flow
 
 1. Personen  
 2. Leihzeitraum  
-3. Filiale (5 Standorte)  
-4. Ausrüstung (Platin / Gold / Silber, Board, Schuhe, Extras + optionale Modell/Länge)  
+3. Filiale  
+4. Ausrüstung  
 5. Kontaktdaten  
-6. Übersicht → Wintersteiger-Export
+6. Übersicht → Easyrent  
 
 ## Develop
 
@@ -37,11 +45,7 @@ npm run build
 npm run preview
 ```
 
-## Mapping → Easyrent
-
-Domain-Typen in `src/api/types.ts` nutzen Wintersteiger-Begriffe (`Filiale`, `Verleihgruppe`, Export-Payload). Der Rent-Buddy-Adapter mappt IDs/Preise live; `wintersteiger.ts` bereitet den Import-Payload vor, bis die Easyreservation-Credentials angebunden sind.
-
-## EasyRest (Wintersteiger)
+## Easyrent-API
 
 Live-Installation (Obertauern):
 
@@ -58,11 +62,9 @@ Access-ID nur serverseitig — nicht als `VITE_`-Variable in die SPA.
 
 ### Live-Proxy (Dev/Preview)
 
-Vite-Middleware `/api/easyrest/*` → EasyRest HTTPS, Access-ID nur am Server.
+Vite-Middleware `/api/easyrest/*` → Easyrent HTTPS-API, Access-ID nur am Server.
 
-Live getestet gegen eure Installation:
-
-| Call | Ergebnis |
+| Call | Ergebnis (Smoke) |
 | --- | --- |
 | `GET /reservation/reservablearticles` | 786 Artikel, u. a. Ski Platin/Gold/Silber |
 | `POST /reservation/getavailcount` | z. B. Platin 23.–31.12. Filiale 1 → 165 |
@@ -71,6 +73,6 @@ Live getestet gegen eure Installation:
 
 OpenAPI 1.0.0.15: `docs/wintersteiger/easyrest-1.0.0.15.swagger.json`
 
-## Hinweis Backend
+## Hinweis
 
-Rent-Buddy bleibt bis zum Cutover Katalog-/Preisquelle für die SPA. EasyRest-Credentials gehören **nicht** ins Repo.
+Credentials gehören **nicht** ins Repo.
