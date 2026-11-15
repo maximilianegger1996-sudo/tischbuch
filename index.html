@@ -609,9 +609,51 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
 #v-dash .tot-row b{font-size:22px;color:#3dd68c;font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0}
 #v-dash .tot-row em{font-style:normal;font-size:16px;color:#8b9098;font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
 #v-dash .tot-note{margin:8px 0 0;font-size:11px;color:#8b9098}
-#v-stub{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:28px 18px;text-align:center}
-#v-stub h3{margin:0 0 8px;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:20px;color:var(--ink)}
-#v-stub p{margin:0;color:var(--muted)}
+#v-payment,#v-tablini,#v-help,#v-notes{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 14px 24px;min-height:50vh}
+#v-payment h2,#v-tablini h2,#v-help h2,#v-notes h2{margin:0 0 4px;font-family:var(--sans);font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
+#v-payment .txbanner,#v-tablini .txbanner,#v-help .txbanner,#v-notes .txbanner,#v-mails .txbanner{background:#e8f6ee;border:1px solid #b7e0c6;color:#1a5c38;border-radius:8px;padding:10px 12px;font-size:13px;margin:0 0 14px;line-height:1.45}
+#v-payment .txwarn{background:#fff6e8;border:1px solid #f0d2a0;color:#7a4e08}
+.ptool{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
+.ptool input[type=search]{flex:1;min-width:180px}
+#v-payment table{width:100%;border-collapse:collapse;font-size:14px}
+#v-payment th,#v-payment td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+#v-payment th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600}
+#v-payment .empty,#v-tablini .empty,#v-notes .empty{padding:28px 8px;text-align:center;color:var(--muted)}
+#v-tablini .tab-hero{max-width:640px;margin:0 auto;text-align:center}
+#v-tablini .tab-hero p{color:var(--muted);margin:6px 0 18px;line-height:1.5}
+#v-tablini .mat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px;text-align:left}
+#v-tablini .mat{position:relative;border:2px solid var(--line);border-radius:10px;padding:10px;background:#fafafa;cursor:pointer}
+#v-tablini .mat.on{border-color:#1faa6e;box-shadow:0 0 0 1px #1faa6e}
+#v-tablini .mat .prev{height:88px;border-radius:6px;display:flex;align-items:flex-end;justify-content:center;padding:8px;color:#1a1a1a;font-size:11px;font-weight:600;margin-bottom:8px}
+#v-tablini .mat .prev.holz{background:linear-gradient(160deg,#c9a87a,#a07848)}
+#v-tablini .mat .prev.kunst{background:linear-gradient(160deg,#3a3a3a,#1a1a1a);color:#eee}
+#v-tablini .mat .prev.beton{background:linear-gradient(160deg,#9a9a9a,#6e6e6e);color:#fff}
+#v-tablini .mat .prev.duo{background:linear-gradient(160deg,#2a2a2a 55%,#b88955 55%)}
+#v-tablini .mat .bs{position:absolute;top:6px;right:6px;background:#e8b923;color:#1a1a1a;font-size:9px;font-weight:700;letter-spacing:.06em;padding:2px 6px;border-radius:3px}
+#v-tablini .order{width:100%;max-width:420px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;gap:8px}
+#v-tablini .ext{font-size:13px}
+#v-help .hsearch{margin:0 0 12px}
+#v-help .hcats{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+#v-help .hcat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 14px 10px}
+#v-help .hcat h3{margin:0 0 8px;font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);display:flex;align-items:center;gap:8px}
+#v-help .hcat button.linkish{display:block;width:100%;text-align:left;border:0;background:transparent;padding:6px 0;color:var(--accent,#1faa6e);font-size:13px;cursor:pointer;font-family:var(--sans);text-transform:none;letter-spacing:0}
+#v-help .hcat button.linkish:hover{text-decoration:underline}
+#v-help .hart{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+#v-help .hart h3{margin:0 0 8px;font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:18px}
+#v-help .hart p,#v-help .hart li{font-size:14px;line-height:1.55;color:var(--ink)}
+#v-notes .ntabs{display:flex;gap:0;margin:0 0 12px;border-bottom:1px solid var(--line)}
+#v-notes .ntabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;padding:10px 14px;font-family:var(--sans);text-transform:none;letter-spacing:0;color:var(--muted)}
+#v-notes .ntabs button.on{border-bottom-color:var(--accent,#1faa6e);color:var(--ink);font-weight:600}
+#v-notes .nlist{display:grid;gap:8px}
+#v-notes .nitem{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff}
+#v-notes .nitem small{display:block;color:var(--muted);margin-bottom:2px}
+#v-mails .mtabs{display:flex;gap:0;margin:0 0 12px;border-bottom:1px solid var(--line)}
+#v-mails .mtabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;padding:10px 14px;font-family:var(--sans);text-transform:none;letter-spacing:0;color:var(--muted)}
+#v-mails .mtabs button.on{border-bottom-color:var(--accent,#1faa6e);color:var(--ink);font-weight:600}
+@media (max-width:600px){
+  #v-tablini .mat-grid{grid-template-columns:1fr}
+  #v-help .hcats{grid-template-columns:1fr}
+}
 #designdlg{width:min(420px,calc(100vw - 24px));background:#2a2e36;color:#e8eaed;border:0;border-radius:12px;max-height:min(92vh,720px)}
 #designdlg .dh{border-bottom-color:#3a404c;background:#2a2e36}
 #designdlg .dh h2{color:#fff;font-family:var(--sans);text-transform:none;letter-spacing:0}
@@ -681,7 +723,10 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
 </nav>
 <main>
   <section id="v-dash" hidden></section>
-  <section id="v-stub" hidden></section>
+  <section id="v-payment" hidden></section>
+  <section id="v-tablini" hidden></section>
+  <section id="v-help" hidden></section>
+  <section id="v-notes" hidden></section>
   <section id="v-plan">
     <div class="planwrap">
       <div class="plan-block">
@@ -767,6 +812,7 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
         <div class="hint" id="f-hint"></div>
       </div>
       <label class="f">Bemerkung<textarea id="f-note" rows="2"></textarea></label>
+      <label class="consent" style="margin:8px 0"><input type="checkbox" id="f-card"> Kreditkartendaten anfordern (Kartengarantie — lokal erfasst, kein Zahlungsanbieter)</label>
       <div class="statebox" id="d-cancel" hidden>
         <select id="f-reason" style="width:auto"><option value="other_reason">Anderer Grund</option><option value="guest_did_not_arrive">Gast nicht erschienen</option></select>
         <label id="l-allseries" style="font-size:13px"><input type="checkbox" id="f-allseries"> <span></span></label>
@@ -899,7 +945,7 @@ const today=()=>iso(new Date());
 const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,stub:null};
+let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail'};
 let curId=null, pickSel=[];
 const FLOOR_DESIGN_DEFAULTS={untilEod:false,roomNames:true,multiTable:true,numberAbove:false,seatDots:false,tabliniStatus:false,statusColor:false,chairs:true,chairForm:'lehne',lowEnd:false};
 let floorDesign={...FLOOR_DESIGN_DEFAULTS};
@@ -1249,16 +1295,35 @@ function queueMail(kind,r,list=[r]){
   return true;
 }
 function renderMails(){
-  const c=S.mailcfg, ts=d=>new Date(d).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-  $('#v-mails').innerHTML=`<p class="hint" style="margin-top:0">E-Mails werden derzeit nur in den Postausgang geschrieben (noch kein SMTP-Versand). Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
+  const c=S.mailcfg, tab=ui.mailTab||'mail';
+  const ts=d=>new Date(d).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const q=(ui.mailQ||'').trim().toLowerCase();
+  const mails=(S.mails||[]).filter(m=>{
+    if(!q) return true;
+    return (m.to||'').toLowerCase().includes(q)||(m.subject||'').toLowerCase().includes(q)||(m.res_id||'').toLowerCase().includes(q)||(m.id||'').toLowerCase().includes(q);
+  });
+  $('#v-mails').innerHTML=`<h2 style="margin:0 0 8px;font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:22px">Nachrichten</h2>
+  <div class="mtabs" role="tablist">
+    <button type="button" data-act="mailtab" data-v="sms" class="${tab==='sms'?'on':''}">SMS</button>
+    <button type="button" data-act="mailtab" data-v="mail" class="${tab==='mail'?'on':''}">E-Mails</button>
+  </div>
+  ${tab==='sms'?`<p class="txbanner txwarn" style="background:#fff6e8;border-color:#f0d2a0;color:#7a4e08">SMS-Gateway nicht angebunden. Es werden keine SMS versendet.</p>
+    <div class="ptool"><label class="f" style="margin:0;min-width:140px">Reservierungs Id<input type="search" id="mail-q" placeholder="z.B. 2546" value="${esc(ui.mailQ||'')}"></label></div>
+    <div class="tablewrap"><table><thead><tr><th>Res Id</th><th>Empfänger</th><th>Nummer</th></tr></thead>
+    <tbody><tr><td colspan="3" class="empty">Keine SMS.</td></tr></tbody></table></div>`
+  :`<p class="hint" style="margin-top:0">E-Mails werden derzeit nur in den Postausgang geschrieben (noch kein SMTP-Versand). Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
   <h3>Automatische E-Mails</h3>
   <div class="mailcfg">
     <label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> Bestätigung bei neuer Reservierung (online und vom Personal eingetragen)</label>
     <label><input type="checkbox" data-m="cancel"${c.cancel?' checked':''}> Nachricht bei Stornierung (nicht bei „Gast nicht erschienen“)</label>
     <label class="f">Grußformel am Ende<textarea rows="2" data-m="signature">${esc(c.signature)}</textarea></label>
   </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Postausgang (${S.mails.length})</h3>${S.mails.length?'<button data-act="mailclear" class="danger">Postausgang leeren</button>':''}</div>
-  <div class="tablewrap"><table><thead><tr><th>Erstellt</th><th>Art</th><th>An</th><th>Betreff</th></tr></thead><tbody>${S.mails.map(m=>`<tr class="rowlink" data-act="mailopen" data-id="${m.id}"><td>${ts(m.created_at)}</td><td><span class="pill ${m.kind==='cancel'?'canceled':'arrived'}">${MAILKIND[m.kind]}</span></td><td>${esc(m.to)}</td><td>${esc(m.subject)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Noch keine E-Mails. Lege eine Reservierung mit E-Mail-Adresse an, dann erscheint hier die Bestätigung.</td></tr>'}</tbody></table></div>`;
+  <div class="ptool"><label class="f" style="margin:0;flex:1;min-width:160px">Suchen<input type="search" id="mail-q" placeholder="Name, Res-ID, Betreff" value="${esc(ui.mailQ||'')}"></label>
+    ${S.mails.length?'<button data-act="mailclear" class="danger">Postausgang leeren</button>':''}</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Postausgang (${mails.length})</h3></div>
+  <div class="tablewrap"><table><thead><tr><th>Res Id</th><th>Empfänger</th><th>Nummer / Betreff</th><th>Erstellt</th></tr></thead><tbody>${mails.map(m=>`<tr class="rowlink" data-act="mailopen" data-id="${m.id}"><td><code>${esc((m.res_id||m.id).slice(-6).toUpperCase())}</code></td><td>${esc(m.to)}</td><td>${esc(m.subject)}</td><td>${ts(m.created_at)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Noch keine E-Mails. Lege eine Reservierung mit E-Mail-Adresse an, dann erscheint hier die Bestätigung.</td></tr>'}</tbody></table></div>`}`;
+  const mq=$('#mail-q');
+  if(mq) mq.oninput=()=>{ui.mailQ=mq.value; renderMails();};
 }
 function openMail(id){
   const m=S.mails.find(m=>m.id===id); if(!m) return;
@@ -1368,7 +1433,7 @@ function seed(){
   }
   S=keep;
   const online=onlineDefaults(); online.name=(VENUES[VENUE_SLUG]||VENUES.lue).name;
-  const d={v:1,nextId:n,rooms,flags,reservations,defaults:{show_from:'11:00',standard_duration:'02:00'},online,locks:[],notes:[],combos:[],contacts:[],mails:[],mailcfg:mailDefaults()};
+  const d={v:1,nextId:n,rooms,flags,reservations,defaults:{show_from:'11:00',standard_duration:'02:00'},online,locks:[],notes:[],series_notes:[],combos:[],contacts:[],mails:[],mailcfg:mailDefaults(),paycfg:{min_people:6,enabled:true},tablini:[]};
   for(const r of reservations) ensureContact(r,d);
   const note=(nm,t)=>{const c=d.contacts.find(c=>c.last_name===nm); if(c) c.note=t;};
   note('Gruber','Sitzt gern am Fenster'); note('Berger','Trinkt immer den Hauswein'); note('Moser','Glutenunverträglichkeit');
@@ -1376,7 +1441,7 @@ function seed(){
   return d;
 }
 function load(){
-  try{const raw=localStorage.getItem(KEY); if(raw){const d=JSON.parse(raw); if(d&&d.v===1){d.online??=onlineDefaults(); d.online.cancel_hours??=2; d.online.public_url??=''; if(d.online.name==='Restaurant Beispiel') d.online.name='LÜ – Burger & Grill'; d.mails??=[]; d.mailcfg??=mailDefaults(); d.locks??=[]; d.notes??=[]; d.combos??=[]; d.online.limit_per_hour??=0; d.online.open_from??=''; d.online.times.forEach((t,i)=>{t.days??=[1,2,3,4,5,6,7]; t.id??='zt'+i;}); addCodes(d); if(!d.contacts){d.contacts=[]; for(const r of d.reservations) ensureContact(r,d);} return d;}}}catch(e){}
+  try{const raw=localStorage.getItem(KEY); if(raw){const d=JSON.parse(raw); if(d&&d.v===1){d.online??=onlineDefaults(); d.online.cancel_hours??=2; d.online.public_url??=''; if(d.online.name==='Restaurant Beispiel') d.online.name='LÜ – Burger & Grill'; d.mails??=[]; d.mailcfg??=mailDefaults(); d.locks??=[]; d.notes??=[]; d.series_notes??=[]; d.combos??=[]; d.paycfg??={min_people:6,enabled:true}; d.tablini??=[]; d.online.limit_per_hour??=0; d.online.open_from??=''; d.online.times.forEach((t,i)=>{t.days??=[1,2,3,4,5,6,7]; t.id??='zt'+i;}); addCodes(d); if(!d.contacts){d.contacts=[]; for(const r of d.reservations) ensureContact(r,d);} return d;}}}catch(e){}
   return seed();
 }
 function save(){
@@ -1453,13 +1518,63 @@ const MENU_ITEMS=[
   {id:'dash',label:'Dashboard',ico:'◐',view:'dash'},
   {id:'res',label:'Reservierungen',ico:'☰',view:'plan'},
   {id:'contacts',label:'Kontakte',ico:'👤',view:'guests'},
-  {id:'notes',label:'Notizen',ico:'📝',view:'plan',focus:'notes'},
-  {id:'payment',label:'Payment',ico:'💳',stub:'Payment'},
-  {id:'tablini',label:'Tablini',ico:'▮',stub:'Tablini'},
+  {id:'notes',label:'Notizen',ico:'📝',view:'notes'},
+  {id:'payment',label:'Payment',ico:'💳',view:'payment'},
+  {id:'tablini',label:'Tablini',ico:'▮',view:'tablini'},
   {id:'mails',label:'Nachrichten',ico:'✉',view:'mails'},
   {id:'setup',label:'Einstellungen',ico:'⚙',view:'setup'},
-  {id:'help',label:'Hilfe',ico:'?',stub:'Hilfe'},
+  {id:'help',label:'Hilfe',ico:'?',view:'help'},
 ];
+const HELP_CATS=[
+  {id:'dash',title:'Dashboard',ico:'◐',arts:[{id:'dash-overview',t:'Dashboard Übersicht'}]},
+  {id:'res',title:'Reservierungen',ico:'☰',arts:[
+    {id:'res-new',t:'+ Reservierung anlegen'},{id:'res-fields',t:'Reservierungsfelder'},
+    {id:'res-dialog',t:'Reservierungsdialog'},{id:'res-series',t:'Serienreservierung'},
+    {id:'res-walkin',t:'Walk-in'}]},
+  {id:'list',title:'Reservierungsliste',ico:'▤',arts:[{id:'list-filter',t:'Filter'}]},
+  {id:'floor',title:'Tischplan',ico:'▦',arts:[
+    {id:'floor-overview',t:'Tischplan – Übersicht & Bedienung'},
+    {id:'floor-assign',t:'Reservierungen zuweisen'},
+    {id:'floor-design',t:'Tischplan-Darstellung anpassen'}]},
+  {id:'online',title:'Online-Einstellungen',ico:'☁',arts:[
+    {id:'online-times',t:'Reservierungszeiten'},{id:'online-limits',t:'Limits'},
+    {id:'online-social',t:'Instagram / Facebook (Links)'},{id:'online-embed',t:'Embed / Website'}]},
+  {id:'setup',title:'Einstellungen',ico:'⚙',arts:[
+    {id:'setup-rooms',t:'Räume & Tische'},{id:'setup-payment',t:'Payment'},
+    {id:'setup-flags',t:'Kennzeichen / Flags'},{id:'setup-mail',t:'Textvorlagen / E-Mails'}]},
+  {id:'tablini',title:'Tablini',ico:'▮',arts:[{id:'tablini-order',t:'Tablini bestellen & verwalten'}]},
+  {id:'basic',title:'Grundfunktionen',ico:'★',arts:[
+    {id:'basic-note',t:'Notiz anlegen'},{id:'basic-print',t:'Liste drucken & exportieren'},
+    {id:'basic-changelog',t:'Updateverlauf'}]},
+  {id:'support',title:'Kontakt & Support',ico:'☎',arts:[
+    {id:'support-mail',t:'Support kontaktieren'},{id:'support-remote',t:'Remote Support'}]},
+];
+const HELP_BODY={
+  'dash-overview':'Das Dashboard zeigt Auslastung (Plätze/Tische), Gäste gesamt / anstehend / gegangen, Storno- und Wartelisten-Chips sowie den Gäste-Mix (Walk-In, Online, Lokal). Vergleichswerte beziehen sich auf denselben Wochentag im Vorjahr.',
+  'res-new':'Über „+ Reservierung“ oder Klick in den Tagesplan/Grundriss. Pflicht: Name, Datum, Zeit, Personen. Tisch optional — ohne Tisch landet der Eintrag auf der Warteliste.',
+  'res-fields':'Name, Telefon, E-Mail, Datum, Von/Bis, Personen, Kindersitze, Kennzeichen, Tische, Bemerkung, Serie, Kartengarantie-Checkbox. Verlauf im Dialog unter „Verlauf“.',
+  'res-dialog':'Status setzen (erwartet / anwesend / gegangen), Storno mit Grund, Auto-Zuweisen, Kombi speichern, Tische trennen.',
+  'res-series':'Wiederholen: täglich / wöchentlich / alle 2 Wochen bis Enddatum. Serien-Storno kann alle Termine betreffen.',
+  'res-walkin':'Walk-in platziert Gäste sofort (Status anwesend). Optional Name, Dauer, Bemerkung; ohne freien Tisch → Warteliste.',
+  'list-filter':'Liste und Tagesplan: Alle · Erwartet · Anwesend · Ohne Tisch. Globale Suche im Header springt zur Liste.',
+  'floor-overview':'Grundriss wie Tablex 2D. Raum-Chips, Zoom/Pan, Zeitregler. Pucks bei belegten Tischen.',
+  'floor-assign':'Klick auf freien Tisch öffnet neue Reservierung mit diesem Tisch; belegter Tisch öffnet die bestehende.',
+  'floor-design':'Design-Button im Grundriss: Raumnamen, Mehrtisch-Badge, Nummer über dem Tisch, Sitzpunkte, Tablini-Status (visuell), Statusfarbe, Stühle, Low-End-Modus.',
+  'online-times':'Unter Online-Buchung: Zeitslots je Wochentag, Standarddauer, Öffnung ab Datum.',
+  'online-limits':'Limit pro Stunde und Online-Sperren (ganztägig oder Zeitfenster) steuern die Verfügbarkeit.',
+  'online-social':'Fertige Links mit quelle=instagram|facebook|google unter Online-Buchung — Website-Einbau bleibt manuell.',
+  'online-embed':'iframe-Snippets pro Haus im README. Kein Cutover der öffentlichen Tablex-Website ohne ausdrückliche Freigabe.',
+  'setup-rooms':'Räume & Tische: Kapazitäten, Außen-Flag, feste Kombinationen, Kennzeichen.',
+  'setup-payment':'Payment listet Kartengarantie-Anfragen lokal. Echter Zahlungsanbieter ist nicht angebunden (PCI).',
+  'setup-flags':'Kennzeichen (Farbe + Label) an Reservierungen vergeben.',
+  'setup-mail':'E-Mail-Bestätigung/Storno in die Warteschlange; SMTP-Versand folgt später. SMS-Gateway fehlt.',
+  'tablini-order':'Tablini-Aufsteller kommen von tablini.at. In Tischbuch: Material wählen und Bestelllink öffnen. Geräte-Sync fehlt ohne Hardware-Anbindung.',
+  'basic-note':'Notizen zum Tag im Menü Notizen oder in der Tagesplan-Sidebar. Seriennotizen: wiederkehrender Text ab Startdatum.',
+  'basic-print':'Liste → Drucken / Tischkarten. Browser-Druckdialog.',
+  'basic-changelog':'Tischbuch folgt Tablex-Parity schrittweise; siehe Projekt-Docs im Agent Store.',
+  'support-mail':'Bei Fragen zu Tischbuch: info@luerzer.at. Tablex-Produkt-Support bleibt support@tablex.at / +43 720 883 600.',
+  'support-remote':'Remote-Desktop-Support wie bei Tablex benötigt ein externes Tool (z. B. TeamViewer) und ist hier nicht eingebaut.',
+};
 function venueDrawerTitle(){
   const name=(S&&S.online&&S.online.name)||(VENUE&&VENUE.name)||VENUE_META.name||'Tischbuch';
   const slug=(VENUE&&VENUE.slug)||VENUE_SLUG;
@@ -1483,11 +1598,10 @@ function renderDrawerNav(){
   const nav=$('#dw-nav'); if(!nav) return;
   const {title,sub}=venueDrawerTitle();
   $('#dw-title').textContent=title; $('#dw-sub').textContent=sub;
-  const active=ui.stub||ui.view;
-  const map={dash:'dash',plan:'res',guests:'contacts',mails:'mails',setup:'setup'};
-  const cur=ui.stub||map[ui.view]||'';
+  const map={dash:'dash',plan:'res',list:'res',floor:'res',cal:'res',guests:'contacts',notes:'notes',payment:'payment',tablini:'tablini',mails:'mails',setup:'setup',online:'setup',help:'help'};
+  const cur=map[ui.view]||'';
   nav.innerHTML=MENU_ITEMS.map(it=>{
-    const on=(!ui.stub&&it.view&&(it.id===cur||(it.view===ui.view&&!it.stub)))||(ui.stub&&it.stub===ui.stub);
+    const on=it.id===cur||it.view===ui.view;
     return `<button type="button" data-act="menugo" data-id="${it.id}" class="${on?'on':''}"><span class="ico" aria-hidden="true">${it.ico}</span>${it.label}</button>`;
   }).join('')+`<div class="dw-sep"></div>
     <button type="button" data-act="switchvenue"><span class="ico" aria-hidden="true">⌂</span>Gastro wechseln</button>
@@ -1496,17 +1610,110 @@ function renderDrawerNav(){
 function goMenu(id){
   const it=MENU_ITEMS.find(x=>x.id===id); if(!it) return;
   setMenuOpen(false);
-  if(it.stub){ ui.stub=it.stub; ui.view='stub'; render(); return; }
-  ui.stub=null; ui.view=it.view;
-  if(it.focus==='notes'){ ui.view='plan'; }
+  ui.view=it.view;
   if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
   if(ui.view==='plan') ui.firstScroll=true;
+  if(ui.view==='help') ui.helpArt=null;
   render();
-  if(it.focus==='notes'){ const n=$('#n-text'); if(n){ n.scrollIntoView({behavior:'smooth',block:'center'}); n.focus(); } }
 }
-function renderStub(){
-  const name=ui.stub||'Funktion';
-  $('#v-stub').innerHTML=`<h3>${esc(name)}</h3><p>Bald verfügbar — noch nicht angebunden.</p>`;
+function payCfg(){
+  S.paycfg??={min_people:6,enabled:true};
+  return S.paycfg;
+}
+function paymentRows(){
+  const q=(ui.payQ||'').trim().toLowerCase();
+  const rows=(S.reservations||[]).filter(r=>r.card_guarantee&&r.type!=='canceled').map(r=>({
+    id:r.id, resId:r.id.slice(-6).toUpperCase(), name:r.guest_name||'—',
+    num:r.phone||r.email||'—', date:r.date, people:r.num_people, status:r.status_guest||'not_started'
+  }));
+  if(!q) return rows.sort((a,b)=>b.date.localeCompare(a.date)||a.name.localeCompare(b.name,'de'));
+  return rows.filter(r=>r.name.toLowerCase().includes(q)||r.resId.toLowerCase().includes(q)||r.num.toLowerCase().includes(q)||r.id.toLowerCase().includes(q))
+    .sort((a,b)=>b.date.localeCompare(a.date));
+}
+function renderPayment(){
+  const cfg=payCfg(), rows=paymentRows();
+  const stLabel=s=>({not_started:'Erwartet',arrived:'Anwesend',done:'Gegangen',late:'Zu spät'}[s]||s);
+  $('#v-payment').innerHTML=`<h2>Zahlungen</h2>
+    <p class="txbanner txwarn">Kein Zahlungsanbieter angebunden. Kartengarantien werden nur lokal am Eintrag vermerkt — keine Belastung, Rückerstattung oder PCI-Verarbeitung.</p>
+    <div class="ptool">
+      <label class="f" style="margin:0;min-width:140px">Datum<input type="date" id="pay-date" value="${esc(ui.date)}"></label>
+      <input type="search" id="pay-q" placeholder="Name, Res-ID, Payment-ID" value="${esc(ui.payQ||'')}" aria-label="Zahlungen suchen">
+      <label style="font-size:13px;display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" id="pay-en"${cfg.enabled?' checked':''}> Garantie-Hinweis aktiv</label>
+      <label class="f" style="margin:0;width:110px">ab Pers.<input type="number" id="pay-min" min="1" max="99" value="${cfg.min_people}"></label>
+    </div>
+    <div class="tablewrap"><table><thead><tr><th>Res Id</th><th>Empfänger</th><th>Nummer</th><th>Datum</th><th>Pers.</th><th>Status</th></tr></thead>
+    <tbody>${rows.length?rows.map(r=>`<tr class="rowlink" data-act="open" data-id="${r.id}"><td><code>${esc(r.resId)}</code></td><td>${esc(r.name)}</td><td>${esc(r.num)}</td><td>${esc(shortDate(r.date))}</td><td>${r.people}</td><td>${esc(stLabel(r.status))}</td></tr>`).join('')
+      :`<tr><td colspan="6" class="empty">Keine Kartengarantie-Anfragen. Im Reservierungsdialog „Kreditkartendaten anfordern“ setzen.</td></tr>`}</tbody></table></div>`;
+  const qd=$('#pay-date'), qq=$('#pay-q'), en=$('#pay-en'), mn=$('#pay-min');
+  if(qd) qd.onchange=()=>{ui.date=qd.value||today(); render();};
+  if(qq) qq.oninput=()=>{ui.payQ=qq.value; renderPayment();};
+  if(en) en.onchange=()=>{payCfg().enabled=en.checked; save();};
+  if(mn) mn.onchange=()=>{payCfg().min_people=clamp(+mn.value||6,1,99); save();};
+}
+function renderTablini(){
+  const mats=[['holz','Holz','holz'],['kunststoff','Kunststoff','kunst'],['beton','Beton','beton'],['duo','Duo','duo']];
+  const mat=ui.tabliniMat||'holz';
+  const devices=(S.tablini||[]);
+  $('#v-tablini').innerHTML=`<h2>Aufsteller</h2>
+    ${devices.length?`<div class="tablewrap" style="margin-bottom:16px"><table><thead><tr><th>Gerät</th><th>Tisch</th><th>Material</th><th>Status</th></tr></thead>
+      <tbody>${devices.map(d=>`<tr><td>${esc(d.name)}</td><td>${esc(d.table||'—')}</td><td>${esc(d.mat)}</td><td>${esc(d.status||'offline')}</td></tr>`).join('')}</tbody></table></div>`:''}
+    <div class="tab-hero">
+      <h3 style="margin:0;font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:20px">${devices.length?'Weitere Aufsteller':'Keine Aufsteller vorhanden'}</h3>
+      <p>Tablini Aufsteller zeigen Reservierungen direkt am Tisch an – modern und elegant in verschiedenen Materialien. Geräte-Sync mit tablini.at ist nicht angebunden; Bestellung extern.</p>
+      <div class="dsec" style="text-align:left;padding:0 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Material auswählen</div>
+      <div class="mat-grid">${mats.map(([id,label,cls])=>`<button type="button" class="mat${mat===id?' on':''}" data-act="tablini-mat" data-v="${id}" aria-pressed="${mat===id?'true':'false'}">
+        ${id==='duo'?'<span class="bs">BESTSELLER</span>':''}
+        <div class="prev ${cls}">09:00 – 10:00 Beispiel</div>
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px;pointer-events:none"><input type="radio" ${mat===id?'checked':''} tabindex="-1"> ${label}</label>
+      </button>`).join('')}</div>
+      <a class="btn primary order" href="https://tablini.at" target="_blank" rel="noopener noreferrer">🛒 Jetzt Aufsteller bestellen</a>
+      <div><a class="ext" href="https://tablini.at" target="_blank" rel="noopener noreferrer">Mehr erfahren auf tablini.at ↗</a></div>
+      <p class="txbanner" style="margin-top:16px;text-align:left">Tablini-Status am Tisch (Design-Toggle) ist rein visuell, solange keine Geräte verbunden sind.</p>
+    </div>`;
+}
+function renderHelp(){
+  const q=(ui.helpQ||'').trim().toLowerCase();
+  const match=(t)=>!q||t.toLowerCase().includes(q);
+  const cats=HELP_CATS.map(c=>({...c,arts:c.arts.filter(a=>match(a.t)||match(c.title))})).filter(c=>c.arts.length);
+  const art=ui.helpArt?HELP_CATS.flatMap(c=>c.arts.map(a=>({...a,cat:c.title}))).find(a=>a.id===ui.helpArt):null;
+  $('#v-help').innerHTML=`<h2>Hilfe &amp; Support</h2>
+    <div class="hsearch"><input type="search" id="help-q" placeholder="Suche nach Funktionen, Einstellungen…" value="${esc(ui.helpQ||'')}" aria-label="Hilfe durchsuchen"></div>
+    <p class="txbanner">Die Hilfe wird laufend erweitert. Texte beschreiben Tischbuch (nicht 1:1 Tablex-Handbuch).</p>
+    ${art?`<div class="hart"><button type="button" class="link" data-act="helpclear" style="margin-bottom:8px">← Zurück</button><h3>${esc(art.t)}</h3><p>${esc(HELP_BODY[art.id]||'')}</p></div>`:''}
+    <div class="hcats">${cats.map(c=>`<div class="hcat"><h3><span aria-hidden="true">${c.ico}</span>${esc(c.title)}</h3>
+      ${c.arts.map(a=>`<button type="button" class="linkish" data-act="helpart" data-id="${a.id}">${esc(a.t)}</button>`).join('')}
+    </div>`).join('')||'<p class="empty">Keine Treffer.</p>'}</div>`;
+  const hq=$('#help-q');
+  if(hq) hq.oninput=()=>{ui.helpQ=hq.value; renderHelp();};
+}
+function renderNotesView(){
+  const tab=ui.notesTab||'day';
+  const day=(S.notes||[]).filter(n=>n.date===ui.date).sort((a,b)=>a.text.localeCompare(b.text,'de'));
+  const future=(S.notes||[]).filter(n=>n.date>today()).sort((a,b)=>a.date.localeCompare(b.date)||a.text.localeCompare(b.text,'de'));
+  const series=(S.series_notes||[]);
+  $('#v-notes').innerHTML=`<h2>Notizen</h2>
+    <div class="ntabs" role="tablist">
+      <button type="button" data-act="notestab" data-v="day" class="${tab==='day'?'on':''}">Notizen</button>
+      <button type="button" data-act="notestab" data-v="series" class="${tab==='series'?'on':''}">Seriennotiz</button>
+    </div>
+    ${tab==='day'?`
+      <div class="ptool" style="margin-bottom:12px"><label class="f" style="margin:0">Tag<input type="date" id="note-date" value="${esc(ui.date)}"></label>
+        <input id="n-text-view" maxlength="200" placeholder="z. B. Stammtisch, Küche bis 21 Uhr" aria-label="Neue Notiz" style="flex:1;min-width:160px">
+        <button type="button" data-act="addnote-view">+</button></div>
+      <div class="nlist">${day.map(n=>`<div class="nitem"><div><small>${esc(shortDate(n.date))}</small>${esc(n.text)}</div><button class="link danger" data-act="delnote" data-id="${n.id}" title="Löschen">✕</button></div>`).join('')||'<div class="empty">Keine Notizen an diesem Tag.</div>'}</div>
+      <h3 style="margin:18px 0 8px;font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:15px">In der Zukunft</h3>
+      <div class="nlist">${future.length?future.map(n=>`<div class="nitem"><div><small>${esc(shortDate(n.date))}</small>${esc(n.text)}</div><button class="link danger" data-act="delnote" data-id="${n.id}">✕</button></div>`).join(''):'<div class="empty">Keine Notizen in der Zukunft</div>'}</div>`
+    :`
+      <p class="txbanner">Seriennotiz: gleicher Text an mehreren Tagen (lokal). Kein Push an Geräte.</p>
+      <div class="ptool"><input id="sn-text" maxlength="200" placeholder="Wiederkehrende Notiz" style="flex:1;min-width:160px">
+        <label class="f" style="margin:0">ab<input type="date" id="sn-from" value="${esc(today())}"></label>
+        <label class="f" style="margin:0">Wochentage
+          <select id="sn-dow"><option value="0">Täglich</option><option value="1">Mo</option><option value="2">Di</option><option value="3">Mi</option><option value="4">Do</option><option value="5">Fr</option><option value="6">Sa</option><option value="7">So</option></select>
+        </label>
+        <button type="button" data-act="addseriesnote">Anlegen</button></div>
+      <div class="nlist" style="margin-top:12px">${series.length?series.map(n=>`<div class="nitem"><div><small>${esc(n.from)} · ${n.dow===0?'täglich':['','Mo','Di','Mi','Do','Fr','Sa','So'][n.dow]}</small>${esc(n.text)}</div><button class="link danger" data-act="delseriesnote" data-id="${n.id}">✕</button></div>`).join(''):'<div class="empty">Keine Seriennotizen.</div>'}</div>`}`;
+  const nd=$('#note-date');
+  if(nd) nd.onchange=()=>{ui.date=nd.value||today(); render();};
 }
 function dashStats(date){
   const all=dayRes(date), rs=all.filter(r=>r.type==='reservation');
@@ -1563,7 +1770,7 @@ function renderDashboard(){
       ${chip(st.unconfOnline,'Unbest. Online',st.unconfOnline>0)}
       ${chip(st.stornoOnline,'Storno Online',st.stornoOnline>0)}
       ${chip(st.wait,'Warteliste',st.wait>0)}
-      ${chip(0,'Nachrichten-Fehler',false)}
+      ${chip(0,'Nachrichten-Fehler',false) /* SMS/SMTP-Fehler: 0 ohne Gateway */}
     </div>
     <div class="dash-mix">
       <div class="mix-chart" style="--w1:${w1}%;--w2:${w2}%"></div>
@@ -1643,12 +1850,15 @@ function render(){
   $('#dateLabel').textContent=d.toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long'})+(ui.date===today()?' · heute':'');
   const qs=$('#q-search'); if(qs&&document.activeElement!==qs) qs.value=ui.search||'';
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
-  for(const v of ['dash','stub','plan','floor','cal','list','guests','stats','setup','online','mails']){ const el=$('#v-'+v); if(el) el.hidden=ui.view!==v; }
-  const kpisEl=$('#kpis'); if(kpisEl) kpisEl.hidden=ui.view==='dash'||ui.view==='stub';
+  for(const v of ['dash','payment','tablini','help','notes','plan','floor','cal','list','guests','stats','setup','online','mails']){ const el=$('#v-'+v); if(el) el.hidden=ui.view!==v; }
+  const kpisEl=$('#kpis'); if(kpisEl) kpisEl.hidden=['dash','payment','tablini','help','notes'].includes(ui.view);
   renderKpis();
   renderDrawerNav();
   if(ui.view==='dash') renderDashboard();
-  if(ui.view==='stub') renderStub();
+  if(ui.view==='payment') renderPayment();
+  if(ui.view==='tablini') renderTablini();
+  if(ui.view==='help') renderHelp();
+  if(ui.view==='notes') renderNotesView();
   if(ui.view==='plan'){renderPlan();renderWait();}
   if(ui.view==='floor') renderFloor();
   if(ui.view==='cal') renderCal();
@@ -2432,6 +2642,9 @@ function openRes(id,preset={}){
   timeOptions($('#f-end'),Math.min(from,t2m(start))+15,LAST_END,end);
   $('#f-start').dataset.prev=start;
   $('#f-people').value=r?r.num_people:2; $('#f-children').value=r?r.num_children:0; $('#f-note').value=r?r.note:'';
+  const people0=r?r.num_people:2, cfg0=payCfg();
+  const cardEl=$('#f-card');
+  if(cardEl) cardEl.checked=r?!!r.card_guarantee:!!(cfg0.enabled&&people0>=cfg0.min_people);
   $('#f-flags').innerHTML=S.flags.map(f=>`<label class="tchip"><input type="checkbox" value="${f.id}" ${r&&r.flags.includes(f.id)?'checked':''}> ${esc(f.label)}</label>`).join('');
   pickSel=r?[...r.table_ids]:(preset.table?[preset.table]:[]);
   $('#f-err').textContent=''; $('#d-cancel').hidden=true;
@@ -2500,6 +2713,7 @@ function saveRes(){
   if(r.type==='canceled'){r.status_guest='not_started'; r.cancel_reason='';}
   Object.assign(r,{guest_name:name,phone:$('#f-phone').value.trim(),email:$('#f-email').value.trim(),date,start_time:m2t(s),end_time:m2t(e),num_people:p,
     num_children:clamp(parseInt($('#f-children').value,10)||0,0,p),note:$('#f-note').value.trim(),
+    card_guarantee:!!$('#f-card')?.checked,
     flags:[...document.querySelectorAll('#f-flags input:checked')].map(i=>i.value),table_ids:[...pickSel],type:pickSel.length?'reservation':'waiting_list'});
   if(r.type==='waiting_list') r.status_guest='not_started';
   const linked=r.contact_id&&S.contacts.find(c=>c.id===r.contact_id);
@@ -2605,10 +2819,38 @@ document.addEventListener('click',async ev=>{
   const a=el.dataset.act, id=el.dataset.id;
   if(a==='day'){ui.date=addDays(ui.date,+el.dataset.n); render();}
   else if(a==='today'){ui.date=today(); ui.firstScroll=true; render();}
-  else if(a==='view'){ui.stub=null; ui.view=el.dataset.v; if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7); if(ui.view==='plan') ui.firstScroll=true; setMenuOpen(false); render();}
+  else if(a==='view'){ui.view=el.dataset.v; if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7); if(ui.view==='plan') ui.firstScroll=true; setMenuOpen(false); render();}
   else if(a==='menu'){ setMenuOpen(!ui.menuOpen); }
   else if(a==='menuclose'){ setMenuOpen(false); }
   else if(a==='menugo'){ goMenu(el.dataset.id); }
+  else if(a==='tablini-mat'){ ui.tabliniMat=el.dataset.v; renderTablini(); }
+  else if(a==='helpart'){ ui.helpArt=el.dataset.id; renderHelp(); }
+  else if(a==='helpclear'){ ui.helpArt=null; renderHelp(); }
+  else if(a==='notestab'){ ui.notesTab=el.dataset.v; renderNotesView(); }
+  else if(a==='mailtab'){ ui.mailTab=el.dataset.v; renderMails(); }
+  else if(a==='addnote-view'){
+    const t=$('#n-text-view')?.value.trim();
+    if(t){(S.notes??=[]).push({id:uid(),date:ui.date,text:t}); save(); render();}
+  }
+  else if(a==='addseriesnote'){
+    const t=$('#sn-text')?.value.trim(), from=$('#sn-from')?.value||today(), dow=+$('#sn-dow')?.value||0;
+    if(!t){toast('Text fehlt.'); return;}
+    (S.series_notes??=[]).push({id:uid(),text:t,from,dow});
+    /* materialize next 28 days */
+    for(let i=0;i<28;i++){
+      const d=addDays(from,i); if(d<from) continue;
+      const wd=new Date(d+'T12:00:00').getDay()||7;
+      if(dow!==0&&wd!==dow) continue;
+      if(!(S.notes||[]).some(n=>n.date===d&&n.text===t&&n.series_id)){
+        (S.notes??=[]).push({id:uid(),date:d,text:t,series_id:S.series_notes.at(-1).id});
+      }
+    }
+    save(); render(); toast('Seriennotiz angelegt.');
+  }
+  else if(a==='delseriesnote'){
+    if(!await ask('Seriennotiz löschen? Zugehörige Tagesnotizen bleiben bestehen.','Löschen')) return;
+    S.series_notes=(S.series_notes||[]).filter(n=>n.id!==id); save(); render();
+  }
   else if(a==='switchvenue'){
     setMenuOpen(false);
     const sel=$('#venue-sel');
