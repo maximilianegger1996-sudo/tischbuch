@@ -9,6 +9,7 @@ import {
 } from "react";
 import { provider, type BookingDraft, type BookingPerson, type Category, type Location, type PersonKind, type PriceQuote, type Product, type SiteSettings, type Special } from "../api";
 import { uid } from "../lib/id";
+import { isPackageProductId, type RentalPackage } from "../lib/packages";
 
 export type StepId =
   | "people"
@@ -59,7 +60,10 @@ type Ctx = {
     modelImage?: string,
   ) => void;
   clearModel: (personId: string, productId: string) => void;
+  applyPackage: (personId: string, pack: RentalPackage, products: Product[]) => void;
+  clearPackage: (personId: string) => void;
   updatePerson: (personId: string, patch: Partial<BookingPerson>) => void;
+  resetBooking: () => void;
   setRemark: (v: string) => void;
   setDiscount: (v: string) => void;
   setTerms: (v: boolean) => void;
@@ -286,6 +290,55 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const applyPackage = (personId: string, pack: RentalPackage, catalog: Product[]) => {
+    const ids = [pack.skiProductId, pack.bootProductId, pack.helmProductId];
+    setDraft((d) => ({
+      ...d,
+      persons: d.persons.map((p) => {
+        if (p.id !== personId) return p;
+        const keep = p.lines.filter((l) => !isPackageProductId(l.productId));
+        const packLines = ids.map((id) => {
+          const prod = catalog.find((x) => x.id === id);
+          return {
+            productId: id,
+            count: 1,
+            title: prod?.title || id,
+          };
+        });
+        return { ...p, lines: [...keep, ...packLines] };
+      }),
+    }));
+  };
+
+  const clearPackage = (personId: string) => {
+    setDraft((d) => ({
+      ...d,
+      persons: d.persons.map((p) =>
+        p.id === personId
+          ? { ...p, lines: p.lines.filter((l) => !isPackageProductId(l.productId)) }
+          : p,
+      ),
+    }));
+  };
+
+  const resetBooking = () => {
+    const coverage = site?.coverageDefault ?? true;
+    setDraft({
+      from: null,
+      to: null,
+      locationId: null,
+      pickupDayBefore: false,
+      persons: [emptyPerson("adult", coverage), emptyPerson("adult", coverage)],
+      specialIds: coverage ? specials.filter((s) => s.type === 1).map((s) => s.id) : [],
+      discountCode: "",
+      accommodationId: null,
+      remark: "",
+      newsletter: false,
+      termsAccepted: false,
+    });
+    setStep("people");
+  };
+
   const updatePerson = (personId: string, patch: Partial<BookingPerson>) => {
     setDraft((d) => ({
       ...d,
@@ -352,7 +405,10 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     toggleProduct,
     setModel,
     clearModel,
+    applyPackage,
+    clearPackage,
     updatePerson,
+    resetBooking,
     setRemark: (v) => setDraft((d) => ({ ...d, remark: v })),
     setDiscount: (v) => setDraft((d) => ({ ...d, discountCode: v })),
     setTerms: (v) => setDraft((d) => ({ ...d, termsAccepted: v })),

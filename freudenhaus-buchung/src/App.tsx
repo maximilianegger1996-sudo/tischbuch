@@ -1,6 +1,13 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import { BookingProvider, useBooking, type StepId } from "./state/booking";
 import { formatMoney } from "./lib/money";
+import { BRANCHES } from "./api/branches";
+import {
+  PACKAGES,
+  findPackageForLines,
+  packageDailyLabel,
+  type RentalPackage,
+} from "./lib/packages";
 import type { Product } from "./api";
 
 const DOW = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -25,10 +32,8 @@ function daysBetween(from: string, to: string) {
   return Math.round((parseIso(to).getTime() - parseIso(from).getTime()) / 86400000) + 1;
 }
 
-/** Online-Frühbucher laut skirent-obertauern.at */
 function earlyBirdPercent(day: Date, today: Date) {
-  const ms = day.getTime() - today.getTime();
-  const ahead = Math.floor(ms / 86400000);
+  const ahead = Math.floor((day.getTime() - today.getTime()) / 86400000);
   if (ahead < 1) return 0;
   if (ahead >= 60) return 20;
   return 10;
@@ -40,62 +45,39 @@ function personSummary(draft: ReturnType<typeof useBooking>["draft"]) {
   const parts = [];
   if (adults) parts.push(`${adults}× Erwachsen`);
   if (kids) parts.push(`${kids}× Kind/Jugend`);
-  return {
-    count: `${draft.persons.length} Personen`,
-    detail: parts.join(" · ") || "—",
-  };
+  return { detail: parts.join(" · ") || "—" };
+}
+
+function TrustStrip() {
+  return (
+    <div className="trust-strip">
+      <span>−20 % / −10 % online</span>
+      <span>Vortag ab 15:00</span>
+      <span>4,8★ Google</span>
+      <span>Kinder &lt;11 gratis*</span>
+    </div>
+  );
 }
 
 function TopBar() {
-  const { draft, quote, locations, setStep, step, providerLabel } = useBooking();
+  const { draft, quote, locations, setStep, step } = useBooking();
   const people = personSummary(draft);
-  const loc = locations.find((l) => l.id === draft.locationId);
-  const dayCount =
-    draft.from && draft.to ? `${daysBetween(draft.from, draft.to)} Tage` : "0 Tage";
+  const loc = locations.find((l) => l.id === draft.locationId) || BRANCHES.find((b) => b.id === draft.locationId);
+  const dayCount = draft.from && draft.to ? `${daysBetween(draft.from, draft.to)} Tage` : "0 Tage";
   const products = draft.persons.reduce((n, p) => n + p.lines.length, 0);
   const range =
     draft.from && draft.to
       ? `${draft.from.slice(8)}.${draft.from.slice(5, 7)}. – ${draft.to.slice(8)}.${draft.to.slice(5, 7)}.`
       : dayCount;
 
-  const slots: Array<{
-    id: StepId | "cart";
-    label: string;
-    value: string;
-    unlock: boolean;
-    go?: StepId;
-  }> = [
-    {
-      id: "people",
-      label: "Personen",
-      value: people.detail,
-      unlock: true,
-      go: "people",
-    },
-    {
-      id: "dates",
-      label: range === dayCount ? "Tage" : "Zeitraum",
-      value: range,
-      unlock: draft.persons.length > 0,
-      go: "dates",
-    },
-    {
-      id: "location",
-      label: "Abholort",
-      value: loc?.title || "wählen",
-      unlock: !!(draft.from && draft.to),
-      go: "location",
-    },
-    {
-      id: "products",
-      label: "Produkte",
-      value: `${products} Produkte`,
-      unlock: !!(draft.from && draft.to && draft.locationId),
-      go: "products",
-    },
+  const slots: Array<{ id: string; label: string; value: string; unlock: boolean; go?: StepId }> = [
+    { id: "people", label: "Personen", value: people.detail, unlock: true, go: "people" },
+    { id: "dates", label: range === dayCount ? "Tage" : "Zeitraum", value: range, unlock: draft.persons.length > 0, go: "dates" },
+    { id: "location", label: "Abholort", value: loc?.title || "wählen", unlock: !!(draft.from && draft.to), go: "location" },
+    { id: "products", label: "Paket", value: products ? `${products} Teile` : "wählen", unlock: !!(draft.from && draft.to && draft.locationId), go: "products" },
     {
       id: "cart",
-      label: "Warenkorb",
+      label: "Summe",
       value: formatMoney(quote?.cartTotal) || "—",
       unlock: draft.persons.some((p) => p.lines.length > 0),
       go: draft.persons.some((p) => p.lines.length > 0) ? "review" : undefined,
@@ -128,13 +110,13 @@ function TopBar() {
           </button>
         ))}
       </div>
-      <div className="topbar-meta">{providerLabel}</div>
+      <div className="topbar-meta">Obertauern</div>
     </header>
   );
 }
 
 function StepPeople() {
-  const { draft, site, setAdults, setKids, next, setStep } = useBooking();
+  const { draft, site, setAdults, setKids, next, resetBooking } = useBooking();
   const [open, setOpen] = useState(false);
   const adults = draft.persons.filter((p) => p.kind === "adult").length;
   const kidPersons = draft.persons.filter((p) => p.kind !== "adult");
@@ -153,40 +135,34 @@ function StepPeople() {
       <div className="brand-float">
         <img src="/brand/logo-white.svg" alt="FREUDENHAUS" />
       </div>
-      <div className="people-center">
+      <div className="people-center anim-rise">
+        <p className="hero-kicker">Mehr Piste. Weniger Gepäck.</p>
         <h1>Wie viele Personen möchten leihen?</h1>
         <button type="button" className="people-picker" onClick={() => setOpen((v) => !v)}>
           <span>{summary}</span>
           <span className="chev">{open ? "▴" : "▾"}</span>
         </button>
-        <button
-          type="button"
-          className="people-reset"
-          onClick={() => {
-            setAdults(2);
-            setKids([]);
-            setStep("people");
-          }}
-        >
+        <button type="button" className="people-reset" onClick={resetBooking}>
           Neu starten?
         </button>
         <button type="button" className="btn accent" onClick={next}>
           Weiter zum Zeitraum
         </button>
+        <div className="hero-trust">Online −20 % / −10 % · Abholung am Vortag · 4,8★</div>
       </div>
       {open ? (
-        <div className="people-sheet">
+        <div className="people-sheet anim-rise">
           <div className="row-line">
             <div>
               <strong>Erwachsene</strong>
               <div className="muted">ab {site?.adultAge ?? 17} Jahren</div>
             </div>
             <div className="counter">
-              <button type="button" aria-label="weniger" onClick={() => setAdults(Math.max(1, adults - 1))}>
+              <button type="button" onClick={() => setAdults(Math.max(1, adults - 1))}>
                 −
               </button>
               <span>{adults}</span>
-              <button type="button" aria-label="mehr" onClick={() => setAdults(Math.min(max, adults + 1))}>
+              <button type="button" onClick={() => setAdults(Math.min(max, adults + 1))}>
                 +
               </button>
             </div>
@@ -194,13 +170,10 @@ function StepPeople() {
           <div className="row-line">
             <div>
               <strong>Kinder / Jugend</strong>
-              <div className="muted">Alter am ersten Leihtag</div>
+              <div className="muted">Alter am ersten Leihtag · unter 11 oft gratis*</div>
             </div>
             <div className="counter">
-              <button
-                type="button"
-                onClick={() => setKids(kidPersons.slice(0, -1).map((p) => p.age || 10))}
-              >
+              <button type="button" onClick={() => setKids(kidPersons.slice(0, -1).map((p) => p.age || 10))}>
                 −
               </button>
               <span>{kidPersons.length}</span>
@@ -266,7 +239,6 @@ function StepDates() {
   }
 
   const [cursor, setCursor] = useState(() => months[0] || new Date(minDate.getFullYear(), minDate.getMonth(), 1));
-
   const daysInMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
   const days: Date[] = [];
   for (let d = 1; d <= daysInMonth; d++) days.push(new Date(cursor.getFullYear(), cursor.getMonth(), d));
@@ -288,6 +260,9 @@ function StepDates() {
     return v >= draft.from && v <= draft.to;
   };
 
+  const bird =
+    draft.from && draft.to ? earlyBirdPercent(parseIso(draft.from), today) : 0;
+
   return (
     <>
       <div
@@ -298,11 +273,12 @@ function StepDates() {
           } as CSSProperties
         }
       />
-      <section className="step-stage">
+      <section className="step-stage anim-rise">
         <div className="stage-head">
-          <h2>Wähle deinen Leihzeitraum:</h2>
-          <p>Online-Frühbucher: −20&nbsp;% ab 60 Tage, −10&nbsp;% bis 1 Tag vorher.</p>
+          <h2>Wähle deinen Leihzeitraum</h2>
+          <p>Tippe Start- und Endtag. Online-Frühbucher siehst du direkt auf den Tagen.</p>
         </div>
+        <TrustStrip />
         <div className="month-rail">
           {months.map((m) => (
             <button
@@ -319,7 +295,7 @@ function StepDates() {
             </button>
           ))}
         </div>
-        <div className="day-grid" aria-label="Kalender">
+        <div className="day-grid">
           {days.map((d) => {
             const disabled = d < minDate || d > seasonEnd;
             const pct = disabled ? 0 : earlyBirdPercent(d, today);
@@ -351,12 +327,12 @@ function StepDates() {
         </div>
         <div className="range-note">
           {draft.from && draft.to
-            ? `${draft.from} → ${draft.to} · ${daysBetween(draft.from, draft.to)} Tage`
+            ? `${daysBetween(draft.from, draft.to)} Tage${bird ? ` · −${bird}% Online` : ""}`
             : draft.from
               ? "2. Tag tippen"
               : "1. Tag tippen"}
         </div>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+        <div className="center-cta">
           <button type="button" className="btn" disabled={!draft.from || !draft.to} onClick={next}>
             Weiter zum Abholort
           </button>
@@ -368,23 +344,43 @@ function StepDates() {
 
 function StepLocation() {
   const { locations, draft, setLocation, setPickupDayBefore, site, next } = useBooking();
+  const [q, setQ] = useState("");
+  const merged = BRANCHES.map((b) => {
+    const live = locations.find((l) => l.id === b.id);
+    return { ...b, title: live?.title || b.title, image: live?.image || b.image };
+  });
+  const filtered = merged.filter((b) => {
+    const hay = `${b.title} ${b.short} ${b.address}`.toLowerCase();
+    return hay.includes(q.trim().toLowerCase());
+  });
+
   return (
-    <section className="step-stage">
+    <section className="step-stage anim-rise">
       <div className="stage-head">
-        <h2>Wähle deinen Abholort:</h2>
-        <p>Fünf Standorte direkt an der Piste — dort abholen, wo du in den Lift steigst.</p>
+        <h2>Wähle deinen Abholort</h2>
+        <p>Fünf Stationen an der Piste — Abholung dort, wo du in den Lift steigst.</p>
+      </div>
+      <TrustStrip />
+      <div className="field loc-search">
+        <label>Suche Hotel / Ort</label>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="z. B. Edelweiss, Ringstraße…"
+        />
       </div>
       <div className="loc-grid">
-        {locations.map((L) => (
-          <div
-            key={L.id}
-            className={`loc-card${draft.locationId === L.id ? " selected" : ""}`}
-          >
+        {filtered.map((L) => (
+          <div key={L.id} className={`loc-card${draft.locationId === L.id ? " selected" : ""}`}>
             {L.image ? <img src={L.image} alt="" /> : <div style={{ height: 160, background: "#eee" }} />}
             <div className="body">
               {L.highlight ? <span className="tag">{L.highlight}</span> : null}
               <h3>{L.title}</h3>
-              <div className="muted" dangerouslySetInnerHTML={{ __html: (L.addressHtml || "").slice(0, 180) }} />
+              <div className="muted">{L.address}</div>
+              <div className="loc-meta">
+                <span>{L.hours}</span>
+                {L.opensFrom ? <span>{L.opensFrom}</span> : null}
+              </div>
               <button
                 type="button"
                 className={`btn${draft.locationId === L.id ? " accent" : ""}`}
@@ -400,6 +396,7 @@ function StepLocation() {
           </div>
         ))}
       </div>
+      {!filtered.length && <div className="notice">Keine Filiale gefunden — Suche leeren.</div>}
       <label className="check" style={{ marginTop: "1.25rem" }}>
         <input
           type="checkbox"
@@ -412,26 +409,82 @@ function StepLocation() {
   );
 }
 
+function PackageCard({
+  pack,
+  active,
+  products,
+  kindCode,
+  onSelect,
+  onClear,
+}: {
+  pack: RentalPackage;
+  active: boolean;
+  products: Product[];
+  kindCode: string;
+  onSelect: () => void;
+  onClear: () => void;
+}) {
+  const ski = products.find((p) => p.id === pack.skiProductId);
+  return (
+    <div className={`pack-card${active ? " active" : ""}`}>
+      {ski?.image ? <img src={ski.image} alt="" /> : <div className="pack-ph" />}
+      <div className="pack-body">
+        {pack.highlight ? <span className="tag">{pack.highlight}</span> : null}
+        <h3>{pack.title}</h3>
+        <p className="muted">{pack.subtitle}</p>
+        <div className="price">{packageDailyLabel(pack, products, kindCode)}</div>
+        <ul className="bullets">
+          <li>Ski/Board + Schuh + Helm</li>
+          <li>Modell optional im nächsten Schritt</li>
+          <li>Online-Rabatt schon eingerechnet*</li>
+        </ul>
+        <button
+          type="button"
+          className={`btn${active ? " accent" : ""}`}
+          style={{ padding: "12px 20px" }}
+          onClick={() => (active ? onClear() : onSelect())}
+        >
+          {active ? "Paket entfernen" : "Paket wählen"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function StepProducts() {
-  const { quote, quoteLoading, draft, toggleProduct, setModel, clearModel, next } = useBooking();
+  const {
+    quote,
+    quoteLoading,
+    draft,
+    products,
+    applyPackage,
+    clearPackage,
+    setModel,
+    clearModel,
+    toggleProduct,
+    next,
+  } = useBooking();
   const [activePerson, setActivePerson] = useState(draft.persons[0]?.id);
+  const [showExtras, setShowExtras] = useState(false);
   const person = draft.persons.find((p) => p.id === activePerson) || draft.persons[0];
   const kindCode = person?.kind === "youth" ? "2" : person?.kind === "kid" ? "3" : "1";
-  const lineCount = draft.persons.reduce((n, p) => n + p.lines.length, 0);
+  const activePack = findPackageForLines(person?.lines.map((l) => l.productId) || []);
+  const skiLine = person?.lines.find((l) =>
+    PACKAGES.some((p) => p.skiProductId === l.productId),
+  );
+  const skiProduct = products.find((p) => p.id === skiLine?.productId);
+
+  const extras = (quote?.categories || [])
+    .flatMap((c) => c.products)
+    .filter((p) => !PACKAGES.some((pack) => [pack.skiProductId, pack.bootProductId, pack.helmProductId].includes(p.id)));
 
   return (
-    <section className="step-stage">
+    <section className="step-stage anim-rise">
       <div className="stage-head">
-        <h2>Ausrüstung</h2>
-        <p>
-          Pro Person wählen — Modell optional. Ohne Modellwahl passt das Team vor Ort die Länge an.
-        </p>
+        <h2>Dein Paket</h2>
+        <p>Ein Klick: Ski/Board + Schuh + Helm. Modell kannst du optional dazunehmen.</p>
       </div>
-      <div className="trust-strip">
-        <span>−20 % / −10 % Online</span>
-        <span>Vortag ab 15:00</span>
-        <span>Kinder unter 11 gratis*</span>
-      </div>
+      <TrustStrip />
       <div className="person-tabs">
         {draft.persons.map((p, i) => (
           <button
@@ -441,144 +494,125 @@ function StepProducts() {
             onClick={() => setActivePerson(p.id)}
           >
             Person {i + 1}
-            {p.lines.length ? ` · ${p.lines.length}` : ""}
+            {p.lines.length ? ` · Paket` : ""}
           </button>
         ))}
       </div>
       {quoteLoading && <div className="muted">Preise werden geladen…</div>}
-      {(quote?.categories || []).map((cat) => (
-        <div key={cat.id}>
-          <span className="cat-title">{cat.title}</span>
-          <div className="product-grid">
-            {cat.products.map((product) => {
-              const selected = person?.lines.some((l) => l.productId === product.id);
-              const line = person?.lines.find((l) => l.productId === product.id);
-              const activeModel = product.models.find((m) => m.id === line?.modelId);
+      <div className="pack-grid">
+        {PACKAGES.map((pack) => (
+          <PackageCard
+            key={pack.id}
+            pack={pack}
+            active={activePack?.id === pack.id}
+            products={products}
+            kindCode={kindCode}
+            onSelect={() => person && applyPackage(person.id, pack, products)}
+            onClear={() => person && clearPackage(person.id)}
+          />
+        ))}
+      </div>
+
+      {activePack && skiProduct && skiProduct.models.length > 0 && (
+        <div className="model-panel anim-rise">
+          <div className="model-head">
+            <strong>Ski-/Board-Modell</strong>
+            <span className="muted">optional — tippen zum Abwählen</span>
+          </div>
+          <div className="model-grid">
+            {skiProduct.models.map((m) => {
+              const on = skiLine?.modelId === m.id;
               return (
-                <div key={product.id} className={`product-card${selected ? " is-on" : ""}`}>
-                  {product.image ? <img src={product.image} alt="" /> : <div className="ph" />}
-                  <div className="body">
-                    {product.highlight ? <span className="tag">{product.highlight}</span> : null}
-                    <h3>{product.title}</h3>
-                    <div className="muted">{product.subtitle}</div>
-                    <div className="price">ab {euroDaily(product, kindCode)} / Tag</div>
-                    {product.bullets?.length ? (
-                      <ul className="bullets">
-                        {product.bullets.slice(0, 3).map((b) => (
-                          <li key={b}>{b}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                    <div className="product-actions">
-                      <button
-                        type="button"
-                        className={`btn${selected ? " accent" : ""}`}
-                        style={{ padding: "12px 20px" }}
-                        onClick={() => person && toggleProduct(person.id, product)}
-                      >
-                        {selected ? "Entfernen" : "Hinzufügen"}
-                      </button>
-                    </div>
-                    {selected && product.models.length > 0 && (
-                      <div className="model-box">
-                        <div className="model-head">
-                          <strong>Modell wählen</strong>
-                          <span className="muted">optional</span>
-                        </div>
-                        <div className="model-grid">
-                          {product.models.map((m) => {
-                            const on = line?.modelId === m.id;
-                            return (
-                              <button
-                                key={m.id}
-                                type="button"
-                                className={`model-card${on ? " active" : ""}`}
-                                onClick={() => {
-                                  if (!person) return;
-                                  if (on) {
-                                    clearModel(person.id, product.id);
-                                    return;
-                                  }
-                                  const variant =
-                                    m.variants.find((v) => !v.disabled) || m.variants[0];
-                                  setModel(
-                                    person.id,
-                                    product.id,
-                                    m.id,
-                                    variant?.property1 || "",
-                                    m.title,
-                                    m.image,
-                                  );
-                                }}
-                              >
-                                {m.image ? (
-                                  <img src={m.image} alt="" />
-                                ) : (
-                                  <div className="model-ph" />
-                                )}
-                                <span className="model-brand">{m.brand || " "}</span>
-                                <span className="model-title">{m.title}</span>
-                                {on ? <span className="model-off">Tippen zum Abwählen</span> : null}
-                              </button>
-                            );
-                          })}
-                        </div>
-                        {activeModel && activeModel.variants.length > 0 && (
-                          <div>
-                            <div className="muted" style={{ marginBottom: "0.35rem" }}>
-                              Länge / Größe
-                            </div>
-                            <div className="chip-row">
-                              {activeModel.variants.map((v) => (
-                                <button
-                                  key={v.property1}
-                                  type="button"
-                                  className={`chip${line?.property1 === v.property1 ? " active" : ""}`}
-                                  disabled={v.disabled}
-                                  onClick={() =>
-                                    person &&
-                                    setModel(
-                                      person.id,
-                                      product.id,
-                                      activeModel.id,
-                                      v.property1,
-                                      activeModel.title,
-                                      activeModel.image,
-                                    )
-                                  }
-                                >
-                                  {v.property1}
-                                  {typeof v.stock === "number" ? ` (${v.stock})` : ""}
-                                </button>
-                              ))}
-                              <button
-                                type="button"
-                                className="chip"
-                                onClick={() => person && clearModel(person.id, product.id)}
-                              >
-                                Modell entfernen
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {!line?.modelId && (
-                          <div className="muted">Kein Modell = Shop wählt passend aus.</div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <button
+                  key={m.id}
+                  type="button"
+                  className={`model-card${on ? " active" : ""}`}
+                  onClick={() => {
+                    if (!person || !skiLine) return;
+                    if (on) {
+                      clearModel(person.id, skiLine.productId);
+                      return;
+                    }
+                    const variant = m.variants.find((v) => !v.disabled) || m.variants[0];
+                    setModel(
+                      person.id,
+                      skiLine.productId,
+                      m.id,
+                      variant?.property1 || "",
+                      m.title,
+                      m.image,
+                    );
+                  }}
+                >
+                  {m.image ? <img src={m.image} alt="" /> : <div className="model-ph" />}
+                  <span className="model-brand">{m.brand || " "}</span>
+                  <span className="model-title">{m.title}</span>
+                  {on ? <span className="model-off">Abwählen</span> : null}
+                </button>
               );
             })}
           </div>
+          {skiLine?.modelId && (
+            <div className="chip-row" style={{ marginTop: "0.75rem" }}>
+              {(skiProduct.models.find((m) => m.id === skiLine.modelId)?.variants || []).map((v) => (
+                <button
+                  key={v.property1}
+                  type="button"
+                  className={`chip${skiLine.property1 === v.property1 ? " active" : ""}`}
+                  disabled={v.disabled}
+                  onClick={() => {
+                    const m = skiProduct.models.find((x) => x.id === skiLine.modelId);
+                    if (!person || !m) return;
+                    setModel(person.id, skiLine.productId, m.id, v.property1, m.title, m.image);
+                  }}
+                >
+                  {v.property1}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="chip"
+                onClick={() => person && skiLine && clearModel(person.id, skiLine.productId)}
+              >
+                Modell entfernen
+              </button>
+            </div>
+          )}
         </div>
-      ))}
+      )}
+
+      <button type="button" className="linkish" onClick={() => setShowExtras((v) => !v)}>
+        {showExtras ? "Extras ausblenden" : "Extras / einzeln dazu (Brille, Protektor…)"}
+      </button>
+      {showExtras && (
+        <div className="product-grid" style={{ marginTop: "0.75rem" }}>
+          {extras.map((product) => {
+            const selected = person?.lines.some((l) => l.productId === product.id);
+            return (
+              <div key={product.id} className={`product-card${selected ? " is-on" : ""}`}>
+                {product.image ? <img src={product.image} alt="" /> : <div className="ph" />}
+                <div className="body">
+                  <h3>{product.title}</h3>
+                  <div className="price">ab {euroDaily(product, kindCode)} / Tag</div>
+                  <button
+                    type="button"
+                    className={`btn${selected ? " accent" : ""}`}
+                    style={{ padding: "12px 20px", marginTop: "0.35rem" }}
+                    onClick={() => person && toggleProduct(person.id, product)}
+                  >
+                    {selected ? "Entfernen" : "Hinzufügen"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <div className="conv-cta">
         <div>
-          <div className="muted" style={{ fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-            {lineCount} Produkte im Warenkorb
-          </div>
-          <strong>{formatMoney(quote?.cartTotal)}</strong>
+          <div className="muted tiny-label">Aktuelle Summe</div>
+          <strong className="sum-pulse">{formatMoney(quote?.cartTotal)}</strong>
         </div>
         <button
           type="button"
@@ -586,7 +620,7 @@ function StepProducts() {
           disabled={!draft.persons.some((p) => p.lines.length)}
           onClick={next}
         >
-          Weiter zu den Kontaktdaten
+          Weiter zu den Daten
         </button>
       </div>
     </section>
@@ -600,11 +634,12 @@ function StepDetails() {
   const insurance = specials.find((s) => s.type === 1);
 
   return (
-    <section className="step-stage stack">
+    <section className="step-stage stack anim-rise">
       <div className="stage-head">
-        <h2>Deine Daten</h2>
-        <p>Für die Übergabe brauchen wir korrekte Gästedaten.</p>
+        <h2>Fast geschafft</h2>
+        <p>Nur die wichtigsten Daten — Zahlung folgt im nächsten Schritt.</p>
       </div>
+      <TrustStrip />
       {draft.persons.map((p, i) => (
         <div
           key={p.id}
@@ -612,7 +647,8 @@ function StepDetails() {
           style={{ borderTop: i ? "1px solid var(--line)" : undefined, paddingTop: i ? "1rem" : 0 }}
         >
           <strong>
-            Person {i + 1} · {p.kind === "adult" ? "Erwachsen" : p.kind === "youth" ? "Jugend" : "Kind"}
+            Person {i + 1}
+            {i === 0 ? " · Hauptgast" : ""}
           </strong>
           <div className="grid-2">
             <div className="field">
@@ -620,6 +656,7 @@ function StepDetails() {
               <input
                 value={p.firstName}
                 onChange={(e) => updatePerson(p.id, { firstName: e.target.value })}
+                autoComplete="given-name"
               />
             </div>
             <div className="field">
@@ -627,6 +664,7 @@ function StepDetails() {
               <input
                 value={p.lastName}
                 onChange={(e) => updatePerson(p.id, { lastName: e.target.value })}
+                autoComplete="family-name"
               />
             </div>
             {i === 0 && (
@@ -637,6 +675,7 @@ function StepDetails() {
                     type="email"
                     value={p.email || ""}
                     onChange={(e) => updatePerson(p.id, { email: e.target.value })}
+                    autoComplete="email"
                   />
                 </div>
                 <div className="field">
@@ -644,26 +683,11 @@ function StepDetails() {
                   <input
                     value={p.phone || ""}
                     onChange={(e) => updatePerson(p.id, { phone: e.target.value })}
+                    autoComplete="tel"
                   />
                 </div>
               </>
             )}
-            <div className="field">
-              <label>Größe (cm)</label>
-              <input
-                type="number"
-                value={p.height || ""}
-                onChange={(e) => updatePerson(p.id, { height: Number(e.target.value) || undefined })}
-              />
-            </div>
-            <div className="field">
-              <label>Gewicht (kg)</label>
-              <input
-                type="number"
-                value={p.weight || ""}
-                onChange={(e) => updatePerson(p.id, { weight: Number(e.target.value) || undefined })}
-              />
-            </div>
           </div>
           {insurance && (
             <label className="check">
@@ -673,21 +697,26 @@ function StepDetails() {
                 onChange={(e) => updatePerson(p.id, { coverage: e.target.checked })}
               />
               <span>
-                {insurance.title} hinzufügen
-                <span className="muted"> — Diebstahl- & Bruchschutz</span>
+                {insurance.title} (empfohlen)
+                <span className="muted"> — Diebstahl & Bruch ohne Selbstbehalt</span>
               </span>
             </label>
           )}
         </div>
       ))}
-      <div className="field">
-        <label>Rabattcode</label>
-        <input value={draft.discountCode} onChange={(e) => setDiscount(e.target.value)} />
-      </div>
-      <div className="field">
-        <label>Anmerkung</label>
-        <textarea rows={3} value={draft.remark} onChange={(e) => setRemark(e.target.value)} />
-      </div>
+      <details className="more-details">
+        <summary>Rabattcode / Anmerkung</summary>
+        <div className="stack" style={{ marginTop: "0.75rem" }}>
+          <div className="field">
+            <label>Rabattcode</label>
+            <input value={draft.discountCode} onChange={(e) => setDiscount(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Anmerkung</label>
+            <textarea rows={2} value={draft.remark} onChange={(e) => setRemark(e.target.value)} />
+          </div>
+        </div>
+      </details>
       <label className="check">
         <input
           type="checkbox"
@@ -704,29 +733,31 @@ function StepDetails() {
         />
         <span>AGB und Datenschutz akzeptieren</span>
       </label>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div className="center-cta">
         <button
           type="button"
-          className="btn"
+          className="btn accent"
           disabled={!main?.firstName || !main?.lastName || !main?.email || !draft.termsAccepted}
           onClick={next}
         >
-          Zur Übersicht
+          Zur Zahlung / Übersicht
         </button>
       </div>
+      <div className="pay-brands muted">Bald: Karte · PayPal · Apple Pay · Google Pay</div>
     </section>
   );
 }
 
 function StepReview() {
-  const { draft, quote, locations, submit, submitting, products, providerLabel } = useBooking();
+  const { draft, quote, locations, submit, submitting, products, resetBooking } = useBooking();
   const [result, setResult] = useState<{
     ok: boolean;
     message: string;
     bookingId?: string;
-    raw?: unknown;
   } | null>(null);
-  const loc = locations.find((l) => l.id === draft.locationId);
+  const loc =
+    locations.find((l) => l.id === draft.locationId) ||
+    BRANCHES.find((b) => b.id === draft.locationId);
 
   const onSubmit = async () => {
     const res = await submit();
@@ -735,32 +766,49 @@ function StepReview() {
 
   if (result?.ok) {
     return (
-      <section className="step-stage">
+      <section className="step-stage anim-rise">
         <div className="success-card stack">
-          <h2>Reservierung vorbereitet</h2>
+          <div className="success-badge">Reserviert</div>
+          <h2>Danke — wir sehen uns auf der Piste</h2>
           <p className="muted">
-            Rentfreudenhaus · Vorgang {result.bookingId} · {providerLabel}
+            Vorgang <strong>{result.bookingId}</strong>
           </p>
+          <div className="confirm-code">{(result.bookingId || "RFH").slice(-8)}</div>
           <div className="notice">
-            Ohne <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run.
+            <strong>Was jetzt?</strong>
+            <ol className="next-list">
+              <li>Bestätigung kommt per E-Mail</li>
+              <li>
+                Abholung {loc?.title || "Filiale"}
+                {draft.pickupDayBefore ? " — gern schon am Vortag ab 15:00" : ""}
+              </li>
+              <li>Code / Name an der Theke nennen</li>
+            </ol>
           </div>
+          <button type="button" className="btn" onClick={resetBooking}>
+            Neue Buchung
+          </button>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="step-stage stack">
+    <section className="step-stage stack anim-rise">
       <div className="stage-head">
-        <h2>Prüfen & absenden</h2>
+        <h2>Prüfen & zahlen</h2>
         <p>
-          {loc?.title} · {draft.from} → {draft.to} · {formatMoney(quote?.cartTotal)}
+          {loc?.title} · {draft.from} → {draft.to}
         </p>
+      </div>
+      <div className="review-total">
+        <span>Summe</span>
+        <strong>{formatMoney(quote?.cartTotal)}</strong>
       </div>
       {draft.persons.map((p, i) => (
         <div key={p.id}>
           <strong>
-            {p.firstName} {p.lastName} (Person {i + 1})
+            {p.firstName} {p.lastName} · Person {i + 1}
           </strong>
           <ul className="bullets">
             {p.lines.map((l) => {
@@ -777,11 +825,12 @@ function StepReview() {
         </div>
       ))}
       {result && !result.ok && <div className="error">{result.message}</div>}
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div className="center-cta">
         <button type="button" className="btn accent" disabled={submitting} onClick={onSubmit}>
-          {submitting ? "Wird übertragen…" : "Reservierung senden"}
+          {submitting ? "Wird gesendet…" : "Jetzt verbindlich reservieren"}
         </button>
       </div>
+      <p className="muted center">Zahlungspartner folgt mit dem Verleih-Backend (Stripe/Mollie).</p>
     </section>
   );
 }
@@ -806,10 +855,8 @@ function FooterBar() {
     <div className="footer-bar">
       <div className="footer-inner">
         <div>
-          <div className="muted" style={{ fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-            Summe
-          </div>
-          <strong>{formatMoney(quote?.cartTotal)}</strong>
+          <div className="muted tiny-label">Summe</div>
+          <strong className="sum-pulse">{formatMoney(quote?.cartTotal)}</strong>
         </div>
         <div className="row">
           <button type="button" className="btn ghost" onClick={back}>
