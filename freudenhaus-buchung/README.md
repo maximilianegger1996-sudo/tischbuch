@@ -1,14 +1,28 @@
 # Rentfreudenhaus
 
-Skiverleih-Buchungsstrecke für **FREUDENHAUS Rent** (Obertauern). Ablösung der bisherigen Rent-Buddy-Onlinebuchung — angebunden an **Easyrent** (Wintersteiger Sports) über die **EasyRest**-API.
+Skiverleih-Buchungs-UI für **FREUDENHAUS Rent** (Obertauern). Ablösung von Rent Buddy online.
+
+Wir bauen **zwei** neue Teile:
+
+| System | Repo-Ordner | Rolle |
+| --- | --- | --- |
+| **Rentfreudenhaus** | `freudenhaus-buchung/` | Kunden-Frontend |
+| **Easyrent-Backend** | `../easyrent-backend/` | neues Buchungs-Backend |
+
+```
+Kunde → Rentfreudenhaus → Easyrent-Backend → EasyRest / Easyrent (Shop)
+```
+
+Details: [`docs/architecture.md`](docs/architecture.md) · API-Vertrag: [`docs/booking-api.md`](docs/booking-api.md)
 
 ## Namensklärung
 
 | Begriff | Bedeutung |
 | --- | --- |
-| **Rentfreudenhaus** | diese Kunden-Buchungsstrecke |
-| **Easyrent** | Verleihsoftware / Zielsystem |
-| **EasyRest** | REST-API von Easyrent (`/easyrest/rest/…`) |
+| **Rentfreudenhaus** | Kunden-Buchungsstrecke (Frontend) |
+| **Easyrent-Backend** | unser neues Backend für Online-Reservierung |
+| **Easyrent** | Verleihsoftware im Shop (Wintersteiger) |
+| **EasyRest** | REST-API der Easyrent-Installation |
 | Rent Buddy | bisherige Online-Buchung (wird abgelöst) |
 
 ## Status

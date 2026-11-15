@@ -1,0 +1,14 @@
+{
+  "name": "easyrent-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Neues Easyrent-Backend für Rentfreudenhaus (Booking-API)",
+  "scripts": {
+    "dev": "node --watch src/server.mjs",
+    "start": "node src/server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
