@@ -17,7 +17,12 @@
   --series:#677967;
   --brand:#677967;--beige:#dfd8d0;--taupe:#928370;--hero:url("https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg");
   --floor:#e9e2d6;--floor-out:#dde2da;--wall:#928370;--chair:#b07a52;--wood1:#d6b98f;--wood2:#b98f62;--woodline:#9c7650;
-  --serif:"Libre Bodoni","Bodoni 72",Didot,Georgia,serif;--sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;--sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+/* Personal/Hub/Login: immer Jost — Gast (?gast=1) behält Haus-Schriften aus applyBrand */
+body:not(.guest){
+  --sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#17191a;--panel:#202324;--ink:#ebe8e3;--muted:#a3a09a;--line:#36393b;--soft:#292c2d;
@@ -283,15 +288,15 @@ body.embed{background:transparent}
 body.embed .ghero,body.embed .gfoot{display:none}
 body.embed #gbody{margin:0 auto;padding:0}
 body.embed .gcard{box-shadow:none;border:1px solid var(--line)}
-/* Steinbock: Website-Typo (Open Sans Condensed Headlines, Open Sans Body) */
-body[data-venue=steinbock]{letter-spacing:.01em}
-body[data-venue=steinbock] .gtitle,body[data-venue=steinbock] .gcard h1,body[data-venue=steinbock] .gcard h3,
-body[data-venue=steinbock] .gkick,body[data-venue=steinbock] .gsteps{font-family:var(--serif);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
-body[data-venue=steinbock] .gtitle{letter-spacing:.12em}
-body[data-venue=steinbock] .gcard,body[data-venue=steinbock] .gcard p,body[data-venue=steinbock] .gsum,body[data-venue=steinbock] .gsub,
-body[data-venue=steinbock] button,body[data-venue=steinbock] input,body[data-venue=steinbock] select,body[data-venue=steinbock] textarea{font-family:var(--sans)}
-body[data-venue=steinbock] button{text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-body[data-venue=steinbock].embed .gcard{border-color:#cfd5d9;border-radius:2px}
+/* Steinbock-Gast: Website-Typo (Open Sans Condensed Headlines, Open Sans Body) — Personal bleibt Jost */
+body.guest[data-venue=steinbock]{letter-spacing:.01em}
+body.guest[data-venue=steinbock] .gtitle,body.guest[data-venue=steinbock] .gcard h1,body.guest[data-venue=steinbock] .gcard h3,
+body.guest[data-venue=steinbock] .gkick,body.guest[data-venue=steinbock] .gsteps{font-family:var(--serif);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+body.guest[data-venue=steinbock] .gtitle{letter-spacing:.12em}
+body.guest[data-venue=steinbock] .gcard,body.guest[data-venue=steinbock] .gcard p,body.guest[data-venue=steinbock] .gsum,body.guest[data-venue=steinbock] .gsub,
+body.guest[data-venue=steinbock] button,body.guest[data-venue=steinbock] input,body.guest[data-venue=steinbock] select,body.guest[data-venue=steinbock] textarea{font-family:var(--sans)}
+body.guest[data-venue=steinbock] button{text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+body.guest[data-venue=steinbock].embed .gcard{border-color:#cfd5d9;border-radius:2px}
 .embedrow{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:8px;max-width:820px}
 .embedrow input,.embedrow textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 @media (max-width:620px){.embedrow{grid-template-columns:1fr}}
@@ -770,11 +775,12 @@ const VENUE_SLUG=/^[a-z0-9-]{1,40}$/.test(QS.get('betrieb')||'')?QS.get('betrieb
 const RECOVERY=/type=recovery/.test(location.hash);   // Rücksprung aus der E-Mail „Passwort zurücksetzen“
 const ONLINE=!QS.has('demo')&&!!window.supabase;
 const DB=ONLINE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
-/* Schriften je Haus (venues.brand.fonts + vars.--sans/--serif). Hub-Fallback = Jost. */
+/* Gast-Schriften je Haus (venues.brand). Personal/Hub/Login: STAFF_FONT_VARS = Jost. */
+const STAFF_FONT_VARS={'--sans':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif','--serif':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif'};
 const FONT_PRESETS={
   lue:{fonts:['Jost:wght@300;400;500;600;700','Libre Bodoni:wght@400;600'],
     vars:{'--sans':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif','--serif':'"Libre Bodoni", "Bodoni 72", Didot, Georgia, serif'}},
-  /* Steinbock Website: Open Sans (Fließtext) + Open Sans Condensed (Überschriften/UI) */
+  /* Steinbock Website: Open Sans (Fließtext) + Open Sans Condensed (Überschriften/UI) — nur Gast */
   steinbock:{fonts:['Open Sans:wght@300;400;500;600;700','Open Sans Condensed:wght@300;700'],
     vars:{'--sans':'"Open Sans", Helvetica, Arial, sans-serif','--serif':'"Open Sans Condensed", "Arial Narrow", Arial, Tahoma, sans-serif'}},
   mundwerk:{fonts:['Jost:wght@300;400;500;600;700','Libre Bodoni:wght@400;600'],
@@ -1034,10 +1040,12 @@ function applyBrand(b,name,slug){
   const s=slug||(VENUE&&VENUE.slug)||VENUE_SLUG||'lue';
   curBrand={b:normalizeBrand(b||{},s),name:name||'',slug:s}; b=curBrand.b;
   document.body.dataset.venue=s;
-  loadBrandFonts(b);
+  /* Personal: nur Jost laden; Gast: Haus-Schriften (z. B. Steinbock Open Sans) */
+  loadBrandFonts(GUEST?b:{fonts:['Jost:wght@300;400;500;600;700']});
   const dark=matchMedia('(prefers-color-scheme:dark)').matches, vars={...(b.vars||{}),...(dark?b.dark||{}:{})}, st=document.documentElement.style;
   const okUrl=u=>typeof u==='string'&&/^https:\/\/[^"'()\s]+$/.test(u);
   for(const k of BRANDKEYS){ st.removeProperty(k); const v=vars[k]; if(typeof v==='string'&&/^[#\w\s,.%"-]+$/.test(v)) st.setProperty(k,v); }
+  if(!GUEST){ for(const [k,v] of Object.entries(STAFF_FONT_VARS)) st.setProperty(k,v); }
   if(okUrl(b.hero)) st.setProperty('--hero',`url("${b.hero}")`); else st.setProperty('--hero','none');
   document.querySelectorAll('img[data-logo]').forEach(i=>{ if(okUrl(b.logo)){i.hidden=false; if(i.src!==b.logo) i.src=b.logo;} else i.hidden=true; });
   const bn=$('#brandname'); bn.hidden=okUrl(b.logo); bn.textContent=curBrand.name.split(/[.–-]/)[0].trim();
@@ -2285,12 +2293,12 @@ window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.queryS
 if(ONLINE) startOnline();
 else {
   S=load();
+  if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }
   applyBrand(VENUE_META.brand,VENUE_META.name,VENUE_SLUG);
   document.title=(GUEST?'Reservieren':'Tischbuch')+' – '+VENUE_META.short+(GUEST?'':' · Demo');
   $('.brand span').textContent='Demo · '+VENUE_META.short;
   $('.foot span').textContent='Demo: Daten nur in diesem Browser.';
   const rb=$('.foot [data-act=reset]'); if(rb) rb.hidden=!!GUEST;
-  if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }
   render();
 }
 setInterval(()=>{ if(ONLINE&&!GUEST){ if(shadow) bump(); return; } if(GUEST){ if(g.mode==='book'&&g.time===null&&!g.done) render(); } else if(!document.querySelector('dialog[open]')&&(ui.view==='plan'||ui.view==='list'||(ui.view==='floor'&&!ui.floorEdit))) render(); },60000);
