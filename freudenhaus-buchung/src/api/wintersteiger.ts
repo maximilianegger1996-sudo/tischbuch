@@ -13,6 +13,7 @@ import type {
   WintersteigerExport,
 } from "./types";
 import { rentBuddyProvider } from "./rentbuddy";
+import { BRANCH_META, ONLINE_BRANCH_ORDER, SITE_DEFAULT, SPECIALS_DEFAULT } from "./mapping";
 
 function euros(n: number): Money {
   return { amountCents: Math.round(n * 100), currency: "EUR" };
@@ -119,27 +120,49 @@ export const wintersteigerProvider: BookingProvider = {
   label: "Rentfreudenhaus · Easyrent",
 
   async loadSite(): Promise<SiteSettings> {
-    // Branding still from public Rent Buddy site settings
-    return rentBuddyProvider.loadSite();
+    return { ...SITE_DEFAULT };
   },
 
   async loadLocations(): Promise<Location[]> {
     try {
       const branches = await easyrest.branches(50);
-      return branches.map((b) => ({
-        id: String(b.branchId),
-        externalKey: b.branchIdExternal || b.branchCode,
-        title: b.name || b.branchCode,
-        closedRanges: [],
-      }));
+      const byId = new Map(branches.map((b) => [String(b.branchId), b]));
+      return ONLINE_BRANCH_ORDER.map((id) => {
+        const live = byId.get(id);
+        const meta = BRANCH_META[id];
+        return {
+          id,
+          externalKey: live?.branchIdExternal || live?.branchCode || id,
+          title: meta?.title || live?.name || id,
+          highlight: meta?.highlight || null,
+          addressHtml: meta?.addressHtml,
+          image: meta?.image,
+          closedRanges: [],
+        } satisfies Location;
+      });
     } catch (e) {
-      console.warn("EasyRest branches failed, fallback Rent Buddy", e);
-      return rentBuddyProvider.loadLocations();
+      console.warn("EasyRest branches failed, using mapped offline list", e);
+      return ONLINE_BRANCH_ORDER.map((id) => {
+        const meta = BRANCH_META[id];
+        return {
+          id,
+          title: meta.title,
+          highlight: meta.highlight || null,
+          addressHtml: meta.addressHtml,
+          image: meta.image,
+          closedRanges: [],
+        } satisfies Location;
+      });
     }
   },
 
-  loadSpecials: () => rentBuddyProvider.loadSpecials(),
-  loadCalendar: (d) => rentBuddyProvider.loadCalendar(d),
+  async loadSpecials() {
+    return SPECIALS_DEFAULT.map((s) => ({ ...s }));
+  },
+
+  async loadCalendar() {
+    return [];
+  },
 
   async quote(draft: BookingDraft): Promise<PriceQuote> {
     if (!draft.from || !draft.to) {

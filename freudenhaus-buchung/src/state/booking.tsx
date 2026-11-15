@@ -95,21 +95,26 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [s, locs, specs] = await Promise.all([
+      const [sRes, locRes, specRes] = await Promise.allSettled([
         provider.loadSite(),
         provider.loadLocations(),
         provider.loadSpecials(),
       ]);
       if (!alive) return;
-      setSite(s);
+      const s = sRes.status === "fulfilled" ? sRes.value : null;
+      const locs = locRes.status === "fulfilled" ? locRes.value : [];
+      const specs = specRes.status === "fulfilled" ? specRes.value : [];
+      if (sRes.status === "rejected") console.error(sRes.reason);
+      if (locRes.status === "rejected") console.error(locRes.reason);
+      if (specRes.status === "rejected") console.error(specRes.reason);
+      if (s) setSite(s);
       setLocations(locs);
       setSpecials(specs);
+      const coverage = s?.coverageDefault ?? true;
       setDraft((d) => ({
         ...d,
-        persons: d.persons.map((p) => ({ ...p, coverage: s.coverageDefault })),
-        specialIds: s.coverageDefault
-          ? specs.filter((x) => x.type === 1).map((x) => x.id)
-          : [],
+        persons: d.persons.map((p) => ({ ...p, coverage })),
+        specialIds: coverage ? specs.filter((x) => x.type === 1).map((x) => x.id) : [],
       }));
     })().catch(console.error);
     return () => {
