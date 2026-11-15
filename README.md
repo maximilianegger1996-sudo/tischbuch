@@ -89,14 +89,18 @@ Echter SMTP-/Provider-Versand ist **nach** Go-Live (Queue bleibt die Quelle).
 - Backend: Supabase (Venues, Tische, Reservierungen, öffentliche RPCs `public_*`)
 - Branding und Buchungsregeln liegen pro Venue in der Datenbank
 
-### Schriften je Haus (`venues.brand`)
+### Schriften
+
+**Personal / Hub / Login (alle Häuser):** Jost für Fließtext und Display (`body:not(.guest)` + `STAFF_FONT_VARS` in `applyBrand`).
+
+**Gast (`?gast=1`) je Haus (`venues.brand`):**
 
 | Haus | Fließtext (`--sans`) | Display (`--serif`) |
 |------|----------------------|---------------------|
 | LÜ / Mundwerk | Jost | Libre Bodoni |
 | Steinbock | Open Sans | Open Sans Condensed |
 
-Die App lädt `brand.fonts` und setzt CSS-Variablen über `applyBrand`. Personal-Login schreibt Presets nach; SQL: `supabase/brand-jost-body-font.sql`.
+Gast-Presets schreibt Personal-Login nach; SQL: `supabase/brand-jost-body-font.sql`.
 
 ## Guest MCP (dev / Agents)
 
