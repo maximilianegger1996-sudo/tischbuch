@@ -2,15 +2,15 @@
 
 Skiverleih-Buchungs-UI für **FREUDENHAUS Rent** (Obertauern). Ablösung von Rent Buddy online.
 
-Wir bauen **zwei** neue Teile:
+Wir bauen **zwei** neue Teile — Ziel **eigene Verleih-Software** (nicht Wintersteiger):
 
 | System | Repo-Ordner | Rolle |
 | --- | --- | --- |
 | **Rentfreudenhaus** | `freudenhaus-buchung/` | Kunden-Frontend |
-| **Easyrent-Backend** | `../easyrent-backend/` | neues Buchungs-Backend |
+| **Verleih-Backend** | `../easyrent-backend/` | API der eigenen Verleih-Software |
 
 ```
-Kunde → Rentfreudenhaus → Easyrent-Backend → EasyRest / Easyrent (Shop)
+Kunde → Rentfreudenhaus → Verleih-Backend → eigene Software / DB / Zahlung
 ```
 
 Details: [`docs/architecture.md`](docs/architecture.md) · API-Vertrag: [`docs/booking-api.md`](docs/booking-api.md)

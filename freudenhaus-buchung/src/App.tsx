@@ -413,16 +413,24 @@ function StepLocation() {
 }
 
 function StepProducts() {
-  const { quote, quoteLoading, draft, toggleProduct, setModel, next } = useBooking();
+  const { quote, quoteLoading, draft, toggleProduct, setModel, clearModel, next } = useBooking();
   const [activePerson, setActivePerson] = useState(draft.persons[0]?.id);
   const person = draft.persons.find((p) => p.id === activePerson) || draft.persons[0];
   const kindCode = person?.kind === "youth" ? "2" : person?.kind === "kid" ? "3" : "1";
+  const lineCount = draft.persons.reduce((n, p) => n + p.lines.length, 0);
 
   return (
     <section className="step-stage">
       <div className="stage-head">
         <h2>Ausrüstung</h2>
-        <p>Pro Person Pakete zusammenstellen — Platin · Gold · Silber und mehr.</p>
+        <p>
+          Pro Person wählen — Modell optional. Ohne Modellwahl passt das Team vor Ort die Länge an.
+        </p>
+      </div>
+      <div className="trust-strip">
+        <span>−20 % / −10 % Online</span>
+        <span>Vortag ab 15:00</span>
+        <span>Kinder unter 11 gratis*</span>
       </div>
       <div className="person-tabs">
         {draft.persons.map((p, i) => (
@@ -445,8 +453,9 @@ function StepProducts() {
             {cat.products.map((product) => {
               const selected = person?.lines.some((l) => l.productId === product.id);
               const line = person?.lines.find((l) => l.productId === product.id);
+              const activeModel = product.models.find((m) => m.id === line?.modelId);
               return (
-                <div key={product.id} className="product-card">
+                <div key={product.id} className={`product-card${selected ? " is-on" : ""}`}>
                   {product.image ? <img src={product.image} alt="" /> : <div className="ph" />}
                   <div className="body">
                     {product.highlight ? <span className="tag">{product.highlight}</span> : null}
@@ -460,59 +469,81 @@ function StepProducts() {
                         ))}
                       </ul>
                     ) : null}
-                    <button
-                      type="button"
-                      className={`btn${selected ? " accent" : ""}`}
-                      style={{ padding: "12px 20px", marginTop: "0.35rem" }}
-                      onClick={() => person && toggleProduct(person.id, product)}
-                    >
-                      {selected ? "Ausgewählt" : "Hinzufügen"}
-                    </button>
+                    <div className="product-actions">
+                      <button
+                        type="button"
+                        className={`btn${selected ? " accent" : ""}`}
+                        style={{ padding: "12px 20px" }}
+                        onClick={() => person && toggleProduct(person.id, product)}
+                      >
+                        {selected ? "Entfernen" : "Hinzufügen"}
+                      </button>
+                    </div>
                     {selected && product.models.length > 0 && (
                       <div className="model-box">
-                        <div className="muted">Modell & Länge (optional)</div>
-                        <select
-                          value={line?.modelId || ""}
-                          onChange={(e) => {
-                            const model = product.models.find((m) => m.id === e.target.value);
-                            if (!model || !person) return;
-                            const variant =
-                              model.variants.find((v) => !v.disabled) || model.variants[0];
-                            setModel(
-                              person.id,
-                              product.id,
-                              model.id,
-                              variant?.property1 || "",
-                              model.title,
+                        <div className="model-head">
+                          <strong>Modell wählen</strong>
+                          <span className="muted">optional</span>
+                        </div>
+                        <div className="model-grid">
+                          {product.models.map((m) => {
+                            const on = line?.modelId === m.id;
+                            return (
+                              <button
+                                key={m.id}
+                                type="button"
+                                className={`model-card${on ? " active" : ""}`}
+                                onClick={() => {
+                                  if (!person) return;
+                                  if (on) {
+                                    clearModel(person.id, product.id);
+                                    return;
+                                  }
+                                  const variant =
+                                    m.variants.find((v) => !v.disabled) || m.variants[0];
+                                  setModel(
+                                    person.id,
+                                    product.id,
+                                    m.id,
+                                    variant?.property1 || "",
+                                    m.title,
+                                    m.image,
+                                  );
+                                }}
+                              >
+                                {m.image ? (
+                                  <img src={m.image} alt="" />
+                                ) : (
+                                  <div className="model-ph" />
+                                )}
+                                <span className="model-brand">{m.brand || " "}</span>
+                                <span className="model-title">{m.title}</span>
+                                {on ? <span className="model-off">Tippen zum Abwählen</span> : null}
+                              </button>
                             );
-                          }}
-                        >
-                          <option value="">Modell wählen…</option>
-                          {product.models.map((m) => (
-                            <option key={m.id} value={m.id}>
-                              {m.brand ? `${m.brand} · ` : ""}
-                              {m.title}
-                            </option>
-                          ))}
-                        </select>
-                        {line?.modelId && (
-                          <div className="chip-row">
-                            {product.models
-                              .find((m) => m.id === line.modelId)
-                              ?.variants.map((v) => (
+                          })}
+                        </div>
+                        {activeModel && activeModel.variants.length > 0 && (
+                          <div>
+                            <div className="muted" style={{ marginBottom: "0.35rem" }}>
+                              Länge / Größe
+                            </div>
+                            <div className="chip-row">
+                              {activeModel.variants.map((v) => (
                                 <button
                                   key={v.property1}
                                   type="button"
-                                  className={`chip${line.property1 === v.property1 ? " active" : ""}`}
+                                  className={`chip${line?.property1 === v.property1 ? " active" : ""}`}
                                   disabled={v.disabled}
                                   onClick={() =>
                                     person &&
                                     setModel(
                                       person.id,
                                       product.id,
-                                      line.modelId!,
+                                      activeModel.id,
                                       v.property1,
-                                      line.modelTitle || "",
+                                      activeModel.title,
+                                      activeModel.image,
                                     )
                                   }
                                 >
@@ -520,7 +551,18 @@ function StepProducts() {
                                   {typeof v.stock === "number" ? ` (${v.stock})` : ""}
                                 </button>
                               ))}
+                              <button
+                                type="button"
+                                className="chip"
+                                onClick={() => person && clearModel(person.id, product.id)}
+                              >
+                                Modell entfernen
+                              </button>
+                            </div>
                           </div>
+                        )}
+                        {!line?.modelId && (
+                          <div className="muted">Kein Modell = Shop wählt passend aus.</div>
                         )}
                       </div>
                     )}
@@ -531,10 +573,16 @@ function StepProducts() {
           </div>
         </div>
       ))}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+      <div className="conv-cta">
+        <div>
+          <div className="muted" style={{ fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            {lineCount} Produkte im Warenkorb
+          </div>
+          <strong>{formatMoney(quote?.cartTotal)}</strong>
+        </div>
         <button
           type="button"
-          className="btn"
+          className="btn accent"
           disabled={!draft.persons.some((p) => p.lines.length)}
           onClick={next}
         >

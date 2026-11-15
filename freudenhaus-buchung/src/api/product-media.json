@@ -1,0 +1,449 @@
+{
+  "1": {
+    "title": "Ski Platin",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/ski-platin-1406x1406-6aab9aaca1fa5959824787.png",
+    "models": [
+      {
+        "id": "514",
+        "title": "PINK SPEED POP",
+        "brand": "AK",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/ski-pink-speedpop-bis-bindung-1600x1600neu-6adb0c6963f4a104998528.png",
+        "variants": [
+          {
+            "property1": "152"
+          },
+          {
+            "property1": "158"
+          }
+        ]
+      },
+      {
+        "id": "488",
+        "title": "CLOUD Q14 RVSK S",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/atomic-cloud-q14-26-27-6aaaa90f0a39d777096641.png",
+        "variants": [
+          {
+            "property1": "145"
+          },
+          {
+            "property1": "152"
+          },
+          {
+            "property1": "159"
+          }
+        ]
+      },
+      {
+        "id": "463",
+        "title": "DOBERMANN MULTIPISTA DC",
+        "brand": "Nordica",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/nordica-dobermann-multipista-dc-74-26-27-6aaaac5f653ba393312223.png",
+        "variants": [
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          },
+          {
+            "property1": "170"
+          },
+          {
+            "property1": "175"
+          },
+          {
+            "property1": "180"
+          }
+        ]
+      },
+      {
+        "id": "493",
+        "title": "REDSTER S9 RVSK S",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/atomic-redster-s9-26-27-6aaaab13aee4e987915085.png",
+        "variants": [
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "165"
+          },
+          {
+            "property1": "170"
+          }
+        ]
+      },
+      {
+        "id": "509",
+        "title": "AK 77",
+        "brand": "AK",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/ski-platin-ak77-bis-bindung-1600x1600neu-6adb0c8acdd06594519420.png",
+        "variants": [
+          {
+            "property1": "165"
+          },
+          {
+            "property1": "172"
+          }
+        ]
+      },
+      {
+        "id": "494",
+        "title": "REDSTER X9s RVSK S",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/atomic-redster-x9s-26-27-6aaaab27dd2a3499676608.png",
+        "variants": [
+          {
+            "property1": "166"
+          },
+          {
+            "property1": "174"
+          },
+          {
+            "property1": "182"
+          }
+        ]
+      },
+      {
+        "id": "491",
+        "title": "RACETIGER SL",
+        "brand": "Völkl",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/voelkl-racetiger-sl-26-27-6aaaaaeb279be237258416.png",
+        "variants": [
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          },
+          {
+            "property1": "170"
+          }
+        ]
+      },
+      {
+        "id": "502",
+        "title": "REDSTER G9 RVSK S",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/ski-atomic-redster-g9-bis-bindung-1600x1600neu-6adb0cda3aba1574167906.png",
+        "variants": [
+          {
+            "property1": "166"
+          }
+        ]
+      }
+    ]
+  },
+  "2": {
+    "title": "Ski Gold",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/ski-gold-1406x1406-6aab9ad868350415859677.png",
+    "models": [
+      {
+        "id": "490",
+        "title": "REDSTER X7i RVSK C",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/atomic-redster-x7i-2627-6aab9199c6576421473924.png",
+        "variants": [
+          {
+            "property1": "154"
+          },
+          {
+            "property1": "161"
+          },
+          {
+            "property1": "168"
+          },
+          {
+            "property1": "175"
+          }
+        ]
+      },
+      {
+        "id": "465",
+        "title": "ES/MAX N°14",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/salomon-smax-n14-2627-6aab92104c4e6981629702.png",
+        "variants": [
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          }
+        ]
+      },
+      {
+        "id": "477",
+        "title": "BELLE DC 72",
+        "brand": "Nordica",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/nordica-belle-dc72-2627-6aab91bb6faa5814051949.png",
+        "variants": [
+          {
+            "property1": "144"
+          },
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "156"
+          },
+          {
+            "property1": "162"
+          }
+        ]
+      },
+      {
+        "id": "475",
+        "title": "CLOUD C9 RVSK LIGHT",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/atomic-cloud-c9-black-2627-6aab90e687212099959434.png",
+        "variants": [
+          {
+            "property1": "143"
+          },
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "157"
+          },
+          {
+            "property1": "164"
+          }
+        ]
+      },
+      {
+        "id": "466",
+        "title": "PS / MAX 12",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/salomon-smax-12-2627-6aab91f2daec4599151442.png",
+        "variants": [
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          },
+          {
+            "property1": "170"
+          },
+          {
+            "property1": "175"
+          }
+        ]
+      },
+      {
+        "id": "496",
+        "title": "MULTIPISTA DC 80 TI FDT",
+        "brand": "Nordica",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/nordica-multipista-dc80-ti-2627-6aab91d473f02653003616.png",
+        "variants": [
+          {
+            "property1": "165"
+          },
+          {
+            "property1": "170"
+          }
+        ]
+      },
+      {
+        "id": "476",
+        "title": "CLOUD C9 RVSK LIGHT WHITE",
+        "brand": "Atomic",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/atomic-cloud-c9-white-2627-6aab9178252d5568796581.png",
+        "variants": [
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "157"
+          }
+        ]
+      },
+      {
+        "id": "412",
+        "title": "ES/MAX ENDURANCE",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/salomon-e-s-max-endurance-68dbb7397d3d1675847108.png",
+        "variants": [
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          }
+        ]
+      }
+    ]
+  },
+  "3": {
+    "title": "Ski Silber",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/ski-silber-1406x1406-6aab991a95c0b403869585.png",
+    "models": []
+  },
+  "5": {
+    "title": "Snowboard",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/sb-25-26-68c17b5fb61e9759865405.png",
+    "models": [
+      {
+        "id": "512",
+        "title": "WILD CARD",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/snowboard-salomon-wildcard-bis-bindung-1600x1600neu-6adb0cf6248f5396539311.png",
+        "variants": [
+          {
+            "property1": "140"
+          },
+          {
+            "property1": "145"
+          },
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          }
+        ]
+      },
+      {
+        "id": "511",
+        "title": "SUPER 8 RTL",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/snowboard-salomon-super-8-bis-bindung-1600x1600neu-6adb0cfe771a1697202431.png",
+        "variants": [
+          {
+            "property1": "147"
+          },
+          {
+            "property1": "151"
+          },
+          {
+            "property1": "154"
+          },
+          {
+            "property1": "157"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "163"
+          }
+        ]
+      },
+      {
+        "id": "442",
+        "title": "WILDCARD",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/sb-25-26-68c2724cc1d12809595013.png",
+        "variants": [
+          {
+            "property1": "145"
+          },
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          }
+        ]
+      },
+      {
+        "id": "209",
+        "title": "Wildcard",
+        "brand": "Salomon",
+        "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/produktbilder202-64f585d65f9cc845640448.png",
+        "variants": [
+          {
+            "property1": "140"
+          },
+          {
+            "property1": "145"
+          },
+          {
+            "property1": "150"
+          },
+          {
+            "property1": "155"
+          },
+          {
+            "property1": "160"
+          },
+          {
+            "property1": "165"
+          }
+        ]
+      }
+    ]
+  },
+  "4": {
+    "title": "Skischuh",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/produktbilder203-64f1eb8d2180a735730817.png",
+    "models": []
+  },
+  "6": {
+    "title": "Snowboard Boot",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/produktbilder20-64f58b2807b70484245993.png",
+    "models": []
+  },
+  "7": {
+    "title": "Schneeschuhe",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/produktbilder-schneeschuh-64f5932fed206027251247.jpg",
+    "models": []
+  },
+  "8": {
+    "title": "Skihelm",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/helm-25-26-68c17b7709bf2737964226.png",
+    "models": []
+  },
+  "47": {
+    "title": "Skibrille",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/oakley-ridge-line-m-matte-black-254627-20556-6740bbcc8bb9f386723974.jpg",
+    "models": []
+  },
+  "44": {
+    "title": "Rückenprotektor",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/komperdell-protektor-65310ae451758708128478.jpg",
+    "models": []
+  },
+  "43": {
+    "title": "Skischloss",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/lt3459-555-651bd7702c923783569535.jpg",
+    "models": []
+  },
+  "45": {
+    "title": "Rodel",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/040001-r-6717416a0a158022566831.jpg",
+    "models": []
+  },
+  "49": {
+    "title": "Depot",
+    "image": "https://freudenhaus.rentbuddy.solutions/media/cache/square800/images/products/icon-2er-depot-6a9563579aa99478985203.jpg",
+    "models": []
+  }
+}

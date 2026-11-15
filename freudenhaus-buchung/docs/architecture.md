@@ -1,40 +1,60 @@
-# Rentfreudenhaus · Architektur
+# Rentfreudenhaus · Architektur (ab morgen: eigene Verleih-Software)
 
-Zwei neue Systeme ersetzen Rent Buddy online:
-
-| System | Rolle |
-| --- | --- |
-| **Rentfreudenhaus** | Kunden-Buchungs-UI (SPA) |
-| **Easyrent-Backend** | neues Buchungs-API/Backend für Online-Reservierung |
-| Easyrent (Wintersteiger) | Verleihsoftware im Shop — Zielsystem hinter dem Backend |
-| EasyRest | REST-Schnittstelle der Wintersteiger-Installation |
+Ziel ab jetzt — **kein Wintersteiger/Easyrent mehr** als Zielsystem.
 
 ```
 Kunde
-  └─ Rentfreudenhaus (Frontend)
-       └─ Easyrent-Backend  ←  unser neues Backend
-            └─ EasyRest / Easyrent (Shop-System)
+  └─ Rentfreudenhaus (Buchungs-Frontend)
+       └─ Verleih-Backend / eigene Verleih-Software
+            ├─ Katalog, Preise, Stock, Filialen
+            ├─ Reservierungen & Check-in
+            └─ Zahlung (PSP) + Mails
 ```
 
-## Verantwortung
+| System | Rolle |
+| --- | --- |
+| **Rentfreudenhaus** | Kunden-Buchungs-UI |
+| **Eigene Verleih-Software** | Shop-Betrieb + Online-API (ab morgen) |
+| `easyrent-backend/` | Seed/Übergang — wird zur API der eigenen Software |
+| Wintersteiger EasyRest | nur noch optional/historisch, nicht produktiv |
 
-**Rentfreudenhaus** kennt nur die Buchungs-API des Backends:
+## Brauchen wir ein Backend?
 
-- Personen, Zeitraum, Filiale, Katalog, Preise, Stock, Reservierung, Zahlung
-- keine Access-IDs, kein direktes EasyRest-Payload-Format im Browser
+**Ja.** Auch mit eigener Verleih-Software braucht Online-Buchung ein serverseitiges Stück:
 
-**Easyrent-Backend** besitzt:
+- Secrets (Payment, Mail) nie im Browser
+- Webhooks der Zahlung (bezahlt → Reservierung fest)
+- Stock atomar reservieren
+- Bestätigungsmail / Shop-Ticket
+- Admin später (No-shows, Umbuchung)
 
-- Mapping Filialen / Verleihgruppen (Rent Buddy → Easyrent IDs)
-- Preis-/Verfügbarkeitslogik über EasyRest (oder eigene Regeln)
-- Reservierungsanlage (`insertupdatereservation` o. ä.)
-- Zahlungsanbindung, Webhooks, Bestätigungsmails
-- Secrets (`accessId`, Payment Keys)
+Die SPA allein reicht nicht. Der Ordner `easyrent-backend/` ist der Startpunkt — morgen umbenennen/weiterbauen zur eigenen API (`/api/booking/*`), nicht EasyRest.
 
-## Übergang jetzt
+## Zahlung — Empfehlung
 
-Solange das neue Backend noch wächst, kann die SPA über einen Dev-Proxy (`/api/easyrest`) gegen die Live-EasyRest-Installation sprechen. Zielzustand: SPA → nur noch `/api/booking/*` am Easyrent-Backend.
+Rent Buddy nutzte Oppwa/Copy&Pay (Karten, PayPal, Apple Pay). Für die eigene Software:
 
-## API-Vertrag (Ziel)
+**Empfehlung: Stripe Checkout oder Mollie** (beide AT/EU, Apple Pay / Google Pay / Karte / oft PayPal).
 
-Siehe `docs/booking-api.md`.
+Ablauf:
+
+1. Frontend sendet Buchungsentwurf → Backend legt **Reservierung `pending_payment`** an  
+2. Backend erzeugt Payment-Session (Stripe Checkout / Mollie Hosted)  
+3. Gast zahlt  
+4. **Webhook** `payment.paid` → Status `confirmed`, Mail, Stock lock  
+5. Return-URL → Danke-Seite in Rentfreudenhaus  
+
+Nicht im Browser: API-Keys, manuelles „als bezahlt markieren“ ohne Webhook.
+
+Alternative: Adyen (näher an Oppwa) — mehr Setup, sinnvoll bei sehr hohem Volumen.
+
+## Conversion (Frontend)
+
+- Trust-Strip (Online-Rabatt, Vortag, Kinder gratis)
+- Modell **optional** mit Fotos; erneutes Tippen / „Modell entfernen“ = abwählen
+- Produkt-Button: Hinzufügen ↔ Entfernen
+- Warenkorb-Summe vor Kontaktdaten sichtbar
+
+## API-Vertrag
+
+Unverändert die Buchungs-API: `docs/booking-api.md` — die eigene Software implementiert dieselben Endpoints.

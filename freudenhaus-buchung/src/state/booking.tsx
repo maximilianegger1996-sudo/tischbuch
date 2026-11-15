@@ -56,7 +56,9 @@ type Ctx = {
     modelId: string,
     property1: string,
     modelTitle: string,
+    modelImage?: string,
   ) => void;
+  clearModel: (personId: string, productId: string) => void;
   updatePerson: (personId: string, patch: Partial<BookingPerson>) => void;
   setRemark: (v: string) => void;
   setDiscount: (v: string) => void;
@@ -245,6 +247,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     modelId: string,
     property1: string,
     modelTitle: string,
+    modelImage?: string,
   ) => {
     setDraft((d) => ({
       ...d,
@@ -254,7 +257,28 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           ...p,
           lines: p.lines.map((l) =>
             l.productId === productId
-              ? { ...l, modelId, property1, modelTitle }
+              ? { ...l, modelId, property1, modelTitle, modelImage }
+              : l,
+          ),
+        };
+      }),
+    }));
+  };
+
+  const clearModel = (personId: string, productId: string) => {
+    setDraft((d) => ({
+      ...d,
+      persons: d.persons.map((p) => {
+        if (p.id !== personId) return p;
+        return {
+          ...p,
+          lines: p.lines.map((l) =>
+            l.productId === productId
+              ? {
+                  productId: l.productId,
+                  count: l.count,
+                  title: l.title,
+                }
               : l,
           ),
         };
@@ -327,6 +351,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     setPickupDayBefore,
     toggleProduct,
     setModel,
+    clearModel,
     updatePerson,
     setRemark: (v) => setDraft((d) => ({ ...d, remark: v })),
     setDiscount: (v) => setDraft((d) => ({ ...d, discountCode: v })),

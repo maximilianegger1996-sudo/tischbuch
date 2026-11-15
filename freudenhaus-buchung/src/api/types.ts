@@ -83,6 +83,7 @@ export type CartLine = {
   count: number;
   title: string;
   modelTitle?: string;
+  modelImage?: string;
 };
 
 export type BookingPerson = {

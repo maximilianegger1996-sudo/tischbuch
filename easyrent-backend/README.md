@@ -1,21 +1,24 @@
-# Easyrent-Backend
+# Verleih-Backend (Seed)
 
-Neues Buchungs-Backend für **Rentfreudenhaus**. Die SPA spricht nur diese API — EasyRest bleibt Adapter hinter der Grenze.
+Startpunkt für die **eigene Verleih-Software** hinter Rentfreudenhaus.  
+Früher als Easyrent-/Wintersteiger-Adapter gedacht — Ziel ab jetzt: **eure** API.
 
 ```
-Rentfreudenhaus  →  /api/booking/*  →  Easyrent-Backend  →  EasyRest (Shop)
+Rentfreudenhaus  →  /api/booking/*  →  dieses Backend  →  eigene DB / Shop-Logik
 ```
+
+Zahlung, Stock und Reservierungen gehören hierher (nicht ins Frontend).
 
 ## Dev
 
 ```bash
-cp .env.example .env   # EASYREST_* setzen
-npm run dev            # http://127.0.0.1:8787
+cp .env.example .env
+npm run dev   # http://127.0.0.1:8787
 ```
 
-Vertrag: `../freudenhaus-buchung/docs/booking-api.md`
+Vertrag: `../freudenhaus-buchung/docs/booking-api.md`  
+Architektur: `../freudenhaus-buchung/docs/architecture.md`
 
 ## Status
 
-Übergang: Endpoints leiten auf die bestehende EasyRest-Live-Installation weiter.  
-Ziel: eigene Logik (Mapping, Quote, Zahlung, Mails) hier — Secrets nie im Frontend.
+Übergang kann noch EasyRest-Live lesen. Produktiv: eigene Katalog-/Preis-/Stock-Logik + Payment-Webhooks.

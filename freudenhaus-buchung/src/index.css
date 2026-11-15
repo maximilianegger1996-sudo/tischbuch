@@ -704,10 +704,127 @@ main {
   font-size: 0.88rem;
 }
 
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  justify-content: center;
+  margin: -0.5rem 0 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.trust-strip span {
+  border-bottom: 2px solid var(--pink);
+  padding-bottom: 0.15rem;
+  color: var(--ink);
+}
+
+.product-card.is-on {
+  border-color: var(--pink);
+  outline: 1px solid var(--pink);
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
 .model-box {
-  margin-top: 0.45rem;
+  margin-top: 0.75rem;
   display: grid;
-  gap: 0.45rem;
+  gap: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+}
+
+.model-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.55rem;
+}
+
+.model-card {
+  border: 1px solid var(--line);
+  background: var(--paper-alt);
+  padding: 0;
+  text-align: left;
+  display: grid;
+  gap: 0.25rem;
+  overflow: hidden;
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.model-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ink);
+}
+
+.model-card.active {
+  border-color: var(--pink);
+  outline: 1px solid var(--pink);
+  background: #fff;
+}
+
+.model-card img,
+.model-ph {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #e8e8e8;
+  display: block;
+}
+
+.model-brand,
+.model-title,
+.model-off {
+  padding: 0 0.55rem;
+  font-size: 0.72rem;
+}
+
+.model-brand {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 0.35rem;
+}
+
+.model-title {
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1.25;
+  padding-bottom: 0.45rem;
+  min-height: 2.4em;
+}
+
+.model-off {
+  color: var(--pink);
+  font-weight: 700;
+  padding-bottom: 0.45rem;
+}
+
+.conv-cta {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 1rem 1.1rem;
 }
 
 .chip-row {

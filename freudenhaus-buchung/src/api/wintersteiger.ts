@@ -14,6 +14,7 @@ import type {
 } from "./types";
 import { rentBuddyProvider } from "./rentbuddy";
 import { BRANCH_META, ONLINE_BRANCH_ORDER, SITE_DEFAULT, SPECIALS_DEFAULT } from "./mapping";
+import { enrichCategoriesWithMedia } from "./product-media";
 
 function euros(n: number): Money {
   return { amountCents: Math.round(n * 100), currency: "EUR" };
@@ -170,7 +171,7 @@ export const wintersteigerProvider: BookingProvider = {
     }
     try {
       const { reservablearticle } = await easyrest.reservableArticles();
-      const categories = buildCatalog(reservablearticle);
+      const categories = enrichCategoriesWithMedia(buildCatalog(reservablearticle));
 
       let cartTotal: Money | null = null;
       if (draft.locationId && draft.persons.some((p) => p.lines.length)) {
