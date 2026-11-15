@@ -517,6 +517,8 @@ main {
   padding: 0;
   overflow: hidden;
   transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  display: flex;
+  flex-direction: column;
 }
 
 .loc-card:hover {

@@ -335,7 +335,15 @@ function StepDates() {
                 <span className="dow">{DOW[(d.getDay() + 6) % 7]}</span>
                 <span className="num">{d.getDate()}</span>
                 <span className="badge">
-                  {disabled ? "nicht verfügbar" : pct ? `−${pct}%` : "·"}
+                  {disabled
+                    ? "nicht verfügbar"
+                    : selected && draft.from === iso(d) && !draft.to
+                      ? "1. Tag"
+                      : selected && draft.to === iso(d)
+                        ? `${daysBetween(draft.from!, draft.to)}. Tag`
+                        : pct
+                          ? `−${pct}%`
+                          : "·"}
                 </span>
               </button>
             );
@@ -345,8 +353,8 @@ function StepDates() {
           {draft.from && draft.to
             ? `${draft.from} → ${draft.to} · ${daysBetween(draft.from, draft.to)} Tage`
             : draft.from
-              ? "Enddatum tippen"
-              : "Startdatum tippen"}
+              ? "2. Tag tippen"
+              : "1. Tag tippen"}
         </div>
         <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
           <button type="button" className="btn" disabled={!draft.from || !draft.to} onClick={next}>
@@ -363,24 +371,33 @@ function StepLocation() {
   return (
     <section className="step-stage">
       <div className="stage-head">
-        <h2>Abholort</h2>
+        <h2>Wähle deinen Abholort:</h2>
         <p>Fünf Standorte direkt an der Piste — dort abholen, wo du in den Lift steigst.</p>
       </div>
       <div className="loc-grid">
         {locations.map((L) => (
-          <button
+          <div
             key={L.id}
-            type="button"
             className={`loc-card${draft.locationId === L.id ? " selected" : ""}`}
-            onClick={() => setLocation(L.id)}
           >
             {L.image ? <img src={L.image} alt="" /> : <div style={{ height: 160, background: "#eee" }} />}
             <div className="body">
               {L.highlight ? <span className="tag">{L.highlight}</span> : null}
               <h3>{L.title}</h3>
               <div className="muted" dangerouslySetInnerHTML={{ __html: (L.addressHtml || "").slice(0, 180) }} />
+              <button
+                type="button"
+                className={`btn${draft.locationId === L.id ? " accent" : ""}`}
+                style={{ padding: "12px 22px", marginTop: "0.75rem" }}
+                onClick={() => {
+                  setLocation(L.id);
+                  next();
+                }}
+              >
+                Hier leihen
+              </button>
             </div>
-          </button>
+          </div>
         ))}
       </div>
       <label className="check" style={{ marginTop: "1.25rem" }}>
@@ -391,11 +408,6 @@ function StepLocation() {
         />
         <span>Am Vortag abholen (ab {site?.pickupTime || "15:00"} Uhr) — entspannter erster Skitag.</span>
       </label>
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
-        <button type="button" className="btn" disabled={!draft.locationId} onClick={next}>
-          Weiter zur Ausrüstung
-        </button>
-      </div>
     </section>
   );
 }
