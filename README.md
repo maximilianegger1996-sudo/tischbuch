@@ -98,6 +98,16 @@ Echter SMTP-/Provider-Versand ist **nach** Go-Live (Queue bleibt die Quelle).
 
 Die App lädt `brand.fonts` und setzt CSS-Variablen über `applyBrand`. Personal-Login schreibt Presets nach; SQL: `supabase/brand-jost-body-font.sql`.
 
+## Guest MCP (dev / Agents)
+
+Gast-Tools für AI-Agents ohne Website-Cutover: Ordner [`mcp/`](mcp/).
+
+```bash
+cd mcp && npm install && npm run smoke
+```
+
+Siehe `mcp/README.md`. Ändert keine Live-Embeds.
+
 ## Go-Live (flip-ready)
 
 - Embed-Dateien zum Einfügen: Ordner [`embeds/`](embeds/)
