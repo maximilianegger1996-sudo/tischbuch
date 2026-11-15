@@ -49,6 +49,12 @@ for (const needle of [
   'Hilfe &amp; Support',
   'Kreditkartendaten anfordern',
   'tablini.at',
+  'SETUP_CATS',
+  'setupcat',
+  'Einstellung suchen',
+  'Online-Widget',
+  'Statusfarbe am Tisch',
+  'class="puck"',
 ]) {
   if (!html.includes(needle)) fail(`missing marker: ${needle}`);
   else ok(`marker ${needle}`);

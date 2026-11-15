@@ -254,8 +254,8 @@ label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing
 #v-floor .ftab.tx.soon{box-shadow:inset 0 0 0 2px var(--open)}
 #v-floor .ftab.tx.occ .ftxt span{display:block;font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.95}
 #v-floor .ftab.tx.occ .ftxt b{font-size:11px}
-#v-floor .ftab.tx .puck{display:none}
-#v-floor .ftab.tx.occ .puck{display:block;position:absolute;top:3px;right:3px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25);z-index:5;pointer-events:none}
+#v-floor .ftab.tx .puck,#v-floor .ftab .puck{display:none}
+#v-floor .ftab.tx.occ .puck,#v-floor .ftab.occ .puck{display:block;position:absolute;top:3px;right:3px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.35);box-shadow:0 1px 3px rgba(0,0,0,.35);z-index:8;pointer-events:none}
 .fcanvas{width:650px;border:5px solid var(--wall);border-radius:3px;background-color:var(--floor);
   background-image:repeating-linear-gradient(90deg,rgba(90,70,40,.10) 0 1px,transparent 1px 46px),repeating-linear-gradient(0deg,rgba(90,70,40,.05) 0 1px,transparent 1px 230px)}
 .fcanvas.out{background-color:var(--floor-out);border-style:dashed;border-width:3px;border-color:var(--accent);
@@ -609,9 +609,35 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
 #v-dash .tot-row b{font-size:22px;color:#3dd68c;font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0}
 #v-dash .tot-row em{font-style:normal;font-size:16px;color:#8b9098;font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
 #v-dash .tot-note{margin:8px 0 0;font-size:11px;color:#8b9098}
-#v-payment,#v-tablini,#v-help,#v-notes{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 14px 24px;min-height:50vh}
-#v-payment h2,#v-tablini h2,#v-help h2,#v-notes h2{margin:0 0 4px;font-family:var(--sans);font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
-#v-payment .txbanner,#v-tablini .txbanner,#v-help .txbanner,#v-notes .txbanner,#v-mails .txbanner{background:#e8f6ee;border:1px solid #b7e0c6;color:#1a5c38;border-radius:8px;padding:10px 12px;font-size:13px;margin:0 0 14px;line-height:1.45}
+#v-payment,#v-tablini,#v-help,#v-notes,#v-setup{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 14px 24px;min-height:50vh}
+#v-payment h2,#v-tablini h2,#v-help h2,#v-notes h2,#v-setup .setup-head h2{margin:0 0 4px;font-family:var(--sans);font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
+#v-payment .txbanner,#v-tablini .txbanner,#v-help .txbanner,#v-notes .txbanner,#v-mails .txbanner,#v-setup .txbanner{background:#e8f6ee;border:1px solid #b7e0c6;color:#1a5c38;border-radius:8px;padding:10px 12px;font-size:13px;margin:0 0 14px;line-height:1.45}
+#v-setup{padding:0;overflow:hidden;display:flex;flex-direction:column}
+#v-setup .setup-shell{display:grid;grid-template-columns:minmax(180px,220px) minmax(0,1fr);min-height:50vh;flex:1}
+#v-setup .setup-nav{background:#2f4f3e;color:#e8eee9;padding:12px 0 18px;overflow:auto}
+#v-setup .setup-nav .sn-search{margin:0 10px 10px;padding:8px 10px;border-radius:6px;border:0;width:calc(100% - 20px);font:inherit;background:#1f3529;color:#fff}
+#v-setup .setup-nav button{display:flex;align-items:center;gap:10px;width:100%;border:0;border-radius:0;background:transparent;color:#d7e2db;text-align:left;padding:11px 14px;font-family:var(--sans);font-size:14px;font-weight:500;text-transform:none;letter-spacing:0;cursor:pointer}
+#v-setup .setup-nav button:hover{background:rgba(255,255,255,.08)}
+#v-setup .setup-nav button.on{background:#1faa6e;color:#fff}
+#v-setup .setup-nav .ico{width:1.2em;opacity:.9;text-align:center}
+#v-setup .setup-main{padding:16px 18px 28px;overflow:auto;background:var(--panel)}
+#v-setup .setup-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+#v-setup .setup-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+#v-setup .setup-sec{margin:0 0 18px}
+#v-setup .setup-sec h3{margin:0 0 8px;font-family:var(--sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+#v-setup .srow{display:grid;grid-template-columns:minmax(140px,220px) minmax(0,1fr);gap:10px 16px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+#v-setup .srow:last-child{border:0}
+#v-setup .srow .lab{color:var(--ink);font-weight:500}
+#v-setup .srow .hint{grid-column:1/-1;margin:0;font-size:12px;color:var(--muted)}
+#v-setup .brandbox{display:flex;gap:14px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:8px;background:#fff}
+#v-setup .brandbox img{height:48px;max-width:120px;object-fit:contain}
+@media (max-width:800px){
+  #v-setup .setup-shell{grid-template-columns:1fr}
+  #v-setup .setup-nav{display:flex;flex-wrap:nowrap;overflow:auto;padding:8px;gap:4px}
+  #v-setup .setup-nav .sn-search{display:none}
+  #v-setup .setup-nav button{width:auto;white-space:nowrap;border-radius:6px;padding:8px 12px}
+  #v-setup .srow{grid-template-columns:1fr}
+}
 #v-payment .txwarn{background:#fff6e8;border:1px solid #f0d2a0;color:#7a4e08}
 .ptool{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
 .ptool input[type=search]{flex:1;min-width:180px}
@@ -945,9 +971,9 @@ const today=()=>iso(new Date());
 const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail'};
+let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail',setupCat:'restaurant',setupQ:''};
 let curId=null, pickSel=[];
-const FLOOR_DESIGN_DEFAULTS={untilEod:false,roomNames:true,multiTable:true,numberAbove:false,seatDots:false,tabliniStatus:false,statusColor:false,chairs:true,chairForm:'lehne',lowEnd:false};
+const FLOOR_DESIGN_DEFAULTS={untilEod:false,roomNames:true,multiTable:true,numberAbove:false,seatDots:false,tabliniStatus:false,statusColor:true,chairs:true,chairForm:'lehne',lowEnd:false};
 let floorDesign={...FLOOR_DESIGN_DEFAULTS};
 const floorDesignKey=()=>'tischbuch.floorDesign.'+((VENUE&&VENUE.slug)||(typeof VENUE_SLUG!=='undefined'?VENUE_SLUG:'lue')||'lue');
 function loadFloorDesign(){
@@ -1614,6 +1640,7 @@ function goMenu(id){
   if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
   if(ui.view==='plan') ui.firstScroll=true;
   if(ui.view==='help') ui.helpArt=null;
+  if(ui.view==='setup'){ ui.setupCat='restaurant'; ui.setupQ=''; }
   render();
 }
 function payCfg(){
@@ -1849,9 +1876,17 @@ function render(){
   const d=new Date(ui.date+'T12:00:00');
   $('#dateLabel').textContent=d.toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long'})+(ui.date===today()?' · heute':'');
   const qs=$('#q-search'); if(qs&&document.activeElement!==qs) qs.value=ui.search||'';
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
+  document.querySelectorAll('.tabs button').forEach(b=>{
+    let on=b.dataset.v===ui.view;
+    if(ui.view==='setup'){
+      if(b.dataset.v==='online') on=['online','zeiten'].includes(ui.setupCat);
+      else if(b.dataset.v==='setup') on=!['online','zeiten'].includes(ui.setupCat);
+      else on=false;
+    }
+    b.classList.toggle('on',on);
+  });
   for(const v of ['dash','payment','tablini','help','notes','plan','floor','cal','list','guests','stats','setup','online','mails']){ const el=$('#v-'+v); if(el) el.hidden=ui.view!==v; }
-  const kpisEl=$('#kpis'); if(kpisEl) kpisEl.hidden=['dash','payment','tablini','help','notes'].includes(ui.view);
+  const kpisEl=$('#kpis'); if(kpisEl) kpisEl.hidden=['dash','payment','tablini','help','notes','setup'].includes(ui.view);
   renderKpis();
   renderDrawerNav();
   if(ui.view==='dash') renderDashboard();
@@ -2217,9 +2252,9 @@ function renderFloors(){
       if(cur){
         const st=stateOf(cur);
         const share=cur.table_ids.length>1?Math.ceil(cur.num_people/cur.table_ids.length):cur.num_people;
-        const colorCls=floorDesign.statusColor?` occ ${st}`:' occ';
+        const colorCls=floorDesign.statusColor?` occ ${st}`:' occ no-status';
         const svg=TX?'':(floorDesign.chairs?tableSvg(t,w,h,st==='done'?0:share):tableSvg(t,w,h,0).replace(/class="chair[^"]*"[^/]*\/>/g,''));
-        return `<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${svg}${txExtras(t,cur)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
+        return `<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${svg}${txExtras(t,cur)}<i class="puck" aria-hidden="true"></i><div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
       }
       free++;
       const soon=next&&t2m(next.start_time)-m<=60;
@@ -2231,31 +2266,189 @@ function renderFloors(){
   }).join('');
 }
 
-function renderSetup(){
+const SETUP_CATS=[
+  {id:'geraet',label:'Gerät',ico:'🖥'},
+  {id:'restaurant',label:'Restaurant',ico:'⌂'},
+  {id:'reservierungen',label:'Reservierungen',ico:'☰'},
+  {id:'tische',label:'Tische',ico:'▦'},
+  {id:'tischplan',label:'Tischplan',ico:'⬚'},
+  {id:'flags',label:'Flags',ico:'⚑'},
+  {id:'zeiten',label:'Zeiten',ico:'⏱'},
+  {id:'online',label:'Online-Widget',ico:'☁'},
+  {id:'payment',label:'Payment',ico:'💳'},
+  {id:'texte',label:'Texte',ico:'✉'},
+  {id:'marke',label:'Marke',ico:'✦'},
+];
+function setupToggle(key,label){
+  floorDesign=loadFloorDesign();
+  return `<div class="srow"><span class="lab">${label}</span><button type="button" class="toggle${floorDesign[key]?' on':''}" data-act="designtoggle" data-k="${key}" aria-pressed="${floorDesign[key]?'true':'false'}"><i></i></button></div>`;
+}
+function setupRoomsPanel(){
   const seats=allTables().reduce((n,t)=>n+t.max_capacity,0);
-  $('#v-setup').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-    <span>${S.rooms.length} Räume · ${allTables().length} Tische · ${seats} Sitzplätze</span><button data-act="addroom">+ Raum</button></div>
+  return `<div class="setup-sec"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+    <span>${S.rooms.length} Räume · ${allTables().length} Tische · ${seats} Sitzplätze</span><button type="button" data-act="addroom">+ Raum</button></div>
   <div class="rooms">${S.rooms.map(r=>`<div class="roomcard">
     <div class="roomhead"><input data-room="${r.id}" data-f="name" value="${esc(r.name)}" aria-label="Raumname">
       <label style="white-space:nowrap;font-size:13px"><input type="checkbox" data-room="${r.id}" data-f="is_outside" ${r.is_outside?'checked':''}> außen</label>
-      <button class="link danger" data-act="delroom" data-id="${r.id}" title="Raum löschen">✕</button></div>
+      <button type="button" class="link danger" data-act="delroom" data-id="${r.id}" title="Raum löschen">✕</button></div>
     <div class="trow h"><span>Tisch</span><span>min.</span><span>max.</span><span></span></div>
     ${r.tables.map(t=>`<div class="trow"><input data-table="${t.id}" data-f="name" value="${esc(t.name)}" aria-label="Tischname">
       <input type="number" min="1" data-table="${t.id}" data-f="min_capacity" value="${t.min_capacity}" aria-label="Mindestbelegung">
       <input type="number" min="1" data-table="${t.id}" data-f="max_capacity" value="${t.max_capacity}" aria-label="Höchstbelegung">
-      <button class="link danger" data-act="deltable" data-id="${t.id}" title="Tisch löschen">✕</button></div>`).join('')}
-    <button data-act="addtable" data-id="${r.id}">+ Tisch</button></div>`).join('')}</div>
-  <h3 style="margin-top:20px">Feste Tischkombinationen</h3>
-  <p class="hint" style="margin:0 0 8px">Für größere Gruppen: Diese Tische werden gemeinsam vergeben, wenn kein einzelner Tisch passt. Tische mit „+“ trennen, zum Beispiel „T7 + T8“.</p>
+      <button type="button" class="link danger" data-act="deltable" data-id="${t.id}" title="Tisch löschen">✕</button></div>`).join('')}
+    <button type="button" data-act="addtable" data-id="${r.id}">+ Tisch</button></div>`).join('')||'<div class="empty">Keine Räume angelegt.</div>'}</div></div>
+  <div class="setup-sec"><h3>Feste Tischkombinationen</h3>
+  <p class="hint" style="margin:0 0 8px">Für größere Gruppen: Tische mit „+“ trennen, zum Beispiel „T7 + T8“.</p>
   <div class="flagrows" style="max-width:520px">${(S.combos||[]).map(c=>`<div class="comborow"><input data-combo="${c.id}" data-f="tables" value="${esc(c.table_ids.map(id=>tableById(id)?.name||'?').join(' + '))}" aria-label="Tische">
     <input type="number" min="1" data-combo="${c.id}" data-f="min_capacity" value="${c.min_capacity}" aria-label="Mindestbelegung">
     <input type="number" min="1" data-combo="${c.id}" data-f="max_capacity" value="${c.max_capacity}" aria-label="Höchstbelegung">
-    <button class="link danger" data-act="delcombo" data-id="${c.id}" title="Kombination löschen">✕</button></div>`).join('')||'<div class="empty">Keine festen Kombinationen.</div>'}</div>
-  <button data-act="addcombo">+ Kombination</button>
-  <h3 style="margin-top:20px">Kennzeichen</h3>
-  <p class="hint" style="margin:0 0 8px">Kennzeichen lassen sich an Reservierungen vergeben, zum Beispiel Geburtstag oder Allergie.</p>
-  <div class="flagrows">${S.flags.map(f=>`<div class="flagrow"><input type="color" data-flag="${f.id}" data-f="color" value="${esc(f.color)}" aria-label="Farbe"><input data-flag="${f.id}" data-f="label" value="${esc(f.label)}" aria-label="Bezeichnung"><button class="link danger" data-act="delflag" data-id="${f.id}" title="Kennzeichen löschen">✕</button></div>`).join('')}</div>
-  <button data-act="addflag">+ Kennzeichen</button>`;
+    <button type="button" class="link danger" data-act="delcombo" data-id="${c.id}" title="Kombination löschen">✕</button></div>`).join('')||'<div class="empty">Keine festen Kombinationen.</div>'}</div>
+  <button type="button" data-act="addcombo">+ Kombination</button></div>`;
+}
+function setupFlagsPanel(){
+  return `<div class="setup-sec"><p class="hint" style="margin:0 0 8px">Kennzeichen an Reservierungen vergeben, zum Beispiel Geburtstag oder Allergie.</p>
+  <div class="flagrows">${(S.flags||[]).map(f=>`<div class="flagrow"><input type="color" data-flag="${f.id}" data-f="color" value="${esc(f.color)}" aria-label="Farbe"><input data-flag="${f.id}" data-f="label" value="${esc(f.label)}" aria-label="Bezeichnung"><button type="button" class="link danger" data-act="delflag" data-id="${f.id}" title="Kennzeichen löschen">✕</button></div>`).join('')||'<div class="empty">Noch keine Kennzeichen.</div>'}</div>
+  <button type="button" data-act="addflag">+ Kennzeichen</button></div>`;
+}
+function setupOnlinePanel(){
+  const o=S.online, up=S.reservations.filter(r=>r.is_online_reservation&&r.type!=='canceled'&&r.date>=today()).length;
+  const locks=S.locks.filter(l=>l.date>=today()).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from));
+  const guestHref=ONLINE&&VENUE&&VENUE.slug?guestPath(VENUE.slug):guestPath(VENUE_SLUG);
+  return `<p class="txbanner">${up} kommende Online-Buchung(en). <a class="guestlink" href="${esc(guestHref)}" target="_blank" rel="noopener">Gäste-Ansicht ↗</a></p>
+  <div class="setup-sec"><h3>Einbinden</h3>
+  <div class="embedrow"><label for="o-url" style="font-size:13px">Öffentliche Adresse</label><input id="o-url" data-o="public_url" value="${esc(o.public_url)}" placeholder="${esc(location.origin+location.pathname)}"><span></span></div>
+  ${embedRows(o)}</div>
+  <div class="setup-sec"><h3>Regeln</h3>
+  <div class="orow">
+    <label class="f">Name auf der Buchungsseite<input data-o="name" value="${esc(o.name)}"></label>
+    <label class="f">Online buchbar bis … Personen<input type="number" min="1" max="50" data-o="max_pax" value="${o.max_pax}"></label>
+    <label class="f">Vorlaufzeit heute (Minuten)<input type="number" min="0" step="15" data-o="lead_minutes" value="${o.lead_minutes}"></label>
+    <label class="f">Buchbar bis … Tage im Voraus<input type="number" min="1" max="365" data-o="days_ahead" value="${o.days_ahead}"></label>
+    <label class="f">Storno durch Gast bis … Stunden vorher<input type="number" min="0" max="168" data-o="cancel_hours" value="${o.cancel_hours}"></label>
+    <label class="f">Online buchbar ab (leer = sofort)<input type="date" data-o="open_from" value="${esc(o.open_from||'')}"></label>
+    <label class="f">Höchstens … Gäste pro Stunde online (0 = kein Limit)<input type="number" min="0" max="500" data-o="limit_per_hour" value="${o.limit_per_hour||0}"></label>
+    <label class="f">Abstand der Uhrzeiten<select data-o="slot_step">${[15,30,60].map(v=>`<option value="${v}"${o.slot_step===v?' selected':''}>${v} Minuten</option>`).join('')}</select></label>
+  </div></div>
+  <div class="setup-sec"><h3>Online-Sperren</h3>
+  ${locks.map(l=>`<div class="lock"><span><b>${esc(longDate(l.date))}</b> · ${l.from==='00:00'&&l.to==='23:59'?'ganzer Tag':l.from+'–'+l.to}</span><button type="button" class="link danger" data-act="dellock" data-id="${l.id}" title="Sperre löschen">✕</button></div>`).join('')||'<div class="empty">Keine Sperren eingetragen.</div>'}
+  <div class="addlock" style="margin-top:10px">
+    <label class="f">Datum<input type="date" id="l-date" min="${today()}" value="${ui.date>=today()?ui.date:today()}"></label>
+    <label class="f">von<input type="time" id="l-from" value="00:00"></label>
+    <label class="f">bis<input type="time" id="l-to" value="23:59"></label>
+    <button type="button" data-act="addlock">Sperre hinzufügen</button>
+  </div></div>`;
+}
+function setupTimesPanel(){
+  const o=S.online, d=S.defaults;
+  return `<div class="setup-sec"><h3>Personal-Tagesplan</h3>
+    <div class="srow"><span class="lab">Ansicht ab</span><input type="time" step="900" data-def="show_from" value="${esc(d.show_from)}"></div>
+    <div class="srow"><span class="lab">Standarddauer</span><input type="time" step="900" data-def="standard_duration" value="${esc(d.standard_duration)}"></div>
+  </div>
+  <div class="setup-sec"><h3>Buchbare Beginnzeiten (Online)</h3>
+  <p class="hint" style="margin:0 0 8px">Gäste können online nur in diesen Zeitfenstern einen Beginn wählen.</p>
+  ${o.times.map((t,i)=>`<div class="twin"><label class="f">Bezeichnung<input data-ot="${i}" data-f="name" value="${esc(t.name)}"></label>
+    <label class="f">von<input type="time" step="900" data-ot="${i}" data-f="from" value="${t.from}"></label>
+    <label class="f">bis<input type="time" step="900" data-ot="${i}" data-f="to" value="${t.to}"></label>
+    <div class="wdays">${['Mo','Di','Mi','Do','Fr','Sa','So'].map((day,j)=>`<label><input type="checkbox" data-ot="${i}" data-wd="${j+1}"${(t.days||[]).includes(j+1)?' checked':''}>${day}</label>`).join('')}</div>
+    <button type="button" class="link danger" data-act="deltime" data-i="${i}" title="Zeitfenster löschen">✕</button></div>`).join('')||'<div class="empty">Keine Zeitfenster. Online ist nichts buchbar.</div>'}
+  <button type="button" data-act="addtime">+ Zeitfenster</button></div>`;
+}
+function setupBody(cat){
+  const o=S.online, brand=(VENUE&&VENUE.brand)||(VENUE_META&&VENUE_META.brand)||{}, cfg=payCfg();
+  if(cat==='geraet') return `<p class="txbanner">Einstellungen in diesem Bereich gelten nur für das aktuelle Gerät (Browser).</p>
+    <div class="setup-sec"><h3>Darstellung</h3>
+      <div class="srow"><span class="lab">Sprache</span><div class="seg"><button type="button" class="on" disabled>Deutsch</button><button type="button" disabled title="Bald">English</button></div></div>
+      ${setupToggle('lowEnd','Low-End-Modus')}
+      ${setupToggle('untilEod','Heute bis Tagesende')}
+    </div>
+    <div class="setup-sec"><h3>Tischplan-Anzeige</h3>
+      ${setupToggle('roomNames','Raumnamen')}
+      ${setupToggle('numberAbove','Nummer über dem Tisch')}
+      ${setupToggle('seatDots','Sitzplatz-Punkte')}
+      ${setupToggle('statusColor','Statusfarbe am Tisch')}
+      ${setupToggle('chairs','Stühle')}
+    </div>`;
+  if(cat==='restaurant') return `<div class="setup-sec"><h3>Betrieb</h3>
+      <div class="srow"><span class="lab">Anzeigename</span><input data-o="name" value="${esc(o.name)}" aria-label="Restaurantname"></div>
+      <div class="srow"><span class="lab">Öffentliche URL</span><input data-o="public_url" value="${esc(o.public_url||'')}" placeholder="${esc(location.origin+location.pathname)}"></div>
+      <div class="srow"><span class="lab">Slug</span><code>${esc((VENUE&&VENUE.slug)||VENUE_SLUG||'—')}</code></div>
+    </div>
+    <div class="setup-sec"><h3>Kapazität</h3>
+      <div class="srow"><span class="lab">Räume / Tische</span><span>${S.rooms.length} / ${allTables().length}</span></div>
+      <div class="srow"><span class="lab">Sitzplätze</span><span>${allTables().reduce((n,t)=>n+t.max_capacity,0)}</span></div>
+      <p class="hint">Räume und Tische unter „Tische“ bearbeiten.</p>
+    </div>`;
+  if(cat==='reservierungen') return `<div class="setup-sec"><h3>Standards</h3>
+      <div class="srow"><span class="lab">Tagesplan ab</span><input type="time" step="900" data-def="show_from" value="${esc(S.defaults.show_from)}"></div>
+      <div class="srow"><span class="lab">Standarddauer</span><input type="time" step="900" data-def="standard_duration" value="${esc(S.defaults.standard_duration)}"></div>
+      <div class="srow"><span class="lab">Walk-ins</span><span>über Knopf „Walk-in“ im Kopf</span></div>
+    </div>
+    <div class="setup-sec"><h3>Online-Regeln (Kurz)</h3>
+      <div class="srow"><span class="lab">Max. Personen online</span><input type="number" min="1" max="50" data-o="max_pax" value="${o.max_pax}"></div>
+      <div class="srow"><span class="lab">Vorlauf (Min.)</span><input type="number" min="0" step="15" data-o="lead_minutes" value="${o.lead_minutes}"></div>
+      <div class="srow"><span class="lab">Storno-Fenster (Std.)</span><input type="number" min="0" max="168" data-o="cancel_hours" value="${o.cancel_hours}"></div>
+      <p class="hint">Vollständige Online-Einstellungen unter „Online-Widget“ und „Zeiten“.</p>
+    </div>`;
+  if(cat==='tische') return setupRoomsPanel();
+  if(cat==='tischplan') return `<div class="setup-sec"><h3>Darstellung am Grundriss</h3>
+      ${setupToggle('roomNames','Raumnamen')}
+      ${setupToggle('multiTable','Mehrtisch-Reservierungen')}
+      ${setupToggle('numberAbove','Nummer über dem Tisch')}
+      ${setupToggle('seatDots','Sitzplatz-Punkte')}
+      ${setupToggle('tabliniStatus','Tablini-Status')}
+      ${setupToggle('statusColor','Statusfarbe am Tisch')}
+      ${setupToggle('chairs','Stühle')}
+      <div class="srow"><span class="lab">Stuhl-Form</span><div class="seg">${[['komplett','Komplett'],['lehne','Lehne'],['sitz','Sitz']].map(([v,l])=>`<button type="button" data-act="chairform" data-v="${v}" class="${floorDesign.chairForm===v?'on':''}">${l}</button>`).join('')}</div></div>
+      <div class="srow"><span class="lab">Design-Dialog</span><button type="button" data-act="opendesign">🎨 Design öffnen</button></div>
+      <div class="srow"><span class="lab">Zum Grundriss</span><button type="button" data-act="view" data-v="floor">Grundriss öffnen</button></div>
+    </div>`;
+  if(cat==='flags') return setupFlagsPanel();
+  if(cat==='zeiten') return setupTimesPanel();
+  if(cat==='online') return setupOnlinePanel();
+  if(cat==='payment') return `<p class="txbanner" style="background:#fff6e8;border-color:#f0d2a0;color:#7a4e08">Kein Zahlungsanbieter angebunden (PCI). Nur lokale Kartengarantie-Vermerke.</p>
+    <div class="setup-sec"><h3>Kartengarantie</h3>
+      <div class="srow"><span class="lab">Hinweis aktiv</span><button type="button" class="toggle${cfg.enabled?' on':''}" data-act="paytoggle" aria-pressed="${cfg.enabled?'true':'false'}"><i></i></button></div>
+      <div class="srow"><span class="lab">ab Personen</span><input type="number" min="1" max="99" data-pay="min_people" value="${cfg.min_people}"></div>
+      <div class="srow"><span class="lab">Liste</span><button type="button" data-act="menugo" data-id="payment">Zu Zahlungen</button></div>
+    </div>`;
+  if(cat==='texte'){ const c=S.mailcfg; return `<div class="setup-sec"><h3>Automatische E-Mails</h3>
+      <div class="srow"><span class="lab">Bestätigung</span><label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> bei neuer Reservierung</label></div>
+      <div class="srow"><span class="lab">Storno</span><label><input type="checkbox" data-m="cancel"${c.cancel?' checked':''}> bei Stornierung</label></div>
+      <div class="srow"><span class="lab">Grußformel</span><textarea rows="3" data-m="signature" style="width:100%">${esc(c.signature)}</textarea></div>
+      <p class="hint">SMTP-Versand folgt später — E-Mails landen im Postausgang unter Nachrichten.</p>
+      <div class="srow"><span class="lab">Nachrichten</span><button type="button" data-act="menugo" data-id="mails">Zu Nachrichten</button></div>
+    </div>`; }
+  if(cat==='marke') return `<div class="setup-sec"><h3>Markenauftritt</h3>
+      <div class="brandbox">
+        ${brand.logo?`<img src="${esc(brand.logo)}" alt="" onerror="this.hidden=true">`:''}
+        <div><b>${esc(o.name)}</b><div style="color:var(--muted);font-size:13px;margin-top:4px">${esc(brand.tagline||VENUE_META.blurb||'')}</div></div>
+      </div>
+      <div class="srow"><span class="lab">Slogan</span><span>${esc(brand.tagline||'—')}</span></div>
+      <div class="srow"><span class="lab">Personal-Schrift</span><span>Jost (alle Häuser)</span></div>
+      <p class="hint">Farben und Logo kommen aus der Betriebsdatei (venues.brand). Gast-Schriften bleiben hausspezifisch.</p>
+    </div>`;
+  return `<div class="empty">Unbekannte Kategorie.</div>`;
+}
+function renderSetup(){
+  const q=(ui.setupQ||'').trim().toLowerCase();
+  const cats=SETUP_CATS.filter(c=>!q||c.label.toLowerCase().includes(q)||c.id.includes(q));
+  let cat=ui.setupCat||'restaurant';
+  if(!SETUP_CATS.some(c=>c.id===cat)) cat='restaurant';
+  if(q&&cats.length&&!cats.some(c=>c.id===cat)) cat=cats[0].id;
+  ui.setupCat=cat;
+  const meta=SETUP_CATS.find(c=>c.id===cat)||SETUP_CATS[1];
+  $('#v-setup').innerHTML=`<div class="setup-shell">
+    <nav class="setup-nav" aria-label="Einstellungen">
+      <input type="search" class="sn-search" id="setup-q" placeholder="Einstellung suchen…" value="${esc(ui.setupQ||'')}" aria-label="Einstellung suchen">
+      ${cats.map(c=>`<button type="button" data-act="setupcat" data-id="${c.id}" class="${c.id===cat?'on':''}"><span class="ico" aria-hidden="true">${c.ico}</span>${c.label}</button>`).join('')||'<p style="padding:12px;opacity:.8">Keine Treffer.</p>'}
+    </nav>
+    <div class="setup-main">
+      <div class="setup-head"><div><h2>${esc(meta.label)}</h2><p>Einstellungen für ${esc((S.online&&S.online.name)||VENUE_META.name||'Betrieb')}</p></div></div>
+      ${cats.length?setupBody(cat):'<div class="empty">Keine Treffer für diese Suche.</div>'}
+    </div>
+  </div>`;
+  const sq=$('#setup-q');
+  if(sq) sq.oninput=()=>{ui.setupQ=sq.value; renderSetup();};
 }
 
 /* ---------- Statistik ---------- */
@@ -2819,7 +3012,16 @@ document.addEventListener('click',async ev=>{
   const a=el.dataset.act, id=el.dataset.id;
   if(a==='day'){ui.date=addDays(ui.date,+el.dataset.n); render();}
   else if(a==='today'){ui.date=today(); ui.firstScroll=true; render();}
-  else if(a==='view'){ui.view=el.dataset.v; if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7); if(ui.view==='plan') ui.firstScroll=true; setMenuOpen(false); render();}
+  else if(a==='view'){
+    ui.view=el.dataset.v;
+    if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
+    if(ui.view==='plan') ui.firstScroll=true;
+    if(ui.view==='setup') ui.setupCat=el.dataset.cat||'tische';
+    if(ui.view==='online'){ ui.view='setup'; ui.setupCat='online'; }
+    setMenuOpen(false); render();
+  }
+  else if(a==='setupcat'){ ui.setupCat=el.dataset.id; ui.setupQ=''; renderSetup(); }
+  else if(a==='paytoggle'){ const c=payCfg(); c.enabled=!c.enabled; save(); el.classList.toggle('on',c.enabled); el.setAttribute('aria-pressed',c.enabled?'true':'false'); }
   else if(a==='menu'){ setMenuOpen(!ui.menuOpen); }
   else if(a==='menuclose'){ setMenuOpen(false); }
   else if(a==='menugo'){ goMenu(el.dataset.id); }
@@ -2863,11 +3065,13 @@ document.addEventListener('click',async ev=>{
     const k=el.dataset.k; floorDesign[k]=!floorDesign[k]; saveFloorDesign(floorDesign);
     el.classList.toggle('on',floorDesign[k]); el.setAttribute('aria-pressed',floorDesign[k]?'true':'false');
     if(ui.view==='floor') renderFloor();
+    if(ui.view==='setup') renderSetup();
   }
   else if(a==='chairform'){
     floorDesign.chairForm=el.dataset.v; saveFloorDesign(floorDesign);
     el.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===floorDesign.chairForm));
     if(ui.view==='floor') renderFloor();
+    if(ui.view==='setup') renderSetup();
   }
   else if(a==='filter'){ui.filter=el.dataset.v; render();}
   else if(a==='planfilter'){ui.planFilter=el.dataset.v; render();}
@@ -3117,37 +3321,61 @@ $('#f-start').addEventListener('change',e=>{
 for(const i of ['#f-date','#f-end','#f-people']) $(i).addEventListener('change',renderPicker);
 for(const i of ['#f-date','#f-repeat','#f-until']) $(i).addEventListener('change',seriesHint);
 $('#f-tables').addEventListener('change',()=>{pickSel=[...document.querySelectorAll('#f-tables input:checked')].map(i=>i.value); renderPicker();});
-$('#v-setup').addEventListener('change',e=>{
-  const el=e.target, f=el.dataset.f; if(!f) return;
-  if(el.dataset.combo){const c=S.combos.find(x=>x.id===el.dataset.combo);
-    if(f==='tables'){const names=el.value.split(/[+,;]/).map(x=>x.trim().toLowerCase()).filter(Boolean), ids=names.map(n=>allTables().find(t=>t.name.toLowerCase()===n)?.id);
-      if(ids.length<2||ids.some(x=>!x)||new Set(ids).size!==ids.length){toast('Bitte mindestens zwei vorhandene Tische angeben, mit „+“ getrennt.'); return render();}
-      c.table_ids=ids;}
-    else{c[f]=Math.max(1,parseInt(el.value,10)||1); if(c.min_capacity>c.max_capacity){if(f==='min_capacity') c.max_capacity=c.min_capacity; else c.min_capacity=c.max_capacity;}}
-  }
-  else if(el.dataset.flag){const fl=S.flags.find(x=>x.id===el.dataset.flag); if(f==='color'){if(/^#[0-9a-f]{6}$/i.test(el.value)) fl.color=el.value;} else fl.label=el.value.trim()||fl.label;}
-  else if(el.dataset.room){const r=S.rooms.find(r=>r.id===el.dataset.room); r[f]=f==='is_outside'?el.checked:(el.value.trim()||r.name);}
-  else{const t=tableById(el.dataset.table);
-    if(f==='name') t.name=el.value.trim()||t.name; else t[f]=Math.max(1,parseInt(el.value,10)||1);
-    if(t.min_capacity>t.max_capacity){if(f==='min_capacity') t.max_capacity=t.min_capacity; else t.min_capacity=t.max_capacity;}
-  }
-  save(); render();
-});
-
-$('#v-online').addEventListener('change',e=>{
-  const el=e.target, o=S.online;
+function applyOnlineFieldChange(el){
+  const o=S.online;
   if(el.dataset.o){const k=el.dataset.o;
     if(k==='name') o.name=el.value.trim()||o.name;
     else if(k==='open_from') o.open_from=/^\d{4}-\d\d-\d\d$/.test(el.value)?el.value:'';
     else if(k==='public_url') o.public_url=/^https?:\/\//.test(el.value.trim())?el.value.trim():'';
     else{const lim={max_pax:[1,50],lead_minutes:[0,1440],days_ahead:[1,365],slot_step:[15,60],cancel_hours:[0,168],limit_per_hour:[0,500]}[k]; o[k]=clamp(parseInt(el.value,10)||lim[0],lim[0],lim[1]);}
-  }else if(el.dataset.ot!==undefined){
+    return true;
+  }
+  if(el.dataset.ot!==undefined){
     const t=o.times[+el.dataset.ot];
     if(el.dataset.wd){const d=+el.dataset.wd, set=new Set(t.days||[]); el.checked?set.add(d):set.delete(d); t.days=[...set].sort();}
     else if(el.dataset.f==='name') t.name=el.value.trim()||t.name;
-    else{const old=t[el.dataset.f]; if(!el.value) return render();
+    else{const old=t[el.dataset.f]; if(!el.value) return 'rerender';
       t[el.dataset.f]=el.value; if(t.to<t.from){t[el.dataset.f]=old; toast('„bis“ darf nicht vor „von“ liegen.');}}
-  }else return;
+    return true;
+  }
+  if(el.dataset.def){
+    const k=el.dataset.def;
+    if(!el.value) return 'rerender';
+    S.defaults[k]=el.value;
+    return true;
+  }
+  if(el.dataset.pay){
+    payCfg()[el.dataset.pay]=clamp(parseInt(el.value,10)||6,1,99);
+    return true;
+  }
+  return false;
+}
+function applySetupChange(el){
+  if(el.dataset.m){ S.mailcfg[el.dataset.m]=el.dataset.m==='signature'?el.value.trim():el.checked; return true; }
+  if(applyOnlineFieldChange(el)) return true;
+  const f=el.dataset.f; if(!f) return false;
+  if(el.dataset.combo){const c=S.combos.find(x=>x.id===el.dataset.combo);
+    if(f==='tables'){const names=el.value.split(/[+,;]/).map(x=>x.trim().toLowerCase()).filter(Boolean), ids=names.map(n=>allTables().find(t=>t.name.toLowerCase()===n)?.id);
+      if(ids.length<2||ids.some(x=>!x)||new Set(ids).size!==ids.length){toast('Bitte mindestens zwei vorhandene Tische angeben, mit „+“ getrennt.'); render(); return true;}
+      c.table_ids=ids;}
+    else{c[f]=Math.max(1,parseInt(el.value,10)||1); if(c.min_capacity>c.max_capacity){if(f==='min_capacity') c.max_capacity=c.min_capacity; else c.min_capacity=c.max_capacity;}}
+    return true;
+  }
+  if(el.dataset.flag){const fl=S.flags.find(x=>x.id===el.dataset.flag); if(f==='color'){if(/^#[0-9a-f]{6}$/i.test(el.value)) fl.color=el.value;} else fl.label=el.value.trim()||fl.label; return true;}
+  if(el.dataset.room){const r=S.rooms.find(r=>r.id===el.dataset.room); r[f]=f==='is_outside'?el.checked:(el.value.trim()||r.name); return true;}
+  if(el.dataset.table){const t=tableById(el.dataset.table);
+    if(f==='name') t.name=el.value.trim()||t.name; else t[f]=Math.max(1,parseInt(el.value,10)||1);
+    if(t.min_capacity>t.max_capacity){if(f==='min_capacity') t.max_capacity=t.min_capacity; else t.min_capacity=t.max_capacity;}
+    return true;
+  }
+  return false;
+}
+$('#v-online').addEventListener('change',e=>{
+  const r=applyOnlineFieldChange(e.target); if(!r) return;
+  save(); render();
+});
+$('#v-setup').addEventListener('change',e=>{
+  if(!applySetupChange(e.target)) return;
   save(); render();
 });
 $('#v-mails').addEventListener('change',e=>{
