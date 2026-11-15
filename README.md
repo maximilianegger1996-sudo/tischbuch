@@ -83,6 +83,13 @@ Kurztest je Haus:
 
 Echter SMTP-/Provider-Versand ist **nach** Go-Live (Queue bleibt die Quelle).
 
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) auf Push/PR zu `main`:
+
+- **SPA syntax:** `node scripts/check-spa.mjs` (HTML-Marker + Script-Syntax)
+- **MCP smoke:** `cd mcp && npm ci && npm run smoke` (Config + Verfügbarkeit, read-only)
+
 ## Stack
 
 - Frontend: eine `index.html` (kein Build)

@@ -173,7 +173,9 @@ details.tv td:last-child{text-align:right}
 .addlock{display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px}
 .addlock label{flex:1;min-width:110px}
 body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main,
-body.hub>header,body.hub>.kpis,body.hub>nav,body.hub>main{display:none}
+body.guest>#drawer-backdrop,body.guest>#staff-drawer,
+body.hub>header,body.hub>.kpis,body.hub>nav,body.hub>main,
+body.hub>#drawer-backdrop,body.hub>#staff-drawer{display:none}
 #guest{max-width:580px;margin:0 auto;padding:24px 16px 40px}
 .gcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
 .gcard h1{margin:0 0 2px;font-size:24px}
@@ -558,11 +560,97 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
   button:hover{border-color:var(--line)}
   .top button:hover{border-color:color-mix(in srgb,var(--brand-ink,#fff) 50%,transparent)}
 }
+/* ===== Tablex-Menü / Dashboard / Design ===== */
+.top .brand{position:relative}
+#b-menu{flex:none;min-width:44px;min-height:44px;padding:8px 10px;margin-right:2px;font-size:18px;line-height:1;letter-spacing:0;text-transform:none}
+#drawer-backdrop{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s}
+#drawer-backdrop.on{opacity:1;pointer-events:auto}
+#staff-drawer{position:fixed;top:0;left:0;bottom:0;z-index:91;width:min(300px,86vw);background:#1a1c1f;color:#f2f2f2;transform:translateX(-105%);transition:transform .22s ease;display:flex;flex-direction:column;font-family:var(--sans);box-shadow:8px 0 28px rgba(0,0,0,.35)}
+#staff-drawer.on{transform:translateX(0)}
+#staff-drawer .dw-head{padding:22px 18px 14px;border-bottom:1px solid #2c3036}
+#staff-drawer .dw-head b{display:block;font-size:16px;font-weight:600;letter-spacing:.02em}
+#staff-drawer .dw-head span{display:block;font-size:13px;color:#b8bcc4;margin-top:2px}
+#staff-drawer .dw-nav{flex:1;overflow:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
+#staff-drawer .dw-nav button{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;background:transparent;color:#f2f2f2;border-radius:0;padding:13px 18px;min-height:48px;text-transform:none;letter-spacing:0;font-size:15px;font-weight:500}
+#staff-drawer .dw-nav button .ico{width:22px;text-align:center;opacity:.9;font-size:16px}
+#staff-drawer .dw-nav button.on{background:#2a2e36}
+#staff-drawer .dw-nav button:hover{background:#24282f}
+#staff-drawer .dw-nav button.danger{color:#ff5a5a}
+#staff-drawer .dw-sep{height:1px;background:#2c3036;margin:8px 0}
+#staff-drawer .dw-foot{padding:12px 18px 18px;border-top:1px solid #2c3036;font-size:11px;color:#8b9098;line-height:1.55}
+#staff-drawer .dw-foot a{color:#aeb4bc;text-decoration:none}
+#v-dash{background:#1f2228;color:#e8eaed;border:0;border-radius:8px;padding:18px 16px 28px;min-height:60vh}
+#v-dash .dash-title{margin:0;font-size:28px;font-weight:700;letter-spacing:.01em;color:#fff;text-transform:none;font-family:var(--sans)}
+#v-dash .dash-sub{margin:4px 0 18px;color:#a3a8b0;font-size:14px}
+#v-dash .dash-cap{display:grid;gap:12px;margin-bottom:16px}
+#v-dash .dash-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+#v-dash .dash-row .lab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#c5c8ce;display:flex;align-items:center;gap:8px;min-width:88px}
+#v-dash .dash-row .vals{font-variant-numeric:tabular-nums;font-size:14px;color:#e8eaed}
+#v-dash .dash-row .pct{color:#3dd68c;font-weight:600;font-variant-numeric:tabular-nums;min-width:42px;text-align:right}
+#v-dash .bartrack{height:8px;background:#2c313a;border-radius:99px;overflow:hidden;margin-top:4px;grid-column:1/-1}
+#v-dash .bartrack i{display:block;height:100%;background:#3dd68c;border-radius:99px;min-width:0}
+#v-dash .dash-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+#v-dash .dash-kpi{background:#2a2e36;border-radius:8px;padding:14px 10px;text-align:center}
+#v-dash .dash-kpi b{display:block;font-size:28px;font-weight:700;color:#3dd68c;font-variant-numeric:tabular-nums;line-height:1.1}
+#v-dash .dash-kpi span{display:block;margin-top:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#a3a8b0}
+#v-dash .dash-kpi.muted b{color:#c5c8ce}
+#v-dash .dash-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+#v-dash .dash-chip{background:#2a2e36;border:1px solid #3a404c;border-radius:8px;padding:12px 10px;font-size:13px;color:#c5c8ce;text-align:center}
+#v-dash .dash-chip.on{border-color:#c9a227;color:#f0c44d;box-shadow:0 0 0 1px rgba(240,196,77,.25)}
+#v-dash .dash-mix,#v-dash .dash-totals{background:#2a2e36;border-radius:8px;padding:14px;margin-bottom:12px}
+#v-dash .dash-mix{display:grid;grid-template-columns:1fr 1.1fr;gap:12px;align-items:center}
+#v-dash .mix-chart{width:110px;height:110px;margin:0 auto;border-radius:50%;background:conic-gradient(#8b9098 0 var(--w1),#4f8cff var(--w1) var(--w2),#3dd68c var(--w2) 100%)}
+#v-dash .mix-legend{font-size:13px;color:#c5c8ce;display:grid;gap:6px}
+#v-dash .mix-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+#v-dash .mix-legend b{float:right;font-weight:600}
+#v-dash .dash-mix h3,#v-dash .dash-totals h3{margin:0 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#a3a8b0;font-family:var(--sans);font-weight:600}
+#v-dash .tot-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #363b44;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#a3a8b0}
+#v-dash .tot-row:last-child{border:0}
+#v-dash .tot-row b{font-size:22px;color:#3dd68c;font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0}
+#v-dash .tot-row em{font-style:normal;font-size:16px;color:#8b9098;font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
+#v-dash .tot-note{margin:8px 0 0;font-size:11px;color:#8b9098}
+#v-stub{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:28px 18px;text-align:center}
+#v-stub h3{margin:0 0 8px;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:20px;color:var(--ink)}
+#v-stub p{margin:0;color:var(--muted)}
+#designdlg{width:min(420px,calc(100vw - 24px));background:#2a2e36;color:#e8eaed;border:0;border-radius:12px;max-height:min(92vh,720px)}
+#designdlg .dh{border-bottom-color:#3a404c;background:#2a2e36}
+#designdlg .dh h2{color:#fff;font-family:var(--sans);text-transform:none;letter-spacing:0}
+#designdlg .db{padding:8px 0 16px;overflow:auto;max-height:min(70vh,560px)}
+#designdlg .df{border-top-color:#3a404c;background:#2a2e36}
+#designdlg .df button{background:#3a404c;border-color:#4a5160;color:#e8eaed}
+#designdlg .dsec{padding:10px 16px 4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8b9098}
+#designdlg .drow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #343943;font-size:15px}
+#designdlg .drow:last-child{border:0}
+#designdlg .seg{display:flex;gap:0;border:1px solid #4a5160;border-radius:6px;overflow:hidden}
+#designdlg .seg button{border:0;border-radius:0;background:#2a2e36;color:#c5c8ce;padding:8px 12px;min-height:36px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500}
+#designdlg .seg button.on{background:#3a404c;color:#fff}
+.toggle{position:relative;width:46px;height:28px;flex:none;border-radius:99px;border:0;background:#555b66;padding:0;cursor:pointer}
+.toggle.on{background:#1faa6e}
+.toggle i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .15s;pointer-events:none}
+.toggle.on i{left:21px}
+#v-floor .floor-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
+#v-floor .floor-tools button.design-btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#v-floor.low-end .ftab.tx,#v-floor.low-end .tx-room-label{box-shadow:none!important;filter:none!important}
+#v-floor .ftab.tx .num-above{position:absolute;left:50%;top:-16px;transform:translateX(-50%);font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);pointer-events:none;white-space:nowrap}
+#v-floor .ftab.tx .seat-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none;z-index:6}
+#v-floor .ftab.tx .multi-badge{position:absolute;left:3px;bottom:3px;font-size:9px;font-weight:700;background:rgba(0,0,0,.45);color:#fff;border-radius:3px;padding:1px 4px;pointer-events:none;z-index:6}
+#v-floor .ftab.tx .tx-chairs{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:visible}
+#v-floor .ftab.tx .tx-chairs span{position:absolute;background:#6d4c2f;border:1px solid rgba(0,0,0,.25)}
+#v-floor .ftab.tx.no-status{background:#8f6238!important}
+#v-floor .tx-room-label[hidden]{display:none!important}
+@media (max-width:999px){
+  .top .brand{flex-wrap:nowrap}
+  #b-menu{order:-1}
+  #v-dash .dash-mix{grid-template-columns:1fr}
+  #v-dash .dash-kpis{gap:8px}
+  #v-dash .dash-kpi{padding:12px 6px}
+  #v-dash .dash-kpi b{font-size:24px}
+}
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="brand"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b><strong class="app-title">Tischbuch</strong><span class="role-pill">Personal</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
+  <div class="brand"><button type="button" id="b-menu" data-act="menu" aria-label="Menü öffnen" aria-expanded="false" aria-controls="staff-drawer">☰</button><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b><strong class="app-title">Tischbuch</strong><span class="role-pill">Personal</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
   <div class="datenav">
     <button data-act="day" data-n="-1" aria-label="Vorheriger Tag">‹</button>
     <button data-act="today">Heute</button>
@@ -580,6 +668,7 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
 </header>
 <div class="kpis" id="kpis"></div>
 <nav class="tabs">
+  <button data-act="view" data-v="dash">Dashboard</button>
   <button data-act="view" data-v="plan">Tagesplan</button>
   <button data-act="view" data-v="floor">Grundriss</button>
   <button data-act="view" data-v="cal">Kalender</button>
@@ -591,6 +680,8 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
   <button data-act="view" data-v="mails">E-Mails</button>
 </nav>
 <main>
+  <section id="v-dash" hidden></section>
+  <section id="v-stub" hidden></section>
   <section id="v-plan">
     <div class="planwrap">
       <div class="plan-block">
@@ -775,6 +866,21 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
   <div class="db"><div id="c-text"></div></div>
   <div class="df"><button type="button" id="c-no">Abbrechen</button><button type="button" class="primary" id="c-yes">Ja</button></div>
 </dialog>
+<dialog id="designdlg">
+  <div class="dh"><h2>Design</h2><button type="button" class="link" data-act="close" aria-label="Schließen" style="color:#fff">✕</button></div>
+  <div class="db" id="design-body"></div>
+  <div class="df"><button type="button" data-act="close">Schließen</button></div>
+</dialog>
+<div id="drawer-backdrop" data-act="menuclose" hidden></div>
+<aside id="staff-drawer" aria-hidden="true" hidden>
+  <div class="dw-head"><b id="dw-title">Tischbuch</b><span id="dw-sub">Personal</span></div>
+  <nav class="dw-nav" id="dw-nav"></nav>
+  <div class="dw-foot">
+    <div>Tischbuch · Lürzer Obertauern</div>
+    <div><a href="mailto:info@luerzer.at">info@luerzer.at</a></div>
+    <div>Personal-App</div>
+  </div>
+</aside>
 <div id="cards"></div>
 <div id="toast" role="status"></div>
 <div id="tip" role="tooltip"></div>
@@ -793,8 +899,16 @@ const today=()=>iso(new Date());
 const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0}};
+let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,stub:null};
 let curId=null, pickSel=[];
+const FLOOR_DESIGN_DEFAULTS={untilEod:false,roomNames:true,multiTable:true,numberAbove:false,seatDots:false,tabliniStatus:false,statusColor:false,chairs:true,chairForm:'lehne',lowEnd:false};
+let floorDesign={...FLOOR_DESIGN_DEFAULTS};
+const floorDesignKey=()=>'tischbuch.floorDesign.'+((VENUE&&VENUE.slug)||(typeof VENUE_SLUG!=='undefined'?VENUE_SLUG:'lue')||'lue');
+function loadFloorDesign(){
+  try{const raw=localStorage.getItem(floorDesignKey()); if(raw){const d=JSON.parse(raw); return {...FLOOR_DESIGN_DEFAULTS,...d};}}catch(e){}
+  return {...FLOOR_DESIGN_DEFAULTS};
+}
+function saveFloorDesign(d){ try{localStorage.setItem(floorDesignKey(),JSON.stringify(d));}catch(e){} }
 
 /* ---------- Daten ---------- */
 const QS=new URLSearchParams(location.search), GUEST=QS.has('gast'), EMBED=QS.has('embed');
@@ -1334,16 +1448,207 @@ function stateOf(r){
 }
 const LABEL={not_started:'erwartet',late:'verspätet',arrived:'angekommen',done:'gegangen',waiting_list:'Warteliste',canceled:'storniert'};
 
+/* ---------- Menü / Dashboard / Design ---------- */
+const MENU_ITEMS=[
+  {id:'dash',label:'Dashboard',ico:'◐',view:'dash'},
+  {id:'res',label:'Reservierungen',ico:'☰',view:'plan'},
+  {id:'contacts',label:'Kontakte',ico:'👤',view:'guests'},
+  {id:'notes',label:'Notizen',ico:'📝',view:'plan',focus:'notes'},
+  {id:'payment',label:'Payment',ico:'💳',stub:'Payment'},
+  {id:'tablini',label:'Tablini',ico:'▮',stub:'Tablini'},
+  {id:'mails',label:'Nachrichten',ico:'✉',view:'mails'},
+  {id:'setup',label:'Einstellungen',ico:'⚙',view:'setup'},
+  {id:'help',label:'Hilfe',ico:'?',stub:'Hilfe'},
+];
+function venueDrawerTitle(){
+  const name=(S&&S.online&&S.online.name)||(VENUE&&VENUE.name)||VENUE_META.name||'Tischbuch';
+  const slug=(VENUE&&VENUE.slug)||VENUE_SLUG;
+  if(slug==='steinbock') return {title:name.includes('STEINBOCK')?name.split(/[·.]/)[0].trim()+'.':'Restaurant STEINBOCK.',sub:'Wirtshaus am Tauern'};
+  if(slug==='lue') return {title:'LÜ – Burger & Grill',sub:'Obertauern'};
+  if(slug==='mundwerk') return {title:'Mundwerk',sub:'Restaurant Obertauern'};
+  return {title:name,sub:VENUE_META.blurb||'Personal'};
+}
+function setMenuOpen(on){
+  ui.menuOpen=!!on;
+  const d=$('#staff-drawer'), b=$('#drawer-backdrop'), btn=$('#b-menu');
+  if(!d||!b) return;
+  d.hidden=false; b.hidden=false;
+  requestAnimationFrame(()=>{ d.classList.toggle('on',ui.menuOpen); b.classList.toggle('on',ui.menuOpen); });
+  if(!ui.menuOpen) setTimeout(()=>{ if(!ui.menuOpen){ d.hidden=true; b.hidden=true; } },240);
+  d.setAttribute('aria-hidden', ui.menuOpen?'false':'true');
+  if(btn) btn.setAttribute('aria-expanded', ui.menuOpen?'true':'false');
+  renderDrawerNav();
+}
+function renderDrawerNav(){
+  const nav=$('#dw-nav'); if(!nav) return;
+  const {title,sub}=venueDrawerTitle();
+  $('#dw-title').textContent=title; $('#dw-sub').textContent=sub;
+  const active=ui.stub||ui.view;
+  const map={dash:'dash',plan:'res',guests:'contacts',mails:'mails',setup:'setup'};
+  const cur=ui.stub||map[ui.view]||'';
+  nav.innerHTML=MENU_ITEMS.map(it=>{
+    const on=(!ui.stub&&it.view&&(it.id===cur||(it.view===ui.view&&!it.stub)))||(ui.stub&&it.stub===ui.stub);
+    return `<button type="button" data-act="menugo" data-id="${it.id}" class="${on?'on':''}"><span class="ico" aria-hidden="true">${it.ico}</span>${it.label}</button>`;
+  }).join('')+`<div class="dw-sep"></div>
+    <button type="button" data-act="switchvenue"><span class="ico" aria-hidden="true">⌂</span>Gastro wechseln</button>
+    <button type="button" class="danger" data-act="logout"><span class="ico" aria-hidden="true">⎋</span>Abmelden</button>`;
+}
+function goMenu(id){
+  const it=MENU_ITEMS.find(x=>x.id===id); if(!it) return;
+  setMenuOpen(false);
+  if(it.stub){ ui.stub=it.stub; ui.view='stub'; render(); return; }
+  ui.stub=null; ui.view=it.view;
+  if(it.focus==='notes'){ ui.view='plan'; }
+  if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
+  if(ui.view==='plan') ui.firstScroll=true;
+  render();
+  if(it.focus==='notes'){ const n=$('#n-text'); if(n){ n.scrollIntoView({behavior:'smooth',block:'center'}); n.focus(); } }
+}
+function renderStub(){
+  const name=ui.stub||'Funktion';
+  $('#v-stub').innerHTML=`<h3>${esc(name)}</h3><p>Bald verfügbar — noch nicht angebunden.</p>`;
+}
+function dashStats(date){
+  const all=dayRes(date), rs=all.filter(r=>r.type==='reservation');
+  const sum=a=>a.reduce((n,r)=>n+r.num_people,0);
+  const guests=sum(rs);
+  const pending=sum(rs.filter(r=>r.status_guest==='not_started'||stateOf(r)==='late'));
+  const gone=sum(rs.filter(r=>r.status_guest==='done'));
+  const canceled=all.filter(r=>r.type==='canceled');
+  const wait=all.filter(r=>r.type==='waiting_list');
+  const unconfOnline=wait.filter(r=>r.is_online_reservation).length;
+  const stornoOnline=canceled.filter(r=>r.cancel_reason==='canceled_by_guest'||r.is_online_reservation).length;
+  const walk=rs.filter(r=>r.is_walkin), online=rs.filter(r=>r.is_online_reservation&&!r.is_walkin), lokal=rs.filter(r=>!r.is_walkin&&!r.is_online_reservation);
+  const seats=allTables().reduce((n,t)=>n+t.max_capacity,0);
+  const tables=allTables().length;
+  let usedSeats=0, usedTables=0;
+  if(date===today()){
+    const n=nowMin();
+    for(const t of allTables()){
+      const hit=rs.find(r=>r.table_ids.includes(t.id)&&t2m(r.start_time)<=n&&t2m(r.end_time)>n&&r.status_guest!=='done');
+      if(hit){ usedTables++; usedSeats+=t.max_capacity; }
+    }
+  }else{
+    const ids=new Set(); for(const r of rs) for(const id of r.table_ids) ids.add(id);
+    usedTables=ids.size; usedSeats=rs.reduce((n,r)=>n+r.num_people,0);
+  }
+  return {rs,guests,pending,gone,canceled:canceled.length,wait:wait.length,unconfOnline,stornoOnline,
+    walk:sum(walk),online:sum(online),lokal:sum(lokal),seats,tables,usedSeats:Math.min(usedSeats,seats),usedTables,
+    resCount:rs.length};
+}
+function renderDashboard(){
+  const d=new Date(ui.date+'T12:00:00');
+  const isToday=ui.date===today();
+  const st=dashStats(ui.date);
+  const prevDate=addDays(ui.date,-365);
+  const prev=dashStats(prevDate);
+  const pct=(a,b)=>b?Math.round(a/b*100):0;
+  const seatPct=pct(st.usedSeats,st.seats), tabPct=pct(st.usedTables,st.tables);
+  const mixTotal=st.walk+st.online+st.lokal||1;
+  const w1=Math.round(st.walk/mixTotal*100), w2=w1+Math.round(st.online/mixTotal*100);
+  const chip=(n,label,on)=>`<div class="dash-chip${on?' on':''}">${n} ${label}</div>`;
+  $('#v-dash').innerHTML=`<h2 class="dash-title">${isToday?'Heute':esc(d.toLocaleDateString('de-AT',{weekday:'long'}))}</h2>
+    <p class="dash-sub">${esc(d.toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long'}))}</p>
+    <div class="dash-cap">
+      <div class="dash-row"><span class="lab">🪑 Plätze</span><span class="vals">${st.usedSeats} / ${st.seats}</span><span class="pct">${seatPct}%</span><div class="bartrack"><i style="width:${seatPct}%"></i></div></div>
+      <div class="dash-row"><span class="lab">▦ Tische</span><span class="vals">${st.usedTables} / ${st.tables}</span><span class="pct">${tabPct}%</span><div class="bartrack"><i style="width:${tabPct}%"></i></div></div>
+    </div>
+    <div class="dash-kpis">
+      <div class="dash-kpi"><b>${st.guests}</b><span>Gesamt</span></div>
+      <div class="dash-kpi muted"><b>${st.pending}</b><span>Anstehend</span></div>
+      <div class="dash-kpi muted"><b>${st.gone}</b><span>Gegangen</span></div>
+    </div>
+    <div class="dash-chips">
+      ${chip(st.canceled,'Storniert',st.canceled>0)}
+      ${chip(st.unconfOnline,'Unbest. Online',st.unconfOnline>0)}
+      ${chip(st.stornoOnline,'Storno Online',st.stornoOnline>0)}
+      ${chip(st.wait,'Warteliste',st.wait>0)}
+      ${chip(0,'Nachrichten-Fehler',false)}
+    </div>
+    <div class="dash-mix">
+      <div class="mix-chart" style="--w1:${w1}%;--w2:${w2}%"></div>
+      <div><h3 style="text-align:right">Gäste-Mix</h3>
+        <div class="mix-legend">
+          <div><i style="background:#8b9098"></i>Walk-In <b>${pct(st.walk,mixTotal)}%</b></div>
+          <div><i style="background:#4f8cff"></i>Online <b>${pct(st.online,mixTotal)}%</b></div>
+          <div><i style="background:#3dd68c"></i>Lokal <b>${pct(st.lokal,mixTotal)}%</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="dash-totals">
+      <div class="tot-row"><span>Gäste</span><b>${st.guests}</b><em>${prev.guests}</em></div>
+      <div class="tot-row"><span>Reservierungen</span><b>${st.resCount}</b><em>${prev.resCount}</em></div>
+      <div class="tot-row"><span>Storniert</span><b>${st.canceled}</b><em>${prev.canceled}</em></div>
+      <p class="tot-note">Heute vs Vorjahr (${esc(shortDate(prevDate))})</p>
+    </div>`;
+}
+function openDesign(){
+  floorDesign=loadFloorDesign();
+  const row=(key,label)=>`<div class="drow"><span>${label}</span><button type="button" class="toggle${floorDesign[key]?' on':''}" data-act="designtoggle" data-k="${key}" aria-pressed="${floorDesign[key]?'true':'false'}"><i></i></button></div>`;
+  const forms=[['komplett','Komplett'],['lehne','Lehne'],['sitz','Sitz']];
+  $('#design-body').innerHTML=`
+    <div class="dsec">Anzeige</div>
+    ${row('untilEod','Heute bis Tagesende')}
+    ${row('roomNames','Raumnamen')}
+    ${row('multiTable','Mehrtisch-Reservierungen')}
+    ${row('numberAbove','Nummer über dem Tisch')}
+    ${row('seatDots','Sitzplatz-Punkte')}
+    ${row('tabliniStatus','Tablini-Status')}
+    ${row('statusColor','Statusfarbe am Tisch')}
+    <div class="dsec">Stühle</div>
+    ${row('chairs','Stühle')}
+    <div class="drow"><span>Stuhl-Form</span><div class="seg">${forms.map(([v,l])=>`<button type="button" data-act="chairform" data-v="${v}" class="${floorDesign.chairForm===v?'on':''}">${l}</button>`).join('')}</div></div>
+    <div class="dsec">Diagnose</div>
+    ${row('lowEnd','Low-End-Modus')}`;
+  $('#designdlg').showModal();
+}
+function txChairHtml(t,w,h){
+  if(!floorDesign.chairs) return '';
+  const n=clamp(t.max_capacity,1,12), form=floorDesign.chairForm||'lehne';
+  let out='';
+  const piece=(x,y,ww,hh,vert)=>{
+    if(form==='sitz') return `<span style="left:${x}px;top:${y}px;width:${ww}px;height:${hh}px;border-radius:2px"></span>`;
+    if(form==='lehne') return `<span style="left:${x}px;top:${y}px;width:${ww}px;height:${hh}px;border-radius:2px"></span><span style="left:${vert?x:x+2}px;top:${vert?y+2:y}px;width:${vert?3:ww-4}px;height:${vert?hh-4:3}px;border-radius:1px;background:#4a3420"></span>`;
+    return `<span style="left:${x}px;top:${y}px;width:${ww}px;height:${hh}px;border-radius:3px"></span><span style="left:${vert?x:x+2}px;top:${vert?y+2:y}px;width:${vert?4:ww-4}px;height:${vert?hh-4:4}px;border-radius:1px;background:#4a3420"></span>`;
+  };
+  if(n<=2){
+    out+=piece(w/2-8,-8,16,7,false)+(n>1?piece(w/2-8,h+1,16,7,false):'');
+  }else{
+    const k=Math.ceil(n/2);
+    for(let i=0;i<n;i++){
+      const row=i%2, cnt=row?n-k:k, j=(i-row)/2, px=w*(j+.5)/cnt;
+      out+=piece(px-7,row?h+1:-8,14,7,false);
+    }
+  }
+  return `<div class="tx-chairs" aria-hidden="true">${out}</div>`;
+}
+function txExtras(t,cur){
+  let x='';
+  if(floorDesign.numberAbove) x+=`<span class="num-above">${esc(t.name)}</span>`;
+  if(floorDesign.seatDots){
+    const n=clamp(t.max_capacity,1,10);
+    for(let i=0;i<n;i++){ const a=(i/n)*Math.PI*2-Math.PI/2, cx=50+Math.cos(a)*42, cy=50+Math.sin(a)*42; x+=`<i class="seat-dot" style="left:calc(${cx}% - 3px);top:calc(${cy}% - 3px)"></i>`; }
+  }
+  if(floorDesign.multiTable&&cur&&cur.table_ids.length>1) x+=`<span class="multi-badge">${cur.table_ids.length}×</span>`;
+  if(floorDesign.tabliniStatus&&cur) x+=`<span class="multi-badge" style="left:auto;right:3px;bottom:3px;background:#1faa6e">T</span>`;
+  return x;
+}
+
 /* ---------- Anzeige ---------- */
 function render(){
   if(GUEST) return renderGuest();
+  floorDesign=loadFloorDesign();
   $('#date').value=ui.date;
   const d=new Date(ui.date+'T12:00:00');
   $('#dateLabel').textContent=d.toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long'})+(ui.date===today()?' · heute':'');
   const qs=$('#q-search'); if(qs&&document.activeElement!==qs) qs.value=ui.search||'';
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
-  for(const v of ['plan','floor','cal','list','guests','stats','setup','online','mails']) $('#v-'+v).hidden=ui.view!==v;
+  for(const v of ['dash','stub','plan','floor','cal','list','guests','stats','setup','online','mails']){ const el=$('#v-'+v); if(el) el.hidden=ui.view!==v; }
+  const kpisEl=$('#kpis'); if(kpisEl) kpisEl.hidden=ui.view==='dash'||ui.view==='stub';
   renderKpis();
+  renderDrawerNav();
+  if(ui.view==='dash') renderDashboard();
+  if(ui.view==='stub') renderStub();
   if(ui.view==='plan'){renderPlan();renderWait();}
   if(ui.view==='floor') renderFloor();
   if(ui.view==='cal') renderCal();
@@ -1591,12 +1896,18 @@ function setFloorZoom(next,{cx,cy}={}){
 function renderFloor(){
   if(!allTables().length){$('#v-floor').innerHTML='<div class="empty">Noch keine Tische angelegt. Unter „Räume &amp; Tische“ kannst du welche hinzufügen.</div>';return;}
   ensurePos();
+  floorDesign=loadFloorDesign();
   const m=floorMin(), E=ui.floorEdit;
   if(ui.floorRoom&&!S.rooms.some(r=>r.id===ui.floorRoom)) ui.floorRoom='';
   const roomChips=S.rooms.length>1
     ? `<div class="chips" style="margin:0 0 8px" role="toolbar" aria-label="Raum filtern"><button type="button" data-act="floorroom" data-v="" class="${!ui.floorRoom?'on':''}">Alle Räume</button>${S.rooms.map(r=>`<button type="button" data-act="floorroom" data-v="${r.id}" class="${ui.floorRoom===r.id?'on':''}">${esc(r.name)}</button>`).join('')}</div>`
     : '';
-  $('#v-floor').innerHTML=`${roomChips}<div class="floorbar">${E?'<span class="hint">Tische mit der Maus oder dem Finger an die richtige Stelle ziehen.</span>'
+  $('#v-floor').classList.toggle('low-end',!!floorDesign.lowEnd);
+  $('#v-floor').innerHTML=`${roomChips}<div class="floor-tools">
+    <button type="button" data-act="opendesign" class="design-btn" title="Design">🎨 Design</button>
+    <span class="hint" style="margin:0">Anzeige &amp; Stühle</span>
+  </div>
+  <div class="floorbar">${E?'<span class="hint">Tische mit der Maus oder dem Finger an die richtige Stelle ziehen.</span>'
     :`<label for="fl-time">Uhrzeit</label><input type="range" id="fl-time" min="${FROM()}" max="${LAST_END-15}" step="15" value="${m}"><output id="fl-out">${m2t(m)}</output>
      <button data-act="floornow">Jetzt</button>`}
     <button data-act="flooredit" class="${E?'primary':''}" style="margin-left:auto">${E?'Fertig':'Tische anordnen'}</button></div>
@@ -1610,19 +1921,30 @@ function renderTxTab(t,m,rs,E,shift={x:0,y:0}){
   const [w,h]=fsize(t), L=txLay(t), x=(L?L.x:clamp(t.x,0,FW-w))-shift.x, y=(L?L.y:(t.y||0))-shift.y;
   const sm=txRound(t), pos=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`, cls='ftab tx'+(sm?' round':'');
   const cap=`${t.min_capacity}–${t.max_capacity} Pers.`;
-  if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}"><div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
-  const mine=rs.filter(r=>r.table_ids.includes(t.id));
+  const chairs=txChairHtml(t,w,h);
+  if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}">${chairs}<div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
+  let mine=rs.filter(r=>r.table_ids.includes(t.id));
+  if(floorDesign.untilEod&&ui.date===today()){
+    const n=nowMin();
+    mine=mine.filter(r=>t2m(r.end_time)>n);
+  }
   const cur=mine.find(r=>t2m(r.start_time)<=m&&t2m(r.end_time)>m);
   const next=mine.filter(r=>t2m(r.start_time)>m).sort((a,b)=>a.start_time.localeCompare(b.start_time))[0];
+  const extras=txExtras(t,cur);
+  const nameInTab=floorDesign.numberAbove?'':`<b>${esc(t.name)}</b>`;
   if(cur){
     const st=stateOf(cur);
-    return {html:`<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}"><i class="puck" aria-hidden="true"></i><div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span></div></div>`, free:0};
+    const colorCls=floorDesign.statusColor?` occ ${st}`:' occ no-status';
+    return {html:`<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${chairs}${extras}<i class="puck" aria-hidden="true"></i><div class="ftxt">${nameInTab}<span>${esc(cur.guest_name)}</span></div></div>`, free:0};
   }
   const soon=next&&t2m(next.start_time)-m<=60;
-  return {html:`<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}"><div class="ftxt"><b>${esc(t.name)}</b></div></div>`, free:1};
+  return {html:`<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${chairs}${extras}<div class="ftxt">${nameInTab||(floorDesign.numberAbove?'':`<b>${esc(t.name)}</b>`)}</div></div>`, free:1};
 }
 function renderFloors(){
-  const m=floorMin(), E=ui.floorEdit, rs=dayRes().filter(r=>r.type==='reservation'), TX=floorTx();
+  const m=floorMin(), E=ui.floorEdit;
+  let rs=dayRes().filter(r=>r.type==='reservation');
+  if(floorDesign.untilEod&&ui.date===today()){ const n=nowMin(); rs=rs.filter(r=>t2m(r.end_time)>n); }
+  const TX=floorTx();
   const roomFilter=ui.floorRoom?S.rooms.find(r=>r.id===ui.floorRoom):null;
   const roomNames=roomFilter?new Set([roomFilter.name]):null;
   const tableOk=t=>!roomFilter||t.room_id===roomFilter.id||roomFilter.tables.some(x=>x.id===t.id);
@@ -1640,7 +1962,8 @@ function renderFloors(){
     for(const t of allTables()){ if(TX.tables[t.name]||!tableOk(t)) continue; const r=renderTxTab(t,m,rs,false,shift); free+=r.free; tabs+=r.html; }
     const roomsHtml=roomsEntries.map(([name,R])=>{
       const fix=(R.fixtures||[]).map(f=>`<div class="tx-fix" style="left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.fill}"></div>`).join('');
-      return `<div class="tx-room" style="left:${R.x-ox}px;top:${R.y-oy}px;width:${R.w}px;height:${R.h}px;background:${R.fill}">${fix}<div class="tx-room-label">${esc(name)}</div></div>`;
+      const label=floorDesign.roomNames?`<div class="tx-room-label">${esc(name)}</div>`:'';
+      return `<div class="tx-room" style="left:${R.x-ox}px;top:${R.y-oy}px;width:${R.w}px;height:${R.h}px;background:${R.fill}">${fix}${label}</div>`;
     }).join('');
     const scopeRooms=roomsEntries.length?Object.fromEntries(roomsEntries):TX.rooms;
     const scopeTabs=Object.fromEntries(Object.entries(TX.tables).filter(([name])=>{
@@ -1684,13 +2007,16 @@ function renderFloors(){
       if(cur){
         const st=stateOf(cur);
         const share=cur.table_ids.length>1?Math.ceil(cur.num_people/cur.table_ids.length):cur.num_people;
-        return `<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${TX?'':tableSvg(t,w,h,st==='done'?0:share)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
+        const colorCls=floorDesign.statusColor?` occ ${st}`:' occ';
+        const svg=TX?'':(floorDesign.chairs?tableSvg(t,w,h,st==='done'?0:share):tableSvg(t,w,h,0).replace(/class="chair[^"]*"[^/]*\/>/g,''));
+        return `<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${svg}${txExtras(t,cur)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
       }
       free++;
       const soon=next&&t2m(next.start_time)-m<=60;
-      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${TX?'':tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
+      const svgFree=TX?'':(floorDesign.chairs?tableSvg(t,w,h):tableSvg(t,w,h,0).replace(/<rect class="chair[\s\S]*?\/>/g,'').replace(/<rect class="back"[\s\S]*?\/>/g,''));
+      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${svgFree}${txExtras(t,null)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
     }).join('');
-    return `<div class="floor"><h3>${esc(room.name)}${room.is_outside?' · außen':''}<small>${E?room.tables.length+' Tische':free+' von '+room.tables.length+' Tischen frei'}</small></h3>
+    return `<div class="floor"><h3>${floorDesign.roomNames?esc(room.name):'Raum'}${room.is_outside?' · außen':''}<small>${E?room.tables.length+' Tische':free+' von '+room.tables.length+' Tischen frei'}</small></h3>
       <div class="fscroll"><div class="fcanvas${room.is_outside?' out':''}" data-room="${room.id}" style="height:${H}px">${tabs||'<div class="empty" style="padding:12px">Keine Tische in diesem Raum.</div>'}</div></div></div>`;
   }).join('');
 }
@@ -2271,12 +2597,36 @@ function ask(text,yes='Ja'){
 }
 
 /* ---------- Ereignisse ---------- */
+document.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'&&ui.menuOpen) setMenuOpen(false);
+});
 document.addEventListener('click',async ev=>{
   const el=ev.target.closest('[data-act]'); if(!el) return;
   const a=el.dataset.act, id=el.dataset.id;
   if(a==='day'){ui.date=addDays(ui.date,+el.dataset.n); render();}
   else if(a==='today'){ui.date=today(); ui.firstScroll=true; render();}
-  else if(a==='view'){ui.view=el.dataset.v; if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7); if(ui.view==='plan') ui.firstScroll=true; render();}
+  else if(a==='view'){ui.stub=null; ui.view=el.dataset.v; if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7); if(ui.view==='plan') ui.firstScroll=true; setMenuOpen(false); render();}
+  else if(a==='menu'){ setMenuOpen(!ui.menuOpen); }
+  else if(a==='menuclose'){ setMenuOpen(false); }
+  else if(a==='menugo'){ goMenu(el.dataset.id); }
+  else if(a==='switchvenue'){
+    setMenuOpen(false);
+    const sel=$('#venue-sel');
+    if(sel&&!sel.hidden){ sel.focus(); toast('Haus oben in der Liste wählen.'); }
+    else if(ONLINE) toast('Nur ein Haus ist diesem Zugang zugeordnet.');
+    else location.href='?demo=1&betrieb='+(VENUE_SLUG==='lue'?'steinbock':VENUE_SLUG==='steinbock'?'mundwerk':'lue');
+  }
+  else if(a==='opendesign') openDesign();
+  else if(a==='designtoggle'){
+    const k=el.dataset.k; floorDesign[k]=!floorDesign[k]; saveFloorDesign(floorDesign);
+    el.classList.toggle('on',floorDesign[k]); el.setAttribute('aria-pressed',floorDesign[k]?'true':'false');
+    if(ui.view==='floor') renderFloor();
+  }
+  else if(a==='chairform'){
+    floorDesign.chairForm=el.dataset.v; saveFloorDesign(floorDesign);
+    el.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===floorDesign.chairForm));
+    if(ui.view==='floor') renderFloor();
+  }
   else if(a==='filter'){ui.filter=el.dataset.v; render();}
   else if(a==='planfilter'){ui.planFilter=el.dataset.v; render();}
   else if(a==='floorroom'){ui.floorRoom=el.dataset.v||''; ui.floorZoom=null; ui.floorPan={x:0,y:0}; render();}
