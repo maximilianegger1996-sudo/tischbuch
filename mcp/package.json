@@ -1,0 +1,22 @@
+{
+  "name": "tischbuch-guest-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Guest-facing MCP for Tischbuch (availability, book, cancel) — anon Supabase RPCs only",
+  "type": "module",
+  "bin": {
+    "tischbuch-guest-mcp": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "smoke": "node src/smoke.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@supabase/supabase-js": "^2.45.4",
+    "zod": "^3.24.2"
+  }
+}
