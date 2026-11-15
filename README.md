@@ -40,3 +40,16 @@ Weitere Kanäle: `quelle=google`, `quelle=facebook`, `quelle=instagram`.
 - Frontend: eine `index.html` (kein Build)
 - Backend: Supabase (Venues, Tische, Reservierungen, öffentliche RPCs `public_*`)
 - Branding und Buchungsregeln liegen pro Venue in der Datenbank
+
+### Körper-Schrift (Jost)
+
+Die Fließtext-Schrift kommt aus `venues.brand`:
+
+```json
+{
+  "fonts": ["Jost:wght@300;400;500;600;700"],
+  "vars": { "--sans": "Jost, system-ui, -apple-system, \"Segoe UI\", sans-serif" }
+}
+```
+
+Die App lädt `brand.fonts` von Google Fonts und setzt `--sans` über `applyBrand`. Beim Personal-Login werden fehlende Einträge für alle Häuser nachgezogen. Alternativ SQL: `supabase/brand-jost-body-font.sql`.

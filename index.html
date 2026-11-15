@@ -7,8 +7,7 @@
 <title>Tischbuch – Lürzer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;600&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Libre+Bodoni:wght@400;600&family=Open+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root{
@@ -18,7 +17,7 @@
   --series:#677967;
   --brand:#677967;--beige:#dfd8d0;--taupe:#928370;--hero:url("https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg");
   --floor:#e9e2d6;--floor-out:#dde2da;--wall:#928370;--chair:#b07a52;--wood1:#d6b98f;--wood2:#b98f62;--woodline:#9c7650;
-  --serif:"Libre Bodoni","Bodoni 72",Didot,Georgia,serif;--sans:Raleway,"Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Libre Bodoni","Bodoni 72",Didot,Georgia,serif;--sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#17191a;--panel:#202324;--ink:#ebe8e3;--muted:#a3a09a;--line:#36393b;--soft:#292c2d;
@@ -30,7 +29,7 @@
 }}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 var(--sans)}
 button,input,select,textarea{font:inherit;color:inherit}
 button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
 button:hover{border-color:var(--muted)}
@@ -620,14 +619,25 @@ const VENUE_SLUG=/^[a-z0-9-]{1,40}$/.test(QS.get('betrieb')||'')?QS.get('betrieb
 const RECOVERY=/type=recovery/.test(location.hash);   // Rücksprung aus der E-Mail „Passwort zurücksetzen“
 const ONLINE=!QS.has('demo')&&!!window.supabase;
 const DB=ONLINE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
+/* Körper-Schrift aus Brand (Supabase venues.brand); Fallback = Jost */
+const BODY_FONT='Jost', BODY_FONT_SPEC='Jost:wght@300;400;500;600;700', BODY_SANS='Jost, system-ui, -apple-system, "Segoe UI", sans-serif';
+const withBodyFont=b=>{
+  const brand={...(b||{})}, vars={...(brand.vars||{})};
+  if(!vars['--sans']) vars['--sans']=BODY_SANS;
+  brand.vars=vars;
+  const fonts=Array.isArray(brand.fonts)?[...brand.fonts]:[];
+  if(!fonts.some(f=>String(f).toLowerCase().includes(BODY_FONT.toLowerCase()))) fonts.unshift(BODY_FONT_SPEC);
+  brand.fonts=fonts;
+  return brand;
+};
 /* Stammdaten der drei Häuser (Hub, Demo-Branding, Embed-Links). Live-Daten kommen aus Supabase. */
 const VENUES={
   lue:{slug:'lue',name:'LÜ – Burger & Grill',short:'LÜ Burger & Grill',blurb:'Burger, Grill & Bar · Obertauern',
-    brand:{hero:'https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg',logo:'https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg',imprint:'https://www.xn--l-eha.at/impressum/',privacy:'https://www.xn--l-eha.at/datenschutz/',tagline:'Happiness is burger-shaped'}},
+    brand:withBodyFont({hero:'https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg',logo:'https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg',imprint:'https://www.xn--l-eha.at/impressum/',privacy:'https://www.xn--l-eha.at/datenschutz/',tagline:'Happiness is burger-shaped'})},
   steinbock:{slug:'steinbock',name:'STEINBOCK. Wirtshaus am Tauern',short:'Restaurant Steinbock',blurb:'Wirtshaus am Tauern · Obertauern',
-    brand:{dark:{'--brand':'#36434b','--taupe':'#b9c4cb','--accent':'#e8344f','--series':'#9fb0bb'},hero:'https://www.steinbock-obertauern.at/wp-content/uploads/2020/07/dsc01629-1-1536x1024.jpg',logo:'https://www.steinbock-obertauern.at/wp-content/uploads/2025/07/steinbock-logo-4c-gray.png',vars:{'--beige':'#e9ecee','--brand':'#4b5c66','--serif':'"Open Sans Condensed", "Arial Narrow", sans-serif','--taupe':'#4b5c66','--accent':'#dd052b','--series':'#4b5c66','--accent-ink':'#ffffff'},imprint:'https://www.steinbock-obertauern.at/impressum/',privacy:'https://www.steinbock-obertauern.at/datenschutz/',tagline:'Bock auf gutes Essen?'}},
+    brand:withBodyFont({dark:{'--brand':'#36434b','--taupe':'#b9c4cb','--accent':'#e8344f','--series':'#9fb0bb'},hero:'https://www.steinbock-obertauern.at/wp-content/uploads/2020/07/dsc01629-1-1536x1024.jpg',logo:'https://www.steinbock-obertauern.at/wp-content/uploads/2025/07/steinbock-logo-4c-gray.png',vars:{'--beige':'#e9ecee','--brand':'#4b5c66','--serif':'"Open Sans Condensed", "Arial Narrow", sans-serif','--taupe':'#4b5c66','--accent':'#dd052b','--series':'#4b5c66','--accent-ink':'#ffffff'},imprint:'https://www.steinbock-obertauern.at/impressum/',privacy:'https://www.steinbock-obertauern.at/datenschutz/',tagline:'Bock auf gutes Essen?'})},
   mundwerk:{slug:'mundwerk',name:'Mundwerk',short:'Mundwerk',blurb:'Fresh. Food. Fast. · Obertauern',
-    brand:{dark:{'--taupe':'#dedc00','--accent':'#dedc00','--series':'#7bc8c5','--accent-ink':'#12120d'},logo:'https://www.meinmundwerk.at/wp-content/uploads/2020/05/mundwerk-logo.svg',vars:{'--beige':'#dedc00','--brand':'#7bc8c5','--serif':'Raleway, "Avenir Next", Avenir, system-ui, sans-serif','--taupe':'#12120d','--accent':'#12120d','--series':'#3a9c98','--hero-ink':'#12120d','--title-bg':'#12120d','--brand-ink':'#12120d','--title-ink':'#dedc00','--accent-ink':'#dedc00','--hero-shade':'none'},imprint:'https://www.meinmundwerk.at/impressum/',privacy:'https://www.meinmundwerk.at/datenschutz/',tagline:'Fresh. Food. Fast.'}}
+    brand:withBodyFont({dark:{'--taupe':'#dedc00','--accent':'#dedc00','--series':'#7bc8c5','--accent-ink':'#12120d'},logo:'https://www.meinmundwerk.at/wp-content/uploads/2020/05/mundwerk-logo.svg',vars:{'--beige':'#dedc00','--brand':'#7bc8c5','--serif':'"Libre Bodoni", Didot, Georgia, serif','--taupe':'#12120d','--accent':'#12120d','--series':'#3a9c98','--hero-ink':'#12120d','--title-bg':'#12120d','--brand-ink':'#12120d','--title-ink':'#dedc00','--accent-ink':'#dedc00','--hero-shade':'none'},imprint:'https://www.meinmundwerk.at/impressum/',privacy:'https://www.meinmundwerk.at/datenschutz/',tagline:'Fresh. Food. Fast.'})}
 };
 const VENUE_META=VENUES[VENUE_SLUG]||VENUES.lue;
 const guestPath=(slug,extra='')=>{
@@ -769,6 +779,7 @@ function bump(){
 }
 function showHub(){
   document.body.classList.add('hub'); document.body.classList.remove('guest');
+  applyBrand(withBodyFont({tagline:'Tischbuch'}), 'Tischbuch');
   $('#hub').hidden=false; $('#login').hidden=true;
   const grid=$('#hub-grid');
   if(grid&&!grid.dataset.ready){
@@ -798,6 +809,7 @@ async function enter(){
   sel.innerHTML=data.map(v=>`<option value="${v.id}"${v.id===VENUE.id?' selected':''}>${esc(v.name)}</option>`).join('');
   sel.onchange=()=>{ try{localStorage.setItem('tischbuch.venue',sel.value)}catch(e){} location.reload(); };
   try{await dbLoad();}catch(e){console.error(e); return showLogin('Die Daten konnten nicht geladen werden: '+(e.message||e));}
+  await ensureVenueBodyFonts();
   applyBrand(VENUE.brand,VENUE.name);
   document.body.classList.remove('hub','guest');
   $('#hub').hidden=true; $('#login').hidden=true; $('#b-logout').hidden=false;
@@ -847,11 +859,23 @@ async function guestSlots(){
   g.slots=groups; renderGuest();
 }
 const gRefresh=()=>ONLINE?guestSlots():renderGuest();
-/* Design je Haus: Farben, Logo, Titelbild und Slogan kommen aus der Datenbank */
-const BRANDKEYS=['--brand','--brand-ink','--accent','--accent-ink','--beige','--taupe','--series','--serif','--hero-shade','--hero-ink','--title-bg','--title-ink'];
+/* Design je Haus: Farben, Logo, Titelbild, Slogan und Schriften kommen aus der Datenbank (venues.brand) */
+const BRANDKEYS=['--brand','--brand-ink','--accent','--accent-ink','--beige','--taupe','--series','--serif','--sans','--hero-shade','--hero-ink','--title-bg','--title-ink'];
 let curBrand=null;
+function brandFontHref(fonts){
+  const fam=(Array.isArray(fonts)?fonts:[]).map(f=>String(f||'').trim()).filter(f=>/^[A-Za-z][A-Za-z0-9 ]*(:wght@[0-9;]+)?$/.test(f));
+  if(!fam.length) return '';
+  return 'https://fonts.googleapis.com/css2?'+fam.map(f=>'family='+encodeURIComponent(f).replace(/%20/g,'+').replace(/%3A/g,':').replace(/%40/g,'@').replace(/%3B/g,';'))+'&display=swap';
+}
+function loadBrandFonts(b){
+  const href=brandFontHref(b&&b.fonts);
+  let link=$('#brand-fonts');
+  if(!link){ link=document.createElement('link'); link.id='brand-fonts'; link.rel='stylesheet'; document.head.appendChild(link); }
+  if(href) link.href=href; else link.removeAttribute('href');
+}
 function applyBrand(b,name){
-  curBrand={b:b||{},name:name||''}; b=curBrand.b;
+  curBrand={b:withBodyFont(b||{}),name:name||''}; b=curBrand.b;
+  loadBrandFonts(b);
   const dark=matchMedia('(prefers-color-scheme:dark)').matches, vars={...(b.vars||{}),...(dark?b.dark||{}:{})}, st=document.documentElement.style;
   const okUrl=u=>typeof u==='string'&&/^https:\/\/[^"'()\s]+$/.test(u);
   for(const k of BRANDKEYS){ st.removeProperty(k); const v=vars[k]; if(typeof v==='string'&&/^[#\w\s,.%"-]+$/.test(v)) st.setProperty(k,v); }
@@ -863,6 +887,20 @@ function applyBrand(b,name){
     const imprint=b.imprint, privacy=b.privacy;
     gl.innerHTML=(imprint?`<a href="${esc(imprint)}" target="_blank" rel="noopener">Impressum</a> · `:'')+(privacy?`<a href="${esc(privacy)}" target="_blank" rel="noopener">Datenschutz</a> · `:'');
   }
+}
+/* Schreibt Jost in venues.brand, falls noch nicht gesetzt (Personal hat Schreibrecht) */
+async function ensureVenueBodyFonts(){
+  if(!DB||GUEST) return;
+  try{
+    const rows=await one(DB.from('venues').select('id,brand'));
+    for(const row of rows||[]){
+      const cur=row.brand||{}, next=withBodyFont(cur);
+      if(JSON.stringify(cur)===JSON.stringify(next)) continue;
+      const {error}=await DB.from('venues').update({brand:next}).eq('id',row.id);
+      if(error){ console.warn('brand font migrate', row.id, error); continue; }
+      if(VENUE&&VENUE.id===row.id) VENUE.brand=next;
+    }
+  }catch(e){ console.warn('brand font migrate', e); }
 }
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name); });
 const onlineDefaults=()=>({name:VENUE_META.name,public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
