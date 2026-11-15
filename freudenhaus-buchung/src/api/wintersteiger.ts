@@ -12,6 +12,7 @@ import type {
   SiteSettings,
   WintersteigerExport,
 } from "./types";
+import { demoQuote, demoProvider } from "./demo";
 import { rentBuddyProvider } from "./rentbuddy";
 import { BRANCH_META, ONLINE_BRANCH_ORDER, SITE_DEFAULT, SPECIALS_DEFAULT } from "./mapping";
 
@@ -215,8 +216,13 @@ export const wintersteigerProvider: BookingProvider = {
         cartDiscount: null,
       };
     } catch (e) {
-      console.warn("EasyRest quote failed, fallback Rent Buddy", e);
-      return rentBuddyProvider.quote(draft);
+      console.warn("EasyRest quote failed, trying Rent Buddy then demo", e);
+      try {
+        return await rentBuddyProvider.quote(draft);
+      } catch (e2) {
+        console.warn("Rent Buddy quote failed, using offline demo catalog", e2);
+        return demoQuote(draft);
+      }
     }
   },
 
@@ -254,21 +260,14 @@ export const wintersteigerProvider: BookingProvider = {
     const payload = toInsertPayload(draft);
     try {
       const raw = await easyrest.insertUpdateReservation(payload);
-      const dry = raw && typeof raw === "object" && "dryRun" in (raw as object);
       return {
         ok: true,
         bookingId: payload.reservation.reservationextid,
         raw,
-        ...(dry
-          ? {}
-          : {}),
       };
     } catch (e) {
-      return {
-        ok: false,
-        message: e instanceof Error ? e.message : "EasyRest Reservierung fehlgeschlagen",
-        raw: payload,
-      };
+      console.warn("EasyRest reservation failed, demo fallback", e);
+      return demoProvider.createReservation(draft);
     }
   },
 

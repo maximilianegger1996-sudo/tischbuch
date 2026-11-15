@@ -1,5 +1,7 @@
 /** Festes Shop-Mapping Obertauern → Easyrent + Anzeige-Assets (FH-CI). */
 
+import { assetUrl } from "./assets";
+
 export const BRANCH_META: Record<
   string,
   { title: string; rentBuddyId: number; highlight?: string; image?: string; addressHtml?: string }
@@ -47,8 +49,12 @@ export const ONLINE_BRANCH_ORDER = ["1", "6", "4", "9", "10"];
 export const SITE_DEFAULT = {
   name: "Rentfreudenhaus",
   shopName: "FREUDENHAUS RENT",
-  logo: "/brand/logo-mark.svg",
-  logoInverted: "/brand/logo-white.svg",
+  get logo() {
+    return assetUrl("brand/logo-mark.svg");
+  },
+  get logoInverted() {
+    return assetUrl("brand/logo-white.svg");
+  },
   bgImage: "https://www.skirent-obertauern.at/img/hero-video-poster.jpg",
   youthAge: 11,
   adultAge: 17,

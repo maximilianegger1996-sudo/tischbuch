@@ -2,6 +2,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 import { BookingProvider, useBooking, type StepId } from "./state/booking";
 import { formatMoney } from "./lib/money";
 import type { Product } from "./api";
+import { assetUrl } from "./api/assets";
 
 const DOW = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
@@ -107,7 +108,7 @@ function TopBar() {
   return (
     <header className="topbar">
       <a className="brand" href="#top" onClick={() => setStep("people")}>
-        <img src="/brand/logo-mark.svg" alt="FREUDENHAUS" />
+        <img src={assetUrl("brand/logo-mark.svg")} alt="FREUDENHAUS" />
         <span className="brand-mark">
           Rent
           <br />
@@ -151,7 +152,7 @@ function StepPeople() {
       }
     >
       <div className="brand-float">
-        <img src="/brand/logo-white.svg" alt="FREUDENHAUS" />
+        <img src={assetUrl("brand/logo-white.svg")} alt="FREUDENHAUS" />
       </div>
       <div className="people-center">
         <h1>Wie viele Personen möchten leihen?</h1>

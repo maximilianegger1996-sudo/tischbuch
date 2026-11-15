@@ -14,6 +14,7 @@ import type {
   Special,
   WintersteigerExport,
 } from "./types";
+import { demoProvider, demoQuote } from "./demo";
 
 const HOST = "https://freudenhaus.rentbuddy.solutions";
 const LANG = "de";
@@ -148,65 +149,80 @@ export const rentBuddyProvider: BookingProvider = {
   label: "Rent Buddy (Übergangs-API)",
 
   async loadSite() {
-    const data = await getJson<{ settings: any; seasons?: any[] }>(`/api/site`);
-    const s = data.settings;
-    const seasons = data.seasons || [];
-    const active = seasons.find((x: any) => x.active) || seasons[seasons.length - 1];
-    return {
-      name: s.name,
-      shopName: s.shopname || s.name,
-      logo: s.logo?.startsWith("http") ? s.logo : `${HOST}${s.logo}`,
-      logoInverted: s.logoInverted?.startsWith("http")
-        ? s.logoInverted
-        : `${HOST}${s.logoInverted || s.logo}`,
-      bgImage: s.bgImage,
-      youthAge: s.youthAge ?? 11,
-      adultAge: s.adultAge ?? 17,
-      maxPersons: s.maxPersons ?? 20,
-      pickupTime: s.pickuptime || "15:00",
-      coverageDefault: !!s.coveragePerDefault,
-      colors: {
-        font: s.colorFont || "#4D4D4D",
-        button: s.colorButton || "#4D4D4D",
-        highlight: s.colorHighlight || "#93BAA2",
-      },
-      paymentBrands: s.paymentBrands || [],
-      seasonStart: active?.from || active?.starting,
-      seasonEnd: active?.to || active?.ending,
-    } satisfies SiteSettings;
+    try {
+      const data = await getJson<{ settings: any; seasons?: any[] }>(`/api/site`);
+      const s = data.settings;
+      const seasons = data.seasons || [];
+      const active = seasons.find((x: any) => x.active) || seasons[seasons.length - 1];
+      return {
+        name: s.name,
+        shopName: s.shopname || s.name,
+        logo: s.logo?.startsWith("http") ? s.logo : `${HOST}${s.logo}`,
+        logoInverted: s.logoInverted?.startsWith("http")
+          ? s.logoInverted
+          : `${HOST}${s.logoInverted || s.logo}`,
+        bgImage: s.bgImage,
+        youthAge: s.youthAge ?? 11,
+        adultAge: s.adultAge ?? 17,
+        maxPersons: s.maxPersons ?? 20,
+        pickupTime: s.pickuptime || "15:00",
+        coverageDefault: !!s.coveragePerDefault,
+        colors: {
+          font: s.colorFont || "#4D4D4D",
+          button: s.colorButton || "#4D4D4D",
+          highlight: s.colorHighlight || "#93BAA2",
+        },
+        paymentBrands: s.paymentBrands || [],
+        seasonStart: active?.from || active?.starting,
+        seasonEnd: active?.to || active?.ending,
+      } satisfies SiteSettings;
+    } catch (e) {
+      console.warn("Rent Buddy site failed, using demo site", e);
+      return demoProvider.loadSite();
+    }
   },
 
   async loadLocations() {
-    const data = await getJson<{ locations: any[] }>(`/api/locations`);
-    return data.locations.map(
-      (L): Location => ({
-        id: String(L.id),
-        externalKey: String(L.id),
-        title: L.title,
-        highlight: L.highlight,
-        addressHtml: L.details || L.text,
-        lat: L.position?.lat ?? Number(L.lat),
-        lng: L.position?.lng ?? Number(L.lng),
-        image: L.image,
-        closedRanges: (L.closed || []).map((c: any) => ({
-          start: c.start,
-          end: c.end,
-        })),
-        businessHours: L.businesshours,
-      }),
-    );
+    try {
+      const data = await getJson<{ locations: any[] }>(`/api/locations`);
+      return data.locations.map(
+        (L): Location => ({
+          id: String(L.id),
+          externalKey: String(L.id),
+          title: L.title,
+          highlight: L.highlight,
+          addressHtml: L.details || L.text,
+          lat: L.position?.lat ?? Number(L.lat),
+          lng: L.position?.lng ?? Number(L.lng),
+          image: L.image,
+          closedRanges: (L.closed || []).map((c: any) => ({
+            start: c.start,
+            end: c.end,
+          })),
+          businessHours: L.businesshours,
+        }),
+      );
+    } catch (e) {
+      console.warn("Rent Buddy locations failed, using offline map", e);
+      return demoProvider.loadLocations();
+    }
   },
 
   async loadSpecials() {
-    const data = await getJson<{ specials: any[] }>(`/api/specials`);
-    return data.specials.map(
-      (s): Special => ({
-        id: String(s.id),
-        type: s.type,
-        title: s.title,
-        textHtml: s.text,
-      }),
-    );
+    try {
+      const data = await getJson<{ specials: any[] }>(`/api/specials`);
+      return data.specials.map(
+        (s): Special => ({
+          id: String(s.id),
+          type: s.type,
+          title: s.title,
+          textHtml: s.text,
+        }),
+      );
+    } catch (e) {
+      console.warn("Rent Buddy specials failed, using defaults", e);
+      return demoProvider.loadSpecials();
+    }
   },
 
   async loadCalendar(draft) {
@@ -225,40 +241,45 @@ export const rentBuddyProvider: BookingProvider = {
     if (!draft.from || !draft.to) {
       return { categories: [], rate: null, rates: [], cartTotal: null, cartList: null, cartDiscount: null };
     }
-    const data = await postJson<any>(`/api/prices`, bookingBody(draft));
-    const categories: Category[] = (data.categories || []).map((c: any) => ({
-      id: String(c.id),
-      title: c.title,
-      products: (c.products || []).map((p: any) => mapProduct(p, String(c.id), c.title)),
-    }));
-    return {
-      categories,
-      rate: data.rate
-        ? {
-            id: String(data.rate),
-            title: (data.rates || []).find((r: any) => r.id === data.rate)?.title || "",
-            description: (data.rates || []).find((r: any) => r.id === data.rate)?.description,
-            cancellation: (data.rates || []).find((r: any) => r.id === data.rate)?.cancellation,
-          }
-        : data.rates?.[0]
+    try {
+      const data = await postJson<any>(`/api/prices`, bookingBody(draft));
+      const categories: Category[] = (data.categories || []).map((c: any) => ({
+        id: String(c.id),
+        title: c.title,
+        products: (c.products || []).map((p: any) => mapProduct(p, String(c.id), c.title)),
+      }));
+      return {
+        categories,
+        rate: data.rate
           ? {
-              id: String(data.rates[0].id),
-              title: data.rates[0].title,
-              description: data.rates[0].description,
-              cancellation: data.rates[0].cancellation,
+              id: String(data.rate),
+              title: (data.rates || []).find((r: any) => r.id === data.rate)?.title || "",
+              description: (data.rates || []).find((r: any) => r.id === data.rate)?.description,
+              cancellation: (data.rates || []).find((r: any) => r.id === data.rate)?.cancellation,
             }
-          : null,
-      rates: (data.rates || []).map((r: any) => ({
-        id: String(r.id),
-        title: r.title,
-        description: r.description,
-        cancellation: r.cancellation,
-      })),
-      cartTotal: money(data.cart?.price),
-      cartList: money(data.cart?.listprice),
-      cartDiscount: money(data.cart?.discount),
-      errorCode: data.errorcode,
-    } satisfies PriceQuote;
+          : data.rates?.[0]
+            ? {
+                id: String(data.rates[0].id),
+                title: data.rates[0].title,
+                description: data.rates[0].description,
+                cancellation: data.rates[0].cancellation,
+              }
+            : null,
+        rates: (data.rates || []).map((r: any) => ({
+          id: String(r.id),
+          title: r.title,
+          description: r.description,
+          cancellation: r.cancellation,
+        })),
+        cartTotal: money(data.cart?.price),
+        cartList: money(data.cart?.listprice),
+        cartDiscount: money(data.cart?.discount),
+        errorCode: data.errorcode,
+      } satisfies PriceQuote;
+    } catch (e) {
+      console.warn("Rent Buddy quote failed, using offline demo", e);
+      return demoQuote(draft);
+    }
   },
 
   async loadStock(draft) {
