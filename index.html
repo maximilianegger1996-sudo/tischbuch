@@ -105,6 +105,44 @@ tr.rowlink{cursor:pointer}tr.rowlink:hover{background:var(--soft)}
 .trow.h{font-size:11px;color:var(--muted)}
 dialog{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:0;width:min(600px,calc(100vw - 24px));max-height:calc(100vh - 24px)}
 dialog::backdrop{background:rgba(0,0,0,.4)}
+/* Staff workflow parity (Tablex) */
+.actions .badge-btn{position:relative}
+.actions .obadge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#e67e22;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+.rtabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:-4px -16px 8px;padding:0 8px}
+.rtabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--muted);padding:8px 12px;font-weight:500}
+.rtabs button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.modechips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.modechip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;user-select:none;font-size:13px;color:var(--ink);background:var(--panel)}
+.modechip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.modechip input{display:none}
+.fnrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.list-ci{display:inline-flex;gap:4px;flex-wrap:wrap}
+.list-ci button{padding:4px 8px;font-size:12px;white-space:nowrap}
+.list-ci button.ci{background:var(--here);color:#fff;border-color:var(--here)}
+.list-ci button.co{background:var(--done);color:#fff;border-color:var(--done)}
+tr.rowlink.dragging, .mq.dragging, .bar.dragging{opacity:.55}
+.dropzones{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);z-index:90;display:none;gap:10px;padding:10px;background:rgba(30,34,30,.92);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.dropzones.on{display:flex}
+.dropzones .dz{min-width:110px;padding:14px 16px;border:2px dashed rgba(255,255,255,.35);border-radius:10px;color:#fff;text-align:center;font-size:13px;font-weight:600}
+.dropzones .dz.over{background:rgba(31,170,110,.35);border-color:#1faa6e}
+.mail-warn{color:#c0692f;font-weight:700;margin-left:4px}
+.online-sec h3{margin:12px 0 8px;font-size:15px}
+.online-sec h3.blue{color:#3b6ea5}
+.online-sec h3.orange{color:#c0692f}
+.online-row{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;background:var(--bg)}
+.online-row:hover{border-color:var(--muted)}
+.online-row .when{min-width:72px;font-variant-numeric:tabular-nums}
+.online-row .meta{flex:1;min-width:0}
+.sperre-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:12px}
+.list-group{margin:14px 0 6px;font-size:13px;font-weight:600;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.list-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+#dlg{width:min(720px,calc(100vw - 24px))}
+.msgbody{white-space:pre-wrap;font-family:var(--sans);font-size:13px;border:1px solid var(--line);border-radius:8px;padding:10px;max-height:240px;overflow:auto;background:var(--bg)}
+.tpl-menu{position:absolute;z-index:130;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;padding:4px 0}
+.tpl-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:8px 12px;border-radius:0}
+.tpl-menu button:hover{background:var(--soft)}
+.ftab.drop-target{outline:3px solid #1faa6e;outline-offset:2px}
+
 .dh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
 .dh h2{margin:0;font-size:16px}
 .db{padding:14px 16px;display:grid;gap:10px}
@@ -742,7 +780,8 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
   </div>
   <div class="actions">
     <button data-act="logout" id="b-logout" hidden>Abmelden</button>
-    <button data-act="daylock" title="Online für diesen Tag sperren">Sperre</button>
+    <button data-act="daylock" title="Online-Sperren">Sperre</button>
+    <button type="button" class="badge-btn" data-act="onlineinbox" id="b-online" title="Online-Reservierungen">Online<span class="obadge" id="online-badge" hidden>0</span></button>
     <button data-act="walkin">Walk-in</button>
     <button class="primary" data-act="new">+ Reservierung</button>
   </div>
@@ -813,13 +852,13 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
     <div class="dh"><h2 id="d-title">Reservierung</h2><button type="button" class="link" data-act="close" aria-label="Schließen">✕</button></div>
     <div class="db">
       <div class="statebox" id="d-state" hidden></div>
-      <div class="grid3">
-        <label class="f">Name<input id="f-name" autocomplete="off" list="dl-contacts"></label>
-        <label class="f">Telefon<input id="f-phone" autocomplete="off"></label>
-        <label class="f">E-Mail<input id="f-email" autocomplete="off"></label>
+      <div class="rtabs" role="tablist" id="d-tabs">
+        <button type="button" data-act="restab" data-v="res" class="on">Reservierung</button>
+        <button type="button" data-act="restab" data-v="kontakt">Kontakt</button>
+        <button type="button" data-act="restab" data-v="serie">Serie</button>
+        <button type="button" data-act="restab" data-v="logbuch">Logbuch</button>
       </div>
-      <datalist id="dl-contacts"></datalist>
-      <div class="hint" id="f-guest"></div>
+      <div id="tab-res">
       <div class="grid4">
         <label class="f">Datum<input type="date" id="f-date"></label>
         <label class="f">Von<select id="f-start"></select></label>
@@ -830,14 +869,14 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
         <label class="f">davon Kindersitze<input type="number" id="f-children" min="0" max="20"></label>
         <label class="f">Besonderheiten<div id="f-flags"></div></label>
       </div>
-      <div id="d-series">
-        <div class="grid2">
-          <label class="f">Wiederholen<select id="f-repeat"><option value="none">Einmalig</option><option value="daily">Täglich</option><option value="weekly">Wöchentlich</option><option value="biweekly">Alle 2 Wochen</option></select></label>
-          <label class="f" id="l-until">Wiederholen bis<input type="date" id="f-until"></label>
-        </div>
-        <div class="hint" id="f-serieshint"></div>
+      <div class="modechips" aria-label="Buchungsmodus">
+        <label class="modechip" id="chip-anfrage"><input type="checkbox" id="f-inquiry"> Anfrage</label>
+        <label class="modechip" id="chip-fix"><input type="checkbox" id="f-tablefix"> Tisch fix</label>
       </div>
-      <div class="hint" id="f-seriesinfo" hidden></div>
+      <div class="fnrow">
+        <button type="button" data-act="addfn">+ Function</button>
+        <select id="f-function" aria-label="Function / Event" style="max-width:260px"><option value="">Keine Function</option></select>
+      </div>
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
           <small>Tische (durchgestrichen = in dieser Zeit belegt)</small>
@@ -857,11 +896,36 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
         <label id="l-allseries" style="font-size:13px"><input type="checkbox" id="f-allseries"> <span></span></label>
         <button type="button" class="danger" data-act="cancelok">Storno bestätigen</button>
       </div>
-      <details id="d-log" hidden><summary style="cursor:pointer;font-size:13px;color:var(--muted)">Verlauf</summary><div class="loglist" id="f-log"></div></details>
+      </div>
+      <div id="tab-kontakt" hidden>
+      <div class="grid3">
+        <label class="f">Name<input id="f-name" autocomplete="off" list="dl-contacts"></label>
+        <label class="f">Telefon<input id="f-phone" autocomplete="off"></label>
+        <label class="f">E-Mail<input id="f-email" autocomplete="off"></label>
+      </div>
+      <datalist id="dl-contacts"></datalist>
+      <div class="hint" id="f-guest"></div>
+      <p class="hint">Kontakt wird beim Speichern der Gästekartei zugeordnet. Unter Gäste können Sperren und Verlauf gepflegt werden.</p>
+      </div>
+      <div id="tab-serie" hidden>
+      <div id="d-series">
+        <div class="grid2">
+          <label class="f">Wiederholen<select id="f-repeat"><option value="none">Einmalig</option><option value="daily">Täglich</option><option value="weekly">Wöchentlich</option><option value="biweekly">Alle 2 Wochen</option></select></label>
+          <label class="f" id="l-until">Wiederholen bis<input type="date" id="f-until"></label>
+        </div>
+        <div class="hint" id="f-serieshint"></div>
+      </div>
+      <div class="hint" id="f-seriesinfo" hidden></div>
+      </div>
+      <div id="tab-logbuch" hidden>
+        <div class="loglist" id="f-log"></div>
+        <p class="hint" id="f-log-empty" hidden>Noch keine Einträge.</p>
+      </div>
       <div class="err" id="f-err"></div>
     </div>
     <div class="df">
       <button type="button" class="danger" id="b-cancel" data-act="cancelask" style="margin-right:auto">Stornieren</button>
+      <button type="button" data-act="msgcompose" id="b-msg" title="Nachricht an Gast" hidden>✈</button>
       <button type="button" data-act="close">Abbrechen</button>
       <button type="submit" class="primary" id="b-save">Speichern</button>
     </div>
@@ -968,6 +1032,41 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
 </aside>
 <nav id="staff-bottom" class="staff-bottom" aria-label="Reservierungen Ansichten" hidden></nav>
 <div id="cards"></div>
+
+<dialog id="onlinedlg">
+  <div class="dh" style="background:var(--accent);color:var(--accent-ink)"><h2 style="color:inherit">Online Reservierungen</h2><button type="button" class="link" data-act="close" aria-label="Schließen" style="color:inherit">✕</button></div>
+  <div class="db" id="online-body"></div>
+  <div class="df"><button type="button" data-act="close">Schließen</button></div>
+</dialog>
+<dialog id="sperredlg">
+  <div class="dh" style="background:var(--accent);color:var(--accent-ink)"><h2 style="color:inherit">Online-Sperren</h2><button type="button" class="link" data-act="close" aria-label="Schließen" style="color:inherit">✕</button></div>
+  <div class="db" id="sperre-body"></div>
+  <div class="df"><button type="button" data-act="close">Schließen</button></div>
+</dialog>
+<dialog id="msgdlg">
+  <form id="msgform">
+    <div class="dh"><h2>Nachricht an Gast</h2><button type="button" class="link" data-act="close" aria-label="Schließen">✕</button></div>
+    <div class="db">
+      <div class="chips" id="msg-chan"><button type="button" data-act="msgchan" data-v="mail" class="on">E-Mail</button><button type="button" data-act="msgchan" data-v="sms">SMS</button></div>
+      <label class="f">Empfänger<input id="msg-to" autocomplete="off"></label>
+      <label class="f" id="msg-subj-wrap">Betreff<input id="msg-subj" autocomplete="off"></label>
+      <label class="f">Text<textarea id="msg-body" rows="8"></textarea></label>
+      <div class="hint">Rechtsklick ins Textfeld · Textvorlage einfügen. SMS: Zeichenzahl wird angezeigt.</div>
+      <div class="hint" id="msg-sms-count" hidden></div>
+      <div class="err" id="msg-err"></div>
+    </div>
+    <div class="df">
+      <button type="button" data-act="msgtpl">Textvorlagen</button>
+      <button type="button" data-act="close">Abbrechen</button>
+      <button type="submit" class="primary">In den Postausgang</button>
+    </div>
+  </form>
+</dialog>
+<div id="dropzones" class="dropzones" aria-hidden="true">
+  <div class="dz" data-drop="checkin">Check-in</div>
+  <div class="dz" data-drop="checkout">Check-out</div>
+  <div class="dz" data-drop="waitlist">Warteliste</div>
+</div>
 <div id="toast" role="status"></div>
 <div id="tip" role="tooltip"></div>
 
@@ -985,7 +1084,7 @@ const today=()=>iso(new Date());
 const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail',setupCat:'restaurant',setupQ:'',resTab:'belegung',_hashNav:false};
+let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail',setupCat:'restaurant',setupQ:'',resTab:'belegung',listSort:'time',resDlgTab:'res',msgChan:'mail',sperreFrom:'',sperreTo:'',_hashNav:false};
 /* Hash routes so drawer destinations are real pages (not ephemeral UI state). */
 const VIEW_TO_HASH={dash:'dashboard',plan:'reservierungen',list:'liste',floor:'tischplan',cal:'kalender',guests:'kontakte',notes:'notizen',payment:'payment',tablini:'tablini',mails:'nachrichten',setup:'einstellungen',online:'online',help:'hilfe',stats:'statistik'};
 const HASH_TO_VIEW={dashboard:'dash',dash:'dash',reservierungen:'plan',reservations:'plan',plan:'plan',belegungsplan:'plan',liste:'list',list:'list',tischplan:'floor',floor:'floor',grundriss:'floor',kalender:'cal',cal:'cal',kontakte:'guests',guests:'guests',contacts:'guests',notizen:'notes',notes:'notes',payment:'payment',zahlungen:'payment',tablini:'tablini',aufsteller:'tablini',nachrichten:'mails',mails:'mails',emails:'mails',einstellungen:'setup',setup:'setup',settings:'setup',online:'online',hilfe:'help',help:'help',statistik:'stats',stats:'stats',keine:'plan'};
@@ -1226,6 +1325,7 @@ function bump(){
     if(syncBusy||document.querySelector('dialog[open]')||ui.floorEdit) return bump();
     const before=JSON.stringify(shadow);
     try{await dbLoad();}catch(e){console.error(e); return;}
+    applyWfToState();
     if(JSON.stringify(shadow)!==before||ui.view==='mails') render();
   },600);
 }
@@ -1261,6 +1361,7 @@ async function enter(){
   sel.innerHTML=data.map(v=>`<option value="${v.id}"${v.id===VENUE.id?' selected':''}>${esc(v.name)}</option>`).join('');
   sel.onchange=()=>{ try{localStorage.setItem('tischbuch.venue',sel.value)}catch(e){} location.reload(); };
   try{await dbLoad();}catch(e){console.error(e); return showLogin('Die Daten konnten nicht geladen werden: '+(e.message||e));}
+  applyWfToState();
   await ensureVenueBodyFonts();
   applyBrand(VENUE.brand,VENUE.name,VENUE.slug);
   document.body.classList.remove('hub','guest');
@@ -1388,7 +1489,8 @@ function queueMail(kind,r,list=[r]){
     body=`Guten Tag ${r.guest_name},\n\n${many?'folgende Reservierungen wurden':'folgende Reservierung wurde'} storniert:\n\n${when}\n\nVielleicht dürfen wir Sie ein anderes Mal begrüßen.`;
   }
   body+=`\n\n${c.signature}\n${o.name}`;
-  S.mails.unshift({id:uid(),kind,to:r.email.trim(),subject,body,res_id:r.id,created_at:new Date().toISOString()});
+  const delivery=/fail@/i.test(r.email)?'failed':'sent';
+  S.mails.unshift({id:uid(),kind,channel:'mail',to:r.email.trim(),subject,body,res_id:r.id,created_at:new Date().toISOString(),delivery,error:delivery==='failed'?'SMTP stub: Zustellung fehlgeschlagen':''});
   if(S.mails.length>200) S.mails.length=200;
   return true;
 }
@@ -1409,7 +1511,7 @@ function renderMails(){
     <div class="ptool"><label class="f" style="margin:0;min-width:140px">Reservierungs Id<input type="search" id="mail-q" placeholder="z.B. 2546" value="${esc(ui.mailQ||'')}"></label></div>
     <div class="tablewrap"><table><thead><tr><th>Res Id</th><th>Empfänger</th><th>Nummer</th></tr></thead>
     <tbody><tr><td colspan="3" class="empty">Keine SMS.</td></tr></tbody></table></div>`
-  :`<p class="hint" style="margin-top:0">E-Mails werden derzeit nur in den Postausgang geschrieben (noch kein SMTP-Versand). Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
+  :`<p class="hint" style="margin-top:0">E-Mails landen im Postausgang; Zustellung ist ein SMTP-Stub (fail@… erzwingt Fehler). SMS ohne Gateway zählen als Nachrichten-Fehler.</p>
   <h3>Automatische E-Mails</h3>
   <div class="mailcfg">
     <label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> Bestätigung bei neuer Reservierung (online und vom Personal eingetragen)</label>
@@ -1419,13 +1521,13 @@ function renderMails(){
   <div class="ptool"><label class="f" style="margin:0;flex:1;min-width:160px">Suchen<input type="search" id="mail-q" placeholder="Name, Res-ID, Betreff" value="${esc(ui.mailQ||'')}"></label>
     ${S.mails.length?'<button data-act="mailclear" class="danger">Postausgang leeren</button>':''}</div>
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Postausgang (${mails.length})</h3></div>
-  <div class="tablewrap"><table><thead><tr><th>Res Id</th><th>Empfänger</th><th>Nummer / Betreff</th><th>Erstellt</th></tr></thead><tbody>${mails.map(m=>`<tr class="rowlink" data-act="mailopen" data-id="${m.id}"><td><code>${esc((m.res_id||m.id).slice(-6).toUpperCase())}</code></td><td>${esc(m.to)}</td><td>${esc(m.subject)}</td><td>${ts(m.created_at)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">Noch keine E-Mails. Lege eine Reservierung mit E-Mail-Adresse an, dann erscheint hier die Bestätigung.</td></tr>'}</tbody></table></div>`}`;
+  <div class="tablewrap"><table><thead><tr><th>Res Id</th><th>Empfänger</th><th>Nummer / Betreff</th><th>Status</th><th>Erstellt</th></tr></thead><tbody>${mails.map(m=>{const st=m.delivery==='failed'?'Fehler':m.delivery==='sent'?'Gesendet':m.delivery==='queued'?'Warteschlange':(m.delivery||'—'); return `<tr class="rowlink" data-act="mailopen" data-id="${m.id}"><td><code>${esc((m.res_id||m.id).slice(-6).toUpperCase())}</code></td><td>${esc(m.to)}</td><td>${esc(m.subject)}${m.channel==='sms'?' <small>SMS</small>':''}</td><td>${m.delivery==='failed'?`<span class="pill canceled">${esc(st)}</span>`:esc(st)}</td><td>${ts(m.created_at)}</td></tr>`;}).join('')||'<tr><td colspan="5" class="empty">Noch keine E-Mails. Lege eine Reservierung mit E-Mail-Adresse an, dann erscheint hier die Bestätigung.</td></tr>'}</tbody></table></div>`}`;
   const mq=$('#mail-q');
   if(mq) mq.oninput=()=>{ui.mailQ=mq.value; renderMails();};
 }
 function openMail(id){
   const m=S.mails.find(m=>m.id===id); if(!m) return;
-  $('#m-subject').textContent=m.subject; $('#m-meta').textContent=`${MAILKIND[m.kind]} · an ${m.to} · erstellt ${new Date(m.created_at).toLocaleString('de-AT')}`;
+  $('#m-subject').textContent=m.subject; $('#m-meta').textContent=`${MAILKIND[m.kind]||m.kind||'Nachricht'} · an ${m.to} · ${m.delivery==='failed'?'Fehler':m.delivery==='sent'?'Gesendet':(m.delivery||'—')} · erstellt ${new Date(m.created_at).toLocaleString('de-AT')}${m.error?' · '+m.error:''}`;
   $('#m-body').textContent=m.body;
   $('#m-mailto').href=`mailto:${encodeURIComponent(m.to)}?subject=${encodeURIComponent(m.subject)}&body=${encodeURIComponent(m.body)}`;
   $('#mdlg').showModal();
@@ -1508,6 +1610,8 @@ function seed(){
   if(sample[0]&&sample[1]) add(0,'Fuchs',Math.min(10,(allTabs.find(t=>t.name===sample[0])?.max_capacity||4)+(allTabs.find(t=>t.name===sample[1])?.max_capacity||4)),'20:00',150,[sample[0],sample[1]],['f4'],'Firmenessen');
   add(0,'Aigner',6,'19:30',120,[],[],'Ruft zurück, falls nichts frei wird');
   add(0,'Lechner',2,'18:00',120,[],[],'',{type:'canceled',cancel_reason:'other_reason'});
+  add(0,'Online Gast',3,'20:00',120,[],[],'Online unbestätigt',{is_online_reservation:true,source:'website',email:'online.gast@example.com'});
+  add(2,'Ruud Tiktak',4,'20:00',150,[],[],'',{type:'canceled',cancel_reason:'canceled_by_guest',is_online_reservation:true,email:'ruud@example.com'});
   if(sample[2]) add(1,'Brandner',4,'12:30',90,[sample[2]]);
   if(sample[3]) add(1,'Reiter',2,'19:00',120,[sample[3]],['f2']);
   if(sample[0]){ add(-1,'Maier',4,'19:00',120,[sample[0]]); add(-7,'Gruber',2,'12:30',90,[sample[0]],['f2']); }
@@ -1531,7 +1635,7 @@ function seed(){
   }
   S=keep;
   const online=onlineDefaults(); online.name=(VENUES[VENUE_SLUG]||VENUES.lue).name;
-  const d={v:1,nextId:n,rooms,flags,reservations,defaults:{show_from:'11:00',standard_duration:'02:00'},online,locks:[],notes:[],series_notes:[],combos:[],contacts:[],mails:[],mailcfg:mailDefaults(),paycfg:{min_people:6,enabled:true},tablini:[]};
+  const d={v:1,nextId:n,rooms,flags,reservations,defaults:{show_from:'11:00',standard_duration:'02:00'},online,locks:[],notes:[],series_notes:[],combos:[],contacts:[],mails:[],mailcfg:mailDefaults(),paycfg:{min_people:6,enabled:true},tablini:[],events:[{id:'ev1',name:'Geburtstagsmenü'},{id:'ev2',name:'Firmenfeier'}],templates:[]};
   for(const r of reservations) ensureContact(r,d);
   const note=(nm,t)=>{const c=d.contacts.find(c=>c.last_name===nm); if(c) c.note=t;};
   note('Gruber','Sitzt gern am Fenster'); note('Berger','Trinkt immer den Hauswein'); note('Moser','Glutenunverträglichkeit');
@@ -1539,7 +1643,7 @@ function seed(){
   return d;
 }
 function load(){
-  try{const raw=localStorage.getItem(KEY); if(raw){const d=JSON.parse(raw); if(d&&d.v===1){d.online??=onlineDefaults(); d.online.cancel_hours??=2; d.online.public_url??=''; if(d.online.name==='Restaurant Beispiel') d.online.name='LÜ – Burger & Grill'; d.mails??=[]; d.mailcfg??=mailDefaults(); d.locks??=[]; d.notes??=[]; d.series_notes??=[]; d.combos??=[]; d.paycfg??={min_people:6,enabled:true}; d.tablini??=[]; d.online.limit_per_hour??=0; d.online.open_from??=''; d.online.times.forEach((t,i)=>{t.days??=[1,2,3,4,5,6,7]; t.id??='zt'+i;}); addCodes(d); if(!d.contacts){d.contacts=[]; for(const r of d.reservations) ensureContact(r,d);} return d;}}}catch(e){}
+  try{const raw=localStorage.getItem(KEY); if(raw){const d=JSON.parse(raw); if(d&&d.v===1){d.online??=onlineDefaults(); d.online.cancel_hours??=2; d.online.public_url??=''; if(d.online.name==='Restaurant Beispiel') d.online.name='LÜ – Burger & Grill'; d.mails??=[]; d.mailcfg??=mailDefaults(); d.locks??=[]; d.notes??=[]; d.series_notes??=[]; d.combos??=[]; d.paycfg??={min_people:6,enabled:true}; d.tablini??=[]; d.events??=[]; d.templates??=[]; d.online.limit_per_hour??=0; d.online.open_from??=''; d.online.times.forEach((t,i)=>{t.days??=[1,2,3,4,5,6,7]; t.id??='zt'+i;}); addCodes(d); if(!d.contacts){d.contacts=[]; for(const r of d.reservations) ensureContact(r,d);} for(const m of d.mails){m.delivery??= 'queued'; m.channel??='mail';} return d;}}}catch(e){}
   return seed();
 }
 function save(){
@@ -1609,7 +1713,206 @@ function stateOf(r){
   if(r.status_guest==='not_started'&&r.date===today()&&nowMin()>t2m(r.start_time)+15) return 'late';
   return r.status_guest;
 }
+
 const LABEL={not_started:'erwartet',late:'verspätet',arrived:'angekommen',done:'gegangen',waiting_list:'Warteliste',canceled:'storniert'};
+
+/* ---------- Staff workflow parity helpers ---------- */
+function wfKey(){ return 'tischbuch.wf.'+(ONLINE&&VENUE&&VENUE.id?VENUE.id:KEY); }
+function loadWf(){ try{return JSON.parse(localStorage.getItem(wfKey())||'{}')}catch(e){return{}} }
+function saveWf(patch){ const m={...loadWf(),...patch}; try{localStorage.setItem(wfKey(),JSON.stringify(m))}catch(e){} return m; }
+function ensureWfDefaults(){
+  const m=loadWf();
+  m.seenOnline??=[]; m.seenCancel??=[]; m.inquiry??={}; m.fixed??={}; m.functions??={}; m.events??=[{id:'ev1',name:'Geburtstagsmenü'},{id:'ev2',name:'Firmenfeier'}];
+  m.templates??=[
+    {id:'t1',kind:'mail',chan:'mail',label:'Bestätigung',subject:'Ihre Reservierung bei {{name}}',body:'Guten Tag {{guest}},\n\nvielen Dank für Ihre Reservierung am {{date}} um {{time}} Uhr für {{people}} Personen.\n\nHerzliche Grüße\n{{name}}'},
+    {id:'t2',kind:'mail',chan:'mail',label:'Stornierung',subject:'Stornierung Ihrer Reservierung bei {{name}}',body:'Guten Tag {{guest}},\n\nIhre Reservierung am {{date}} um {{time}} Uhr wurde storniert.\n\nHerzliche Grüße\n{{name}}'},
+    {id:'t3',kind:'sms',chan:'sms',label:'Bestätigung SMS',subject:'',body:'{{name}}: Reservierung {{date}} {{time}} für {{people}} Pers. bestätigt.'},
+    {id:'t4',kind:'sms',chan:'sms',label:'Storno SMS',subject:'',body:'{{name}}: Ihre Reservierung {{date}} {{time}} wurde storniert.'}
+  ];
+  saveWf(m); return m;
+}
+function applyWfToState(){
+  const m=ensureWfDefaults();
+  S.events=m.events||S.events||[];
+  S.templates=m.templates||S.templates||[];
+  for(const r of S.reservations||[]){
+    if(m.inquiry[r.id]!=null) r.is_inquiry=!!m.inquiry[r.id];
+    if(m.fixed[r.id]!=null) r.table_fixed=!!m.fixed[r.id];
+    if(m.functions[r.id]!=null) r.function_id=m.functions[r.id]||'';
+    r.is_inquiry=!!r.is_inquiry; r.table_fixed=!!r.table_fixed; r.function_id=r.function_id||'';
+  }
+  for(const mail of S.mails||[]){
+    mail.delivery=mail.delivery||'queued';
+    mail.channel=mail.channel||'mail';
+  }
+}
+function persistResModes(r){
+  if(!r||!r.id) return;
+  const m=ensureWfDefaults();
+  m.inquiry={...m.inquiry,[r.id]:!!r.is_inquiry};
+  m.fixed={...m.fixed,[r.id]:!!r.table_fixed};
+  m.functions={...m.functions,[r.id]:r.function_id||''};
+  saveWf(m);
+}
+function mailFailCount(){ return (S.mails||[]).filter(m=>m.delivery==='failed').length; }
+function resHasMailFail(r){ return (S.mails||[]).some(m=>m.res_id===r.id&&m.delivery==='failed'); }
+function onlineInboxLists(){
+  const m=ensureWfDefaults();
+  const seenO=new Set(m.seenOnline||[]), seenC=new Set(m.seenCancel||[]);
+  const from=addDays(today(),-14);
+  const pending=(S.reservations||[]).filter(r=>r.is_online_reservation&&r.type!=='canceled'&&r.date>=today()&&!seenO.has(r.id)&& (r.type==='waiting_list'||r.status_guest==='not_started'));
+  const cancels=(S.reservations||[]).filter(r=>r.type==='canceled'&&r.date>=from&&(r.cancel_reason==='canceled_by_guest'||r.is_online_reservation)&&!seenC.has(r.id));
+  return {pending,cancels,badge:pending.length+cancels.length};
+}
+function updateOnlineBadge(){
+  const b=$('#online-badge'); if(!b) return;
+  const n=onlineInboxLists().badge;
+  b.hidden=!n; b.textContent=String(n);
+}
+function fillFunctionSelect(sel,val){
+  if(!sel) return;
+  const ev=S.events||[];
+  sel.innerHTML='<option value="">Keine Function</option>'+ev.map(e=>`<option value="${esc(e.id)}"${e.id===val?' selected':''}>${esc(e.name)}</option>`).join('');
+}
+function setResDlgTab(tab){
+  ui.resDlgTab=tab||'res';
+  for(const t of ['res','kontakt','serie','logbuch']){
+    const pane=$('#tab-'+t); if(pane) pane.hidden=ui.resDlgTab!==t;
+  }
+  document.querySelectorAll('#d-tabs [data-act=restab]').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.resDlgTab));
+}
+function syncModeChips(){
+  const a=$('#chip-anfrage'), f=$('#chip-fix');
+  if(a) a.classList.toggle('on',!!$('#f-inquiry')?.checked);
+  if(f) f.classList.toggle('on',!!$('#f-tablefix')?.checked);
+}
+function tplFill(tpl,r){
+  const map={guest:r.guest_name||'',date:shortDate(r.date),time:r.start_time||'',people:String(r.num_people||''),name:S.online?.name||'Restaurant'};
+  return String(tpl||'').replace(/\{\{(\w+)\}\}/g,(_,k)=>map[k]??'');
+}
+function daypartOf(r){
+  const m=t2m(r.start_time||'12:00');
+  const times=S.online?.times||[];
+  for(const t of times){ if(m>=t2m(t.from)&&m<t2m(t.to)) return t.name||'Zeitfenster'; }
+  return m<15*60?'Mittag':'Abend';
+}
+function quickStatus(id,s){
+  const r=resById(id); if(!r||r.type==='canceled') return;
+  if(s==='arrived'){
+    if(r.type==='waiting_list'&&!r.table_ids.length){ toast('Bitte zuerst einen Tisch zuweisen.'); return; }
+    r.type='reservation'; r.status_guest='arrived';
+  }else if(s==='done'){
+    r.status_guest='done';
+    if(r.date===today()){const n=nowMin(),a=t2m(r.start_time),b=t2m(r.end_time); if(n>a&&n<b) r.end_time=m2t(Math.max(a+15,Math.ceil(n/15)*15));}
+  }else if(s==='not_started'){ r.status_guest='not_started'; }
+  else if(s==='waitlist'){ r.table_ids=[]; r.type='waiting_list'; r.status_guest='not_started'; }
+  save(); render(); toast(`${r.guest_name}: ${s==='waitlist'?'Warteliste':LABEL[s]||s}.`);
+}
+function assignResToTable(rid,tableId){
+  const r=resById(rid), t=tableById(tableId); if(!r||!t) return false;
+  const s=t2m(r.start_time), e=t2m(r.end_time);
+  if(busy(tableId,r.date,s,e,r.id)){ toast('Tisch in dieser Zeit belegt.'); return false; }
+  r.table_ids=[tableId]; r.type='reservation';
+  if(r.status_guest==='not_started'&&r.date===today()&&s<=nowMin()&&e>nowMin()) r.status_guest='arrived';
+  save(); render(); toast(`${r.guest_name} → ${t.name}`); return true;
+}
+let dragResId=null;
+function showDropzones(on){ const z=$('#dropzones'); if(!z) return; z.classList.toggle('on',!!on); z.setAttribute('aria-hidden',on?'false':'true'); }
+function bindResDrag(el,id){
+  if(!el||!id) return;
+  el.setAttribute('draggable','true');
+  el.addEventListener('dragstart',ev=>{
+    dragResId=id; ev.dataTransfer.setData('text/plain',id); ev.dataTransfer.effectAllowed='move';
+    el.classList.add('dragging'); showDropzones(true);
+  });
+  el.addEventListener('dragend',()=>{ el.classList.remove('dragging'); dragResId=null; showDropzones(false); document.querySelectorAll('.ftab.drop-target').forEach(n=>n.classList.remove('drop-target')); });
+}
+function openOnlineInbox(){
+  const {pending,cancels}=onlineInboxLists();
+  const row=(r,kind)=>{
+    const when=`${r.start_time||''}<br><small>${r.end_time||''}</small>`;
+    const st=kind==='cancel'?`Online storniert${r.updated_at||r.created_at?' am '+new Date(r.updated_at||r.created_at).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}`:(r.type==='waiting_list'?'Warteliste · unbestätigt':'Unbestätigte Online-Reservierung');
+    return `<div class="online-row" data-act="inboxopen" data-id="${r.id}" data-kind="${kind}"><div class="when">${when}</div><div class="meta"><b>${esc(longDate(r.date))}</b> · ${r.num_people} Pax<br><b>${esc(r.guest_name)}</b>${tableNames(r)?` <span class="pill" style="background:var(--muted)">${esc(tableNames(r))}</span>`:''}<br><small>${esc(st)}</small></div><div>${r.num_people}</div></div>`;
+  };
+  $('#online-body').innerHTML=`
+    <div class="online-sec"><h3 class="blue">Online Reservierungen (${pending.length})</h3>
+      ${pending.length?pending.map(r=>row(r,'pending')).join(''):'<div class="empty">Keine unbestätigten Online-Reservierungen.</div>'}
+    </div>
+    <div class="online-sec"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 class="orange" style="margin:0">Stornierungen (${cancels.length})</h3>
+      ${cancels.length?`<button type="button" data-act="markallseen">✓ Alle als gesehen markieren</button>`:''}</div>
+      ${cancels.length?cancels.map(r=>row(r,'cancel')).join(''):'<div class="empty">Keine ungelesenen Stornierungen.</div>'}
+    </div>`;
+  $('#onlinedlg').showModal();
+}
+function openSperreModal(){
+  ui.sperreFrom=ui.sperreFrom||ui.date; ui.sperreTo=ui.sperreTo||ui.date;
+  renderSperreBody();
+  $('#sperredlg').showModal();
+}
+function renderSperreBody(){
+  const from=ui.sperreFrom||ui.date, to=ui.sperreTo||ui.date;
+  const locks=(S.locks||[]).filter(l=>l.date>=from&&l.date<=to).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from));
+  $('#sperre-body').innerHTML=`
+    <div class="sperre-toolbar">
+      <label class="f">Zeitraum von<input type="date" id="sp-from" value="${esc(from)}"></label>
+      <label class="f">bis<input type="date" id="sp-to" value="${esc(to)}"></label>
+      <button type="button" class="danger" data-act="sperreclear" title="Sperren im Zeitraum löschen">🗑</button>
+      <button type="button" class="primary" data-act="sperreadd" title="Sperre hinzufügen">+</button>
+    </div>
+    ${locks.map(l=>`<div class="lock"><span><b>${esc(longDate(l.date))}</b> · ${l.from==='00:00'&&(l.to==='23:59'||l.to>='23:45')?'ganzer Tag':l.from+'–'+l.to}</span><button type="button" class="link danger" data-act="dellock" data-id="${l.id}" title="Sperre löschen">✕</button></div>`).join('')||'<div class="empty">Keine Sperren im gewählten Zeitraum.</div>'}
+    <div class="addlock" style="margin-top:12px">
+      <label class="f">Datum<input type="date" id="sp-date" value="${esc(from)}"></label>
+      <label class="f">von<input type="time" id="sp-tfrom" value="00:00"></label>
+      <label class="f">bis<input type="time" id="sp-tto" value="23:59"></label>
+    </div>`;
+  const a=$('#sp-from'), b=$('#sp-to');
+  if(a) a.onchange=()=>{ui.sperreFrom=a.value||ui.date; renderSperreBody();};
+  if(b) b.onchange=()=>{ui.sperreTo=b.value||ui.date; renderSperreBody();};
+}
+let msgResId=null;
+function openMsgCompose(id){
+  const r=resById(id); if(!r) return;
+  msgResId=id; ui.msgChan='mail';
+  document.querySelectorAll('#msg-chan [data-act=msgchan]').forEach(b=>b.classList.toggle('on',b.dataset.v==='mail'));
+  $('#msg-to').value=r.email||r.phone||'';
+  $('#msg-subj-wrap').hidden=false;
+  $('#msg-subj').value=`Nachricht zu Ihrer Reservierung bei ${S.online.name}`;
+  $('#msg-body').value=`Guten Tag ${r.guest_name},\n\nbezüglich Ihrer Reservierung am ${shortDate(r.date)} um ${r.start_time} Uhr:\n\n`;
+  $('#msg-sms-count').hidden=true; $('#msg-err').textContent='';
+  $('#msgdlg').showModal();
+}
+function applyMsgChan(ch){
+  ui.msgChan=ch;
+  document.querySelectorAll('#msg-chan [data-act=msgchan]').forEach(b=>b.classList.toggle('on',b.dataset.v===ch));
+  const r=resById(msgResId); if(!r) return;
+  $('#msg-subj-wrap').hidden=ch==='sms';
+  $('#msg-to').value=ch==='sms'?(r.phone||''):(r.email||'');
+  $('#msg-sms-count').hidden=ch!=='sms';
+  if(ch==='sms') updateSmsCount();
+}
+function updateSmsCount(){
+  const t=$('#msg-body')?.value||'', n=t.length, seg=Math.max(1,Math.ceil(n/160));
+  const el=$('#msg-sms-count'); if(el){ el.hidden=false; el.textContent=`${n} Zeichen · ${seg} SMS-Segment${seg===1?'':'e'} (Gateway nicht angebunden — nur Postausgang).`; }
+}
+function queueGuestMessage(){
+  const r=resById(msgResId); if(!r) return;
+  const chan=ui.msgChan||'mail', to=$('#msg-to').value.trim(), subj=$('#msg-subj').value.trim(), body=$('#msg-body').value.trim();
+  if(!to) return $('#msg-err').textContent=chan==='sms'?'Bitte Telefonnummer eintragen.':'Bitte E-Mail-Adresse eintragen.';
+  if(chan==='mail'&&!validMail(to)) return $('#msg-err').textContent='Ungültige E-Mail-Adresse.';
+  if(!body) return $('#msg-err').textContent='Bitte einen Text eingeben.';
+  const delivery=chan==='sms'?'failed':'queued'; // SMS ohne Gateway = Fehlerzustand für Pipeline-Demo
+  const mail={id:uid(),kind:chan==='sms'?'sms':'message',channel:chan,to,subject:chan==='sms'?`(SMS) ${r.guest_name}`:subj,body,res_id:r.id,created_at:new Date().toISOString(),delivery,error:chan==='sms'?'SMS-Gateway nicht angebunden':''};
+  S.mails.unshift(mail);
+  if(S.mails.length>200) S.mails.length=200;
+  if(chan==='mail'){
+    /* Stub SMTP: mark as sent unless address looks like fail@ */
+    if(/fail@/i.test(to)){ mail.delivery='failed'; mail.error='SMTP stub: Zustellung fehlgeschlagen'; }
+    else mail.delivery='sent';
+  }
+  save(); $('#msgdlg').close(); render();
+  toast(mail.delivery==='failed'?'Nachricht mit Zustellfehler im Postausgang.':'Nachricht im Postausgang abgelegt.');
+}
+
 
 /* ---------- Menü / Dashboard / Design ---------- */
 const MENU_ITEMS=[
@@ -1842,8 +2145,9 @@ function dashStats(date){
   const gone=sum(rs.filter(r=>r.status_guest==='done'));
   const canceled=all.filter(r=>r.type==='canceled');
   const wait=all.filter(r=>r.type==='waiting_list');
-  const unconfOnline=wait.filter(r=>r.is_online_reservation).length;
+  const unconfOnline=all.filter(r=>r.is_online_reservation&&r.type!=='canceled'&&(r.type==='waiting_list'||r.status_guest==='not_started')).length; /* day-scoped via dayRes in dashStats */
   const stornoOnline=canceled.filter(r=>r.cancel_reason==='canceled_by_guest'||r.is_online_reservation).length;
+  const mailFails=mailFailCount();
   const walk=rs.filter(r=>r.is_walkin), online=rs.filter(r=>r.is_online_reservation&&!r.is_walkin), lokal=rs.filter(r=>!r.is_walkin&&!r.is_online_reservation);
   const seats=allTables().reduce((n,t)=>n+t.max_capacity,0);
   const tables=allTables().length;
@@ -1858,7 +2162,7 @@ function dashStats(date){
     const ids=new Set(); for(const r of rs) for(const id of r.table_ids) ids.add(id);
     usedTables=ids.size; usedSeats=rs.reduce((n,r)=>n+r.num_people,0);
   }
-  return {rs,guests,pending,gone,canceled:canceled.length,wait:wait.length,unconfOnline,stornoOnline,
+  return {rs,guests,pending,gone,canceled:canceled.length,wait:wait.length,unconfOnline,stornoOnline,mailFails,
     walk:sum(walk),online:sum(online),lokal:sum(lokal),seats,tables,usedSeats:Math.min(usedSeats,seats),usedTables,
     resCount:rs.length};
 }
@@ -1889,7 +2193,7 @@ function renderDashboard(){
       ${chip(st.unconfOnline,'Unbest. Online',st.unconfOnline>0)}
       ${chip(st.stornoOnline,'Storno Online',st.stornoOnline>0)}
       ${chip(st.wait,'Warteliste',st.wait>0)}
-      ${chip(0,'Nachrichten-Fehler',false) /* SMS/SMTP-Fehler: 0 ohne Gateway */}
+      ${chip(st.mailFails,'Nachrichten-Fehler',st.mailFails>0)}
     </div>
     <div class="dash-mix">
       <div class="mix-chart" style="--w1:${w1}%;--w2:${w2}%"></div>
@@ -1987,7 +2291,7 @@ function render(){
   if(ui.view==='tablini') renderTablini();
   if(ui.view==='help') renderHelp();
   if(ui.view==='notes') renderNotesView();
-  if(ui.view==='plan'){renderPlan();renderWait();}
+  if(ui.view==='plan'){renderPlan();renderWait(); document.querySelectorAll('#v-plan [data-resid]').forEach(el=>bindResDrag(el,el.dataset.resid));}
   if(ui.view==='floor') renderFloor();
   if(ui.view==='cal') renderCal();
   if(ui.view==='list') renderList();
@@ -1996,6 +2300,7 @@ function render(){
   if(ui.view==='mails') renderMails();
   if(ui.view==='guests') renderGuests();
   if(ui.view==='stats') renderStats();
+  updateOnlineBadge();
 }
 function renderKpis(){
   const rs=dayRes().filter(r=>r.type==='reservation'), sum=a=>a.reduce((n,r)=>n+r.num_people,0);
@@ -2061,7 +2366,7 @@ function renderPlan(){
       for(const r of rs.filter(r=>r.table_ids.includes(t.id))){
         const s=Math.max(t2m(r.start_time),from), e=t2m(r.end_time); if(e<=from) continue;
         const dots=r.flags.map(f=>S.flags.find(g=>g.id===f)).filter(Boolean).map(f=>`<i class="dot" style="background:${esc(f.color)}" title="${esc(f.label)}"></i>`).join('');
-        h+=`<div class="bar ${stateOf(r)}" data-act="open" data-id="${r.id}" style="left:${x(s)+1}px;width:${x(e)-x(s)-2}px" title="${esc(r.guest_name)} · ${r.num_people} Pers. · ${r.start_time}–${r.end_time}${r.note?' · '+esc(r.note):''}"><b>${esc(r.guest_name)}${dots}</b>${r.num_people} Pers. · ${r.start_time}</div>`;
+        h+=`<div class="bar ${stateOf(r)}" data-act="open" data-id="${r.id}" data-resid="${r.id}" style="left:${x(s)+1}px;width:${x(e)-x(s)-2}px" title="${esc(r.guest_name)} · ${r.num_people} Pers. · ${r.start_time}–${r.end_time}${r.note?' · '+esc(r.note):''}"><b>${resHasMailFail(r)?'⚠ ':''}${esc(r.guest_name)}${dots}</b>${r.num_people} Pers. · ${r.start_time}</div>`;
       }
       h+='</div></div>';
     }
@@ -2071,7 +2376,7 @@ function renderPlan(){
   $('#plan').innerHTML=h+'</div>';
   if(ui.firstScroll){ui.firstScroll=false; $('#plan').scrollLeft=Math.max(0,x(ui.date===today()?n:t2m('17:00'))-PX*6);}
 }
-const card=r=>`<div class="card" data-act="open" data-id="${r.id}"><b>${esc(r.guest_name)}</b> · ${r.num_people} Pers.<br><small>${r.start_time}–${r.end_time}${r.note?' · '+esc(r.note):''}</small></div>`;
+const card=r=>`<div class="card" data-act="open" data-id="${r.id}" data-resid="${r.id}"><b>${resHasMailFail(r)?'⚠ ':''}${esc(r.guest_name)}</b> · ${r.num_people} Pers.<br><small>${r.start_time}–${r.end_time}${r.note?' · '+esc(r.note):''}</small></div>`;
 function renderWait(){
   const w=dayRes().filter(r=>r.type==='waiting_list').sort((a,b)=>a.start_time.localeCompare(b.start_time));
   const c=dayRes().filter(r=>r.type==='canceled');
@@ -2129,21 +2434,55 @@ function listMatch(r){
   return true;
 }
 function renderList(){
-  const F=[['all','Alle'],['expected','Erwartet'],['open','Anwesend'],['done','Gegangen'],['notable','Ohne Tisch'],['waiting_list','Warteliste'],['canceled','Storniert']];
+  const F=[['all','Alle'],['expected','Erwartet'],['open','Offen'],['done','Gegangen'],['notable','Ohne Tisch'],['waiting_list','Warteliste'],['canceled','Storniert']];
   const term=(ui.search||'').trim().toLowerCase(), td=digits(term);
   const hit=r=>[r.guest_name,r.email,r.note,r.code].some(v=>(v||'').toLowerCase().includes(term))||(td.length>=3&&digits(r.phone).includes(td));
-  const rs=term?S.reservations.filter(hit).sort((a,b)=>b.date.localeCompare(a.date)||a.start_time.localeCompare(b.start_time)).slice(0,200)
-    :dayRes().filter(listMatch).sort((a,b)=>a.start_time.localeCompare(b.start_time)||String(a.created_at).localeCompare(String(b.created_at)));
-  const rows=rs.map(r=>{const st=stateOf(r);
-    const tags=r.flags.map(f=>S.flags.find(g=>g.id===f)).filter(Boolean).map(f=>`<span class="tag" style="background:${esc(f.color)}">${esc(f.label)}</span>`).join('');
-    return `<tr class="rowlink" data-act="open" data-id="${r.id}"><td>${term?'<b>'+shortDate(r.date)+'</b><br>':''}${r.start_time}–${r.end_time}</td><td><b>${esc(r.guest_name)}</b>${r.is_walkin?' <small>Walk-in</small>':''}${r.series_id?' <small title="Serienreservierung">↻ Serie</small>':''}${r.is_online_reservation?` <small>· online gebucht${r.source&&SOURCES[r.source]?' über '+SOURCES[r.source]:''}${r.code?' · Code '+esc(r.code):''}</small>`:''}${r.cancel_reason==='canceled_by_guest'?' <small>· vom Gast storniert</small>':''}<br><small>${esc(r.phone)}${r.email?' · '+esc(r.email):''}</small></td>
-      <td>${r.num_people}${r.num_children?` <small>(${r.num_children} Ki.)</small>`:''}</td><td>${esc(tableNames(r))||'–'}</td><td><span class="pill ${st}">${LABEL[st]}</span></td><td>${tags}${esc(r.note)}</td></tr>`}).join('');
+  const sortKey=ui.listSort==='created'
+    ? (a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))||a.start_time.localeCompare(b.start_time)
+    : (a,b)=>a.start_time.localeCompare(b.start_time)||String(a.created_at).localeCompare(String(b.created_at));
+  const rs=term?S.reservations.filter(hit).sort((a,b)=>b.date.localeCompare(a.date)||sortKey(a,b)).slice(0,200)
+    :dayRes().filter(listMatch).sort(sortKey);
+  const rowHtml=r=>{const st=stateOf(r);
+    const tags=(r.flags||[]).map(f=>S.flags.find(g=>g.id===f)).filter(Boolean).map(f=>`<span class="tag" style="background:${esc(f.color)}">${esc(f.label)}</span>`).join('');
+    const modes=(r.is_inquiry?'<span class="tag" style="background:var(--late)">Anfrage</span>':'')+(r.table_fixed?'<span class="tag" style="background:#555">Tisch fix</span>':'');
+    const fn=(S.events||[]).find(e=>e.id===r.function_id);
+    const warn=resHasMailFail(r)?'<span class="mail-warn" title="Nachrichten-Fehler">⚠</span>':'';
+    let ci='';
+    if(r.type==='reservation'||r.type==='waiting_list'){
+      if(r.status_guest==='not_started'||r.type==='waiting_list') ci=`<span class="list-ci"><button type="button" class="ci" data-act="quickst" data-id="${r.id}" data-s="arrived">Check-in</button></span>`;
+      else if(r.status_guest==='arrived') ci=`<span class="list-ci"><button type="button" class="co" data-act="quickst" data-id="${r.id}" data-s="done">Check-out</button></span>`;
+    }
+    const stLabel=st==='arrived'?'Offen':LABEL[st];
+    return `<tr class="rowlink" data-act="open" data-id="${r.id}" data-resid="${r.id}"><td>${term?'<b>'+shortDate(r.date)+'</b><br>':''}${r.start_time}–${r.end_time}</td><td><b>${esc(r.guest_name)}</b>${warn}${r.is_walkin?' <small>Walk-in</small>':''}${r.series_id?' <small title="Serienreservierung">↻ Serie</small>':''}${r.is_online_reservation?` <small>· online gebucht${r.source&&SOURCES[r.source]?' über '+SOURCES[r.source]:''}${r.code?' · Code '+esc(r.code):''}</small>`:''}${r.cancel_reason==='canceled_by_guest'?' <small>· vom Gast storniert</small>':''}<br><small>${esc(r.phone)}${r.email?' · '+esc(r.email):''}</small></td>
+      <td>${r.num_people}${r.num_children?` <small>(${r.num_children} Ki.)</small>`:''}</td><td>${esc(tableNames(r))||'–'}</td><td><span class="pill ${st}">${stLabel}</span> ${ci}</td><td>${modes}${fn?`<span class="tag" style="background:var(--accent)">${esc(fn.name)}</span>`:''}${tags}${esc(r.note)}</td></tr>`;
+  };
+  let body='';
+  if(term || ui.listSort==='created'){
+    body=rs.map(rowHtml).join('')||'<tr><td colspan="6" class="empty">Keine Einträge an diesem Tag.</td></tr>';
+  }else{
+    const groups=[];
+    const order=[];
+    for(const r of rs){
+      const g=daypartOf(r);
+      if(!groups[g]){ groups[g]=[]; order.push(g); }
+      groups[g].push(r);
+    }
+    if(!order.length) body='<tr><td colspan="6" class="empty">Keine Einträge an diesem Tag.</td></tr>';
+    else for(const g of order){
+      const list=groups[g], pax=list.reduce((n,r)=>n+r.num_people,0);
+      body+=`<tr class="list-group-row"><td colspan="6"><div class="list-group"><span>${esc(g)}</span><span>${list.length} Res. · ${pax} Pers.</span></div></td></tr>`+list.map(rowHtml).join('');
+    }
+  }
   const pn=(S.notes||[]).filter(n=>n.date===ui.date);
   const dayRs=term?rs:dayRes().filter(r=>r.type==='reservation');
   $('#v-list').innerHTML=`<div class="printhead"><h2>${esc(S.online.name)}</h2><p>${esc(longDate(ui.date))} · ${dayRs.filter(r=>r.type==='reservation').length} Reservierungen · ${dayRs.filter(r=>r.type==='reservation').reduce((n,r)=>n+r.num_people,0)} Gäste</p>${pn.length?'<p><b>Notizen:</b> '+pn.map(n=>esc(n.text)).join(' · ')+'</p>':''}</div>
-    <div class="chips">${F.map(([v,l])=>`<button data-act="filter" data-v="${v}" class="${ui.filter===v?'on':''}">${l}</button>`).join('')}<input type="search" id="r-search" value="${esc(ui.search||'')}" placeholder="Suche in allen Tagen: Name, Telefon, Code" aria-label="Reservierungen suchen" style="margin-left:auto;width:min(300px,100%)"><button data-act="cards">Tischkarten</button><button data-act="print">Drucken</button></div>
-    ${term?`<p class="hint" style="margin:0 0 8px">${rs.length} Treffer für „${esc(ui.search)}“ in allen geladenen Tagen. Suchfeld leeren, um wieder den Tag zu sehen.</p>`:''}
-    <div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Gast</th><th>Pers.</th><th>Tisch</th><th>Status</th><th>Bemerkung</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">Keine Einträge an diesem Tag.</td></tr>'}</tbody></table></div>`;
+    <div class="chips">${F.map(([v,l])=>`<button data-act="filter" data-v="${v}" class="${ui.filter===v?'on':''}">${l}</button>`).join('')}
+      <button type="button" data-act="listsort" data-v="time" class="${ui.listSort!=='created'?'on':''}">Tageszeit</button>
+      <button type="button" data-act="listsort" data-v="created" class="${ui.listSort==='created'?'on':''}">Zuletzt erstellt</button>
+      <input type="search" id="r-search" value="${esc(ui.search||'')}" placeholder="Suche in allen Tagen: Name, Telefon, Code" aria-label="Reservierungen suchen" style="margin-left:auto;width:min(300px,100%)"><button data-act="cards">Tischkarten</button><button data-act="print">Drucken</button></div>
+    ${term?`<p class="hint" style="margin:0 0 8px">${rs.length} Treffer für „${esc(ui.search)}“ in allen geladenen Tagen. Suchfeld leeren, um wieder den Tag zu sehen.</p>`:'<p class="hint" style="margin:0 0 8px">Zeilen ziehen · Drop-Zonen Check-in / Check-out / Warteliste · oder auf Tischplan-Tisch ablegen.</p>'}
+    <div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Gast</th><th>Pers.</th><th>Tisch</th><th>Status</th><th>Bemerkung</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  $('#v-list').querySelectorAll('tr.rowlink[data-resid]').forEach(tr=>bindResDrag(tr, tr.dataset.resid));
 }
 /* ---------- Grundriss (Tablex 2D parity) ---------- */
 const FW=640;
@@ -2259,6 +2598,19 @@ function renderFloor(){
     <span><i style="background:var(--open)"></i>erwartet</span><span><i style="background:var(--late)"></i>verspätet</span><span><i style="background:var(--here)"></i>angekommen</span>
     <span><i style="background:var(--done)"></i>gegangen</span><span>Klick auf einen Tisch öffnet oder erstellt die Reservierung. Auf dem Handy: kneifen oder +/− zum Zoomen.</span></div>`}`;
   renderFloors();
+  // Waitlist / unassigned strip for DnD onto tables
+  if(!E){
+    const wait=dayRes().filter(r=>r.type==='waiting_list'||(r.type==='reservation'&&!r.table_ids.length));
+    const strip=document.createElement('div');
+    strip.className='floor-wait';
+    strip.style.cssText='margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center';
+    strip.innerHTML=`<small style="width:100%">Warteliste / ohne Tisch — auf einen Tisch ziehen:</small>`+(wait.map(r=>{
+      const warn=resHasMailFail(r)?'⚠ ':'';
+      return `<button type="button" class="mq" data-act="open" data-id="${r.id}" data-resid="${r.id}" style="max-width:220px"><span><b>${warn}${esc(r.guest_name)}</b><small>${r.start_time} · ${r.num_people} Pers.</small></span></button>`;
+    }).join('')||'<span class="empty">Keine Warteliste.</span>');
+    $('#v-floor').appendChild(strip);
+  }
+  $('#v-floor').querySelectorAll('[data-resid]').forEach(el=>bindResDrag(el, el.dataset.resid));
 }
 function renderTxTab(t,m,rs,E,shift={x:0,y:0}){
   const [w,h]=fsize(t), L=txLay(t), x=(L?L.x:clamp(t.x,0,FW-w))-shift.x, y=(L?L.y:(t.y||0))-shift.y;
@@ -2278,7 +2630,8 @@ function renderTxTab(t,m,rs,E,shift={x:0,y:0}){
   if(cur){
     const st=stateOf(cur);
     const colorCls=floorDesign.statusColor?` occ ${st}`:' occ no-status';
-    return {html:`<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${chairs}${extras}<i class="puck" aria-hidden="true"></i><div class="ftxt">${nameInTab}<span>${esc(cur.guest_name)}</span></div></div>`, free:0};
+    const warn=resHasMailFail(cur)?'⚠ ':'';
+    return {html:`<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" data-resid="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${chairs}${extras}<i class="puck" aria-hidden="true"></i><div class="ftxt">${nameInTab}<span>${warn}${esc(cur.guest_name)}</span></div></div>`, free:0};
   }
   const soon=next&&t2m(next.start_time)-m<=60;
   return {html:`<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${chairs}${extras}<div class="ftxt">${nameInTab||(floorDesign.numberAbove?'':`<b>${esc(t.name)}</b>`)}</div></div>`, free:1};
@@ -2352,7 +2705,7 @@ function renderFloors(){
         const share=cur.table_ids.length>1?Math.ceil(cur.num_people/cur.table_ids.length):cur.num_people;
         const colorCls=floorDesign.statusColor?` occ ${st}`:' occ no-status';
         const svg=TX?'':(floorDesign.chairs?tableSvg(t,w,h,st==='done'?0:share):tableSvg(t,w,h,0).replace(/class="chair[^"]*"[^/]*\/>/g,''));
-        return `<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${svg}${txExtras(t,cur)}<i class="puck" aria-hidden="true"></i><div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
+        return `<div class="${cls}${colorCls}" data-act="ftab" data-id="${cur.id}" data-resid="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${svg}${txExtras(t,cur)}<i class="puck" aria-hidden="true"></i><div class="ftxt"><b>${esc(t.name)}</b><span>${resHasMailFail(cur)?'⚠ ':''}${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
       }
       free++;
       const soon=next&&t2m(next.start_time)-m<=60;
@@ -2509,12 +2862,29 @@ function setupBody(cat){
       <div class="srow"><span class="lab">ab Personen</span><input type="number" min="1" max="99" data-pay="min_people" value="${cfg.min_people}"></div>
       <div class="srow"><span class="lab">Liste</span><button type="button" data-act="menugo" data-id="payment">Zu Zahlungen</button></div>
     </div>`;
-  if(cat==='texte'){ const c=S.mailcfg; return `<div class="setup-sec"><h3>Automatische E-Mails</h3>
+  if(cat==='texte'){ const c=S.mailcfg; const m=ensureWfDefaults(); S.templates=m.templates; S.events=m.events;
+    return `<div class="setup-sec"><h3>Automatische E-Mails</h3>
       <div class="srow"><span class="lab">Bestätigung</span><label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> bei neuer Reservierung</label></div>
       <div class="srow"><span class="lab">Storno</span><label><input type="checkbox" data-m="cancel"${c.cancel?' checked':''}> bei Stornierung</label></div>
       <div class="srow"><span class="lab">Grußformel</span><textarea rows="3" data-m="signature" style="width:100%">${esc(c.signature)}</textarea></div>
-      <p class="hint">SMTP-Versand folgt später — E-Mails landen im Postausgang unter Nachrichten.</p>
+      <p class="hint">SMTP-Stub: Zustellung als gesendet; fail@… erzeugt Nachrichten-Fehler.</p>
       <div class="srow"><span class="lab">Nachrichten</span><button type="button" data-act="menugo" data-id="mails">Zu Nachrichten</button></div>
+    </div>
+    <div class="setup-sec"><h3>Textvorlagen</h3>
+      <p class="hint">Platzhalter: {{guest}} {{date}} {{time}} {{people}} {{name}}</p>
+      ${(S.templates||[]).map(t=>`<div class="lock"><span><b>${esc(t.label)}</b> · ${t.chan==='sms'?'SMS':'E-Mail'}</span><button type="button" class="link danger" data-act="deltpl" data-id="${t.id}">✕</button></div>`).join('')||'<div class="empty">Keine Textvorlagen.</div>'}
+      <div class="addlock" style="margin-top:8px">
+        <label class="f">Bezeichnung<input id="tpl-label" placeholder="z.B. Bestätigung"></label>
+        <label class="f">Kanal<select id="tpl-chan"><option value="mail">E-Mail</option><option value="sms">SMS</option></select></label>
+        <button type="button" data-act="addtpl">+ Vorlage</button>
+      </div>
+    </div>
+    <div class="setup-sec"><h3>Events / Functions</h3>
+      ${(S.events||[]).map(e=>`<div class="lock"><span>${esc(e.name)}</span><button type="button" class="link danger" data-act="delevent" data-id="${e.id}">✕</button></div>`).join('')||'<div class="empty">Keine Events.</div>'}
+      <div class="addlock" style="margin-top:8px">
+        <label class="f">Name<input id="ev-name" placeholder="z.B. Weinverkostung"></label>
+        <button type="button" data-act="addevent">+ Event</button>
+      </div>
     </div>`; }
   if(cat==='marke') return `<div class="setup-sec"><h3>Markenauftritt</h3>
       <div class="brandbox">
@@ -2937,6 +3307,10 @@ function openRes(id,preset={}){
   const cardEl=$('#f-card');
   if(cardEl) cardEl.checked=r?!!r.card_guarantee:!!(cfg0.enabled&&people0>=cfg0.min_people);
   $('#f-flags').innerHTML=S.flags.map(f=>`<label class="tchip"><input type="checkbox" value="${f.id}" ${r&&r.flags.includes(f.id)?'checked':''}> ${esc(f.label)}</label>`).join('');
+  if($('#f-inquiry')) $('#f-inquiry').checked=!!(r&&r.is_inquiry);
+  if($('#f-tablefix')) $('#f-tablefix').checked=!!(r&&r.table_fixed);
+  syncModeChips();
+  fillFunctionSelect($('#f-function'), r&&r.function_id||'');
   pickSel=r?[...r.table_ids]:(preset.table?[preset.table]:[]);
   $('#f-err').textContent=''; $('#d-cancel').hidden=true;
   $('#d-series').hidden=!!r; $('#f-repeat').value='none'; $('#f-until').value=''; seriesHint();
@@ -2948,23 +3322,38 @@ function openRes(id,preset={}){
   if(r){
     const s=stateOf(r); let b='';
     if(r.type==='reservation'){
-      if(r.status_guest==='not_started') b+='<button type="button" class="primary" data-act="st" data-s="arrived">Gäste sind da</button>';
-      if(r.status_guest==='arrived') b+='<button type="button" class="primary" data-act="st" data-s="done">Gäste sind gegangen</button>';
+      if(r.status_guest==='not_started') b+='<button type="button" class="primary" data-act="st" data-s="arrived">Check-in</button>';
+      if(r.status_guest==='arrived') b+='<button type="button" class="primary" data-act="st" data-s="done">Check-out</button>';
       if(r.status_guest!=='not_started') b+='<button type="button" data-act="st" data-s="not_started">Status zurücksetzen</button>';
     }
     if(r.type==='canceled') b+=`<small>Grund: ${r.cancel_reason==='guest_did_not_arrive'?'Gast nicht erschienen':r.cancel_reason==='canceled_by_guest'?'Vom Gast online storniert':'Anderer Grund'}. Speichern stellt die Reservierung wieder her.</small>`;
     if(r.type==='waiting_list') b+='<small>Tisch wählen und speichern, um die Reservierung zu platzieren.</small>';
     if(r.type==='reservation'&&r.table_ids.length) b+='<button type="button" data-act="towait">Auf Warteliste</button>';
+    if(r.is_inquiry) b+=' <span class="pill late">Anfrage</span>';
+    if(r.table_fixed) b+=' <span class="pill" style="background:#555">Tisch fix</span>';
+    if(r.function_id){ const fn=(S.events||[]).find(e=>e.id===r.function_id); if(fn) b+=` <span class="tag" style="background:var(--accent)">${esc(fn.name)}</span>`; }
     st.innerHTML=`<span class="pill ${s}">${LABEL[s]}</span>${b}`;
   }
   $('#b-cancel').hidden=!r||r.type==='canceled';
   $('#b-save').textContent=r&&r.type==='canceled'?'Wiederherstellen':'Speichern';
-  $('#d-log').hidden=!(r&&ONLINE); $('#d-log').open=false; $('#f-log').textContent='';
+  const msgBtn=$('#b-msg'); if(msgBtn) msgBtn.hidden=!r;
+  $('#f-log').innerHTML='';
+  const emptyLog=$('#f-log-empty'); if(emptyLog) emptyLog.hidden=true;
   if(r&&ONLINE) DB.from('res_log').select('at,actor,action,detail').eq('reservation_id',r.id).order('at',{ascending:false}).limit(50).then(({data})=>{
     if(curId!==r.id) return;
-    $('#f-log').innerHTML=(data||[]).map(l=>`<div><b>${new Date(l.at).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</b> · ${esc(l.action)}${l.detail?' · '+esc(l.detail):''} <small>(${esc(l.actor)})</small></div>`).join('')||'<div>Noch keine Einträge.</div>';
+    const rows=(data||[]).map(l=>`<div><b>${new Date(l.at).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</b> · ${esc(l.action)}${l.detail?' · '+esc(l.detail):''} <small>(${esc(l.actor)})</small></div>`).join('');
+    $('#f-log').innerHTML=rows||'';
+    if(emptyLog) emptyLog.hidden=!!rows;
   });
-  renderPicker(); guestInfo(false); $('#dlg').showModal(); if(!r) $('#f-name').focus();
+  else if(r){
+    const local=[`Angelegt ${new Date(r.created_at||Date.now()).toLocaleString('de-AT')}`];
+    if(r.is_online_reservation) local.push('Online-Reservierung'+(r.source?' · '+r.source:''));
+    if(r.is_inquiry) local.push('Modus: Anfrage');
+    if(r.table_fixed) local.push('Modus: Tisch fix');
+    $('#f-log').innerHTML=local.map(x=>`<div>${esc(x)}</div>`).join('');
+  }else if(emptyLog) emptyLog.hidden=false;
+  setResDlgTab(preset.tab||'res');
+  renderPicker(); guestInfo(false); $('#dlg').showModal(); if(!r){ setResDlgTab('kontakt'); $('#f-name').focus(); }
 }
 function formTimes(){return {date:$('#f-date').value,s:t2m($('#f-start').value),e:t2m($('#f-end').value),p:parseInt($('#f-people').value,10)||0};}
 /* ---------- Serienreservierungen ---------- */
@@ -2993,7 +3382,7 @@ function renderPicker(){
   $('#f-hint').textContent=!pickSel.length?'Kein Tisch gewählt – die Reservierung kommt auf die Warteliste.':cap<p?`Achtung: Die gewählten Tische haben nur ${cap} Plätze für ${p} Personen.`:`${cap} Plätze gewählt.`;
 }
 function saveRes(){
-  const {date,s,e,p}=formTimes(), name=$('#f-name').value.trim(), err=m=>{$('#f-err').textContent=m};
+  const {date,s,e,p}=formTimes(), name=$('#f-name').value.trim(), err=m=>{$('#f-err').textContent=m; if(m&&!name) setResDlgTab('kontakt');};
   if(!name) return err('Bitte einen Namen eintragen.');
   if(!date) return err('Bitte ein Datum wählen.');
   if(p<1) return err('Die Personenzahl muss mindestens 1 sein.');
@@ -3005,8 +3394,10 @@ function saveRes(){
   Object.assign(r,{guest_name:name,phone:$('#f-phone').value.trim(),email:$('#f-email').value.trim(),date,start_time:m2t(s),end_time:m2t(e),num_people:p,
     num_children:clamp(parseInt($('#f-children').value,10)||0,0,p),note:$('#f-note').value.trim(),
     card_guarantee:!!$('#f-card')?.checked,
+    is_inquiry:!!$('#f-inquiry')?.checked, table_fixed:!!$('#f-tablefix')?.checked, function_id:$('#f-function')?.value||'',
     flags:[...document.querySelectorAll('#f-flags input:checked')].map(i=>i.value),table_ids:[...pickSel],type:pickSel.length?'reservation':'waiting_list'});
   if(r.type==='waiting_list') r.status_guest='not_started';
+  persistResModes(r);
   const linked=r.contact_id&&S.contacts.find(c=>c.id===r.contact_id);
   if(linked&&cname(linked).toLowerCase()!==name.toLowerCase()) r.contact_id=null; // Name geändert: neu zuordnen
   ensureContact(r);
@@ -3189,15 +3580,87 @@ document.addEventListener('click',async ev=>{
   }
   else if(a==='new') openRes(null);
   else if(a==='walkin') openWalk();
-  else if(a==='daylock'){
-    const date=ui.date;
-    if(S.locks.some(l=>l.date===date&&l.from==='00:00'&&(l.to==='23:59'||l.to>='23:45'))){
-      if(!await ask(`Die ganztägige Online-Sperre für ${longDate(date)} wieder aufheben?`,'Aufheben')) return;
-      S.locks=S.locks.filter(l=>!(l.date===date&&l.from==='00:00'&&(l.to==='23:59'||l.to>='23:45')));
-      save(); render(); toast('Online-Sperre aufgehoben.'); return;
-    }
-    if(!await ask(`Online-Buchung für ${longDate(date)} ganztägig sperren? Personal kann weiterhin eintragen.`,'Sperren')) return;
-    S.locks.push({id:uid(),date,from:'00:00',to:'23:59'}); save(); render(); toast('Tag online gesperrt.');
+  else if(a==='daylock'){ openSperreModal(); }
+  else if(a==='onlineinbox'){ openOnlineInbox(); }
+  else if(a==='markallseen'){
+    const {pending,cancels}=onlineInboxLists();
+    const m=ensureWfDefaults();
+    m.seenOnline=[...new Set([...(m.seenOnline||[]),...pending.map(r=>r.id)])];
+    m.seenCancel=[...new Set([...(m.seenCancel||[]),...cancels.map(r=>r.id)])];
+    saveWf(m); openOnlineInbox(); updateOnlineBadge(); toast('Alle als gesehen markiert.');
+  }
+  else if(a==='inboxopen'){
+    const m=ensureWfDefaults();
+    if(el.dataset.kind==='cancel') m.seenCancel=[...new Set([...(m.seenCancel||[]),id])];
+    else m.seenOnline=[...new Set([...(m.seenOnline||[]),id])];
+    saveWf(m); $('#onlinedlg').close(); openRes(id); updateOnlineBadge();
+  }
+  else if(a==='sperreadd'){
+    const date=$('#sp-date')?.value||ui.sperreFrom||ui.date;
+    const from=$('#sp-tfrom')?.value||'00:00', to=$('#sp-tto')?.value||'23:59';
+    if(!date){toast('Datum fehlt.'); return;}
+    if(to<from){toast('„bis“ darf nicht vor „von“ liegen.'); return;}
+    S.locks.push({id:uid(),date,from,to}); save(); renderSperreBody(); render(); toast('Online-Sperre eingetragen.');
+  }
+  else if(a==='sperreclear'){
+    const from=ui.sperreFrom||ui.date, to=ui.sperreTo||ui.date;
+    const n=(S.locks||[]).filter(l=>l.date>=from&&l.date<=to).length;
+    if(!n){toast('Keine Sperren im Zeitraum.'); return;}
+    if(!await ask(`${n} Sperre(n) im gewählten Zeitraum löschen?`,'Löschen')) return;
+    S.locks=(S.locks||[]).filter(l=>!(l.date>=from&&l.date<=to)); save(); renderSperreBody(); render(); toast('Sperren gelöscht.');
+  }
+  else if(a==='quickst'){ ev.stopPropagation(); quickStatus(id, el.dataset.s); }
+  else if(a==='listsort'){ ui.listSort=el.dataset.v||'time'; render(); }
+  else if(a==='restab'){ setResDlgTab(el.dataset.v); }
+  else if(a==='msgcompose'){ openMsgCompose(curId); }
+  else if(a==='msgchan'){ applyMsgChan(el.dataset.v); }
+  else if(a==='msgtpl'){
+    const r=resById(msgResId); if(!r) return;
+    const chan=ui.msgChan||'mail';
+    const tpls=(ensureWfDefaults().templates||[]).filter(t=>(t.chan||t.kind)===(chan==='sms'?'sms':'mail')||(!t.chan&&chan==='mail'));
+    const existing=$('.tpl-menu'); if(existing) existing.remove();
+    if(!tpls.length){ toast('Keine Textvorlagen. Unter Einstellungen → Texte anlegen.'); return; }
+    const menu=document.createElement('div'); menu.className='tpl-menu';
+    menu.innerHTML=tpls.map(t=>`<button type="button" data-tid="${t.id}">${esc(t.label||'Vorlage')}</button>`).join('');
+    const rect=el.getBoundingClientRect();
+    menu.style.left=Math.min(rect.left, innerWidth-220)+'px'; menu.style.top=(rect.bottom+4)+'px';
+    document.body.appendChild(menu);
+    const close=()=>{ menu.remove(); document.removeEventListener('click',close,true); };
+    menu.addEventListener('click',ev2=>{
+      const b=ev2.target.closest('[data-tid]'); if(!b) return;
+      const t=tpls.find(x=>x.id===b.dataset.tid); if(!t) return;
+      if(chan==='mail'&&t.subject) $('#msg-subj').value=tplFill(t.subject,r);
+      $('#msg-body').value=tplFill(t.body,r); if(chan==='sms') updateSmsCount();
+      close();
+    });
+    setTimeout(()=>document.addEventListener('click',close,true),0);
+  }
+  else if(a==='addfn'){
+    const name=prompt('Name der Function / des Events:');
+    if(!name||!name.trim()) return;
+    const m=ensureWfDefaults();
+    const evn={id:uid(),name:name.trim()};
+    m.events=[...(m.events||[]),evn]; saveWf(m); S.events=m.events;
+    fillFunctionSelect($('#f-function'), evn.id); toast('Function angelegt.');
+  }
+  else if(a==='addevent'){
+    const name=$('#ev-name')?.value.trim(); if(!name){toast('Name fehlt.'); return;}
+    const m=ensureWfDefaults(); m.events=[...(m.events||[]),{id:uid(),name}]; saveWf(m); S.events=m.events; save(); render(); toast('Event angelegt.');
+  }
+  else if(a==='delevent'){
+    const m=ensureWfDefaults(); m.events=(m.events||[]).filter(e=>e.id!==id); saveWf(m); S.events=m.events;
+    for(const r of S.reservations) if(r.function_id===id){ r.function_id=''; persistResModes(r); }
+    save(); render();
+  }
+  else if(a==='addtpl'){
+    const label=$('#tpl-label')?.value.trim()||'Neue Vorlage';
+    const chan=$('#tpl-chan')?.value||'mail';
+    const m=ensureWfDefaults();
+    m.templates=[...(m.templates||[]),{id:uid(),label,chan,kind:chan,subject:chan==='mail'?'Ihre Reservierung bei {{name}}':'',body:'Guten Tag {{guest}},\n\n…\n\n{{name}}'}];
+    saveWf(m); S.templates=m.templates; save(); render(); toast('Textvorlage angelegt.');
+  }
+  else if(a==='deltpl'){
+    const m=ensureWfDefaults(); m.templates=(m.templates||[]).filter(t=>t.id!==id); saveWf(m); S.templates=m.templates; save(); render();
   }
   else if(a==='savecombo'){
     if(pickSel.length<2){toast('Bitte mindestens zwei Tische wählen.'); return;}
@@ -3314,7 +3777,7 @@ document.addEventListener('click',async ev=>{
     if(to<=from) return toast('Das Ende der Sperre muss nach dem Beginn liegen.');
     S.locks.push({id:uid(),date,from,to}); save(); render(); toast('Online-Sperre eingetragen.');
   }
-  else if(a==='dellock'){S.locks=S.locks.filter(l=>l.id!==id); save(); render();}
+  else if(a==='dellock'){S.locks=S.locks.filter(l=>l.id!==id); save(); if($('#sperredlg')?.open) renderSperreBody(); render();}
   else if(a==='reset'){ if(await ask('Alle Änderungen verwerfen und die Beispieldaten neu laden?','Zurücksetzen')){S=seed(); save(); ui.date=today(); ui.firstScroll=true; render(); toast('Beispieldaten neu geladen.');} }
 });
 $('#date').addEventListener('change',e=>{if(e.target.value){ui.date=e.target.value; render();}});
@@ -3420,6 +3883,49 @@ $('#loginform').addEventListener('submit',async e=>{
   $('#l-pass').value=''; await enter();
 });
 $('#walkform').addEventListener('submit',e=>{e.preventDefault(); saveWalk();});
+$('#msgform')?.addEventListener('submit',e=>{e.preventDefault(); queueGuestMessage();});
+$('#msg-body')?.addEventListener('input',()=>{ if(ui.msgChan==='sms') updateSmsCount(); });
+$('#msg-body')?.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  const btn=document.querySelector('[data-act=msgtpl]'); if(btn) btn.click();
+});
+for(const id of ['#f-inquiry','#f-tablefix']) $(id)?.addEventListener('change',syncModeChips);
+document.addEventListener('dragover',e=>{
+  const dz=e.target.closest('[data-drop]');
+  const tab=e.target.closest('.ftab[data-act=ftab], .ftab[data-table]');
+  if(dz||(tab&&dragResId&&!ui.floorEdit)){ e.preventDefault(); if(dz) dz.classList.add('over'); if(tab) tab.classList.add('drop-target'); }
+});
+document.addEventListener('dragleave',e=>{
+  e.target.closest?.('[data-drop]')?.classList.remove('over');
+  e.target.closest?.('.ftab.drop-target')?.classList.remove('drop-target');
+});
+document.addEventListener('drop',e=>{
+  const dz=e.target.closest('[data-drop]');
+  const tab=e.target.closest('.ftab[data-table], .ftab[data-act=ftab]');
+  document.querySelectorAll('.dz.over,.ftab.drop-target').forEach(n=>n.classList.remove('over','drop-target'));
+  const rid=dragResId||e.dataTransfer?.getData('text/plain');
+  if(!rid) return;
+  e.preventDefault();
+  if(dz){
+    const act=dz.dataset.drop;
+    if(act==='checkin') quickStatus(rid,'arrived');
+    else if(act==='checkout') quickStatus(rid,'done');
+    else if(act==='waitlist') quickStatus(rid,'waitlist');
+    showDropzones(false); dragResId=null; return;
+  }
+  if(tab&&!ui.floorEdit){
+    const tableId=tab.dataset.table||(()=>{ const r=resById(tab.dataset.id); return r&&r.table_ids[0]; })();
+    // Prefer free table target
+    const freeId=tab.dataset.table;
+    if(freeId) assignResToTable(rid, freeId);
+    else if(tab.dataset.id&&tab.dataset.id!==rid){
+      // drop onto occupied: open both / move to that table's first id from current occ
+      const occ=resById(tab.dataset.id);
+      if(occ&&occ.table_ids[0]) assignResToTable(rid, occ.table_ids[0]);
+    }
+    showDropzones(false); dragResId=null;
+  }
+});
 $('#w-people').addEventListener('input',fillWalk);
 $('#w-dur')?.addEventListener('change',fillWalk);
 $('#f-start').addEventListener('change',e=>{
@@ -3508,7 +4014,7 @@ $('#guest').addEventListener('change',e=>{
 });
 $('#guest').addEventListener('submit',e=>{e.preventDefault(); if(e.target.id==='gfind') findBooking(); else bookOnline();});
 /* Änderungen aus einem anderen Tab (z. B. neue Online-Buchung) übernehmen */
-window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.querySelector('dialog[open]')){ S=load(); if(GUEST?(g.mode==='book'&&g.time===null)||g.look!=null:ui.view==='plan'||ui.view==='list'||ui.view==='mails'||(ui.view==='floor'&&!ui.floorEdit)) render(); } });
+window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.querySelector('dialog[open]')){ S=load(); applyWfToState(); if(GUEST?(g.mode==='book'&&g.time===null)||g.look!=null:ui.view==='plan'||ui.view==='list'||ui.view==='mails'||(ui.view==='floor'&&!ui.floorEdit)) render(); } });
 
 function onStaffRouteChange(){
   if(GUEST||document.body.classList.contains('hub')) return;
@@ -3524,6 +4030,7 @@ window.addEventListener('popstate',onStaffRouteChange);
 if(ONLINE) startOnline();
 else {
   S=load();
+  applyWfToState();
   if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }
   applyBrand(VENUE_META.brand,VENUE_META.name,VENUE_SLUG);
   document.title=(GUEST?'Reservieren':'Tischbuch')+' – '+VENUE_META.short+(GUEST?'':' · Demo');
