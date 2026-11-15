@@ -415,7 +415,7 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
 </head>
 <body>
 <header class="top">
-  <div class="brand"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b>Tischbuch<span>Prototyp · Beispieldaten</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
+  <div class="brand"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b>Tischbuch<span>Personal</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
   <div class="datenav">
     <button data-act="day" data-n="-1" aria-label="Vorheriger Tag">‹</button>
     <button data-act="today">Heute</button>
@@ -469,8 +469,8 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
   <section id="v-online" hidden></section>
   <section id="v-mails" hidden></section>
   <div class="foot">
-    <span>Alle Daten sind erfunden und liegen nur in diesem Browser.</span>
-    <button class="link" data-act="reset">Beispieldaten zurücksetzen</button>
+    <span>Tischbuch · Lürzer Obertauern</span>
+    <button class="link" data-act="reset" hidden>Beispieldaten zurücksetzen</button>
   </div>
 </main>
 
@@ -973,7 +973,7 @@ function queueMail(kind,r,list=[r]){
 }
 function renderMails(){
   const c=S.mailcfg, ts=d=>new Date(d).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-  $('#v-mails').innerHTML=`<p class="hint" style="margin-top:0">Der Prototyp verschickt nichts. Jede E-Mail wird nur erzeugt und hier im Postausgang abgelegt. Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
+  $('#v-mails').innerHTML=`<p class="hint" style="margin-top:0">E-Mails werden derzeit nur in den Postausgang geschrieben (noch kein SMTP-Versand). Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
   <h3>Automatische E-Mails</h3>
   <div class="mailcfg">
     <label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> Bestätigung bei neuer Reservierung (online und vom Personal eingetragen)</label>
@@ -1714,7 +1714,7 @@ function renderGuest0(){
     el.innerHTML=`<div class="gcard"><h1>Danke, ${esc(r.guest_name)}!</h1><p class="gsub">Ihr Tisch bei ${esc(o.name)} ist reserviert.</p>
       <div class="gsum"><b>${esc(longDate(r.date))}</b><br>${r.start_time} Uhr · ${r.num_people} ${r.num_people===1?'Person':'Personen'}${r.note?'<br>Ihre Nachricht: '+esc(r.note):''}</div>
       <p>Ihr Buchungscode: <b style="font-size:18px;letter-spacing:1px">${esc(r.code)}</b><br><small>Damit können Sie Ihre Reservierung ${cancelText(o)} selbst stornieren.</small></p>
-      <p><small>${r.mailed?`Eine Bestätigung mit diesem Code geht an ${esc(r.email)}. (Im Prototyp wird sie nicht wirklich verschickt, sondern nur im Postausgang abgelegt.)`:'Bitte notieren Sie den Code, es wird keine Bestätigung per E-Mail verschickt.'}</small></p>
+      <p><small>${r.mailed?`Eine Bestätigung mit diesem Code ist für ${esc(r.email)} vorgesehen. (Der Versand landet vorerst nur im Personal-Postausgang, bis SMTP angebunden ist.)`:'Bitte notieren Sie den Code, es wird keine Bestätigung per E-Mail verschickt.'}</small></p>
       <button data-act="gnew">Weitere Reservierung</button> <button data-act="gmanage" data-code="${esc(r.code)}">Reservierung verwalten</button></div>`; return;}
   const maxDate=addDays(today(),o.days_ahead); if(g.date<today()||g.date>maxDate) g.date=today();
   let pax=''; for(let i=1;i<=o.max_pax;i++) pax+=`<option value="${i}"${g.pax===i?' selected':''}>${i} ${i===1?'Person':'Personen'}</option>`;
@@ -2154,6 +2154,8 @@ else {
   applyBrand(VENUE_META.brand,VENUE_META.name,VENUE_SLUG);
   document.title=(GUEST?'Reservieren':'Tischbuch')+' – '+VENUE_META.short+(GUEST?'':' · Demo');
   $('.brand span').textContent='Demo · '+VENUE_META.short;
+  $('.foot span').textContent='Demo: Daten nur in diesem Browser.';
+  const rb=$('.foot [data-act=reset]'); if(rb) rb.hidden=!!GUEST;
   if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }
   render();
 }

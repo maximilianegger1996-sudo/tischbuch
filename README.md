@@ -98,6 +98,10 @@ Echter SMTP-/Provider-Versand ist **nach** Go-Live (Queue bleibt die Quelle).
 
 Die App lädt `brand.fonts` und setzt CSS-Variablen über `applyBrand`. Personal-Login schreibt Presets nach; SQL: `supabase/brand-jost-body-font.sql`.
 
-## Go-Live
+## Go-Live (flip-ready)
 
-Checkliste (Muss vs. später: SMS, Karten, 3D, Shopify-App): Projekt-Store `docs/go-live-checklist.md`.
+- Embed-Dateien zum Einfügen: Ordner [`embeds/`](embeds/)
+- Smoke (Config + Verfügbarkeit): `node scripts/smoke-go-live.mjs`
+- Checkliste Done vs. nur-Mensch-Cutover (Merge, Shopify Montag, DNS, Embeds live): Projekt-Store `docs/go-live-checklist.md`
+
+Kein öffentlicher Cutover durch den Agenten — PR mergen + Snippets einsetzen reicht für den Flip.
