@@ -22,8 +22,8 @@ function TopBar() {
   return (
     <header className="topbar">
       <a className="brand" href="#top">
-        {site?.logo ? <img src={site.logo} alt={site?.name || "FREUDENHAUS"} /> : null}
-        <span className="brand-mark">FREUDENHAUS RENT</span>
+        {site?.logo ? <img src={site.logo} alt={site?.name || "Rentfreudenhaus"} /> : null}
+        <span className="brand-mark">Rentfreudenhaus</span>
       </a>
       <div className="summary-chip">
         <span>
@@ -99,7 +99,7 @@ function StepPeople() {
         <div className="hero-copy">
           <span className="eyebrow">Obertauern · Online reservieren</span>
           <h1>Mehr Piste. Weniger Gepäck.</h1>
-          <p>Neue Buchungsstrecke für FREUDENHAUS — angebunden an Easyrent.</p>
+          <p>Rentfreudenhaus — die Skiverleih-Buchungsstrecke, angebunden an Easyrent.</p>
           <button type="button" className="btn" onClick={next}>
             Jetzt starten
           </button>
@@ -567,7 +567,7 @@ function StepDetails() {
           checked={draft.newsletter}
           onChange={(e) => setNewsletter(e.target.checked)}
         />
-        <span>Neuigkeiten von FREUDENHAUS per E-Mail erhalten</span>
+        <span>Neuigkeiten von Rentfreudenhaus per E-Mail erhalten</span>
       </label>
       <label className="check">
         <input
@@ -609,14 +609,13 @@ function StepReview() {
   if (result?.ok) {
     return (
       <section className="panel success-card stack">
-        <h2>Easyrent</h2>
+        <h2>Reservierung vorbereitet</h2>
         <p className="lede">
-          Vorgang {result.bookingId} · {providerLabel}
+          Rentfreudenhaus · Vorgang {result.bookingId} · {providerLabel}
         </p>
         <div className="notice">
-          Katalog/Preise/Verfügbarkeit laufen über die Easyrent-API (Proxy). Ohne{" "}
-          <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run (keine Live-Buchung in
-          Easyrent).
+          Katalog/Preise/Verfügbarkeit laufen über Easyrent. Ohne{" "}
+          <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run (keine Live-Buchung).
         </div>
         <pre
           style={{

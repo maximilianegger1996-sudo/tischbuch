@@ -303,7 +303,7 @@ export const rentBuddyProvider: BookingProvider = {
   toWintersteigerExport(draft, products) {
     const byId = new Map(products.map((p) => [p.id, p]));
     return {
-      shop: "FREUDENHAUS",
+      shop: "Rentfreudenhaus",
       branchId: draft.locationId,
       from: draft.from,
       to: draft.to,

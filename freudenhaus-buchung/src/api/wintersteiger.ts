@@ -104,7 +104,7 @@ function toInsertPayload(draft: BookingDraft) {
   return {
     reservation: {
       reservationextid: `FH-${Date.now()}`,
-      origin: "freudenhaus-buchung",
+      origin: "rentfreudenhaus",
       datefrom: draft.from,
       dateto: draft.to,
       er_branchid: draft.locationId ? Number(draft.locationId) : undefined,
@@ -116,7 +116,7 @@ function toInsertPayload(draft: BookingDraft) {
 
 export const wintersteigerProvider: BookingProvider = {
   id: "wintersteiger",
-  label: "Easyrent (Live via Proxy)",
+  label: "Rentfreudenhaus · Easyrent",
 
   async loadSite(): Promise<SiteSettings> {
     // Branding still from public Rent Buddy site settings

@@ -1,11 +1,12 @@
-# FREUDENHAUS Buchungstrecke
+# Rentfreudenhaus
 
-Neue Kunden-Buchungsstrecke für **FREUDENHAUS Rent** (Obertauern), gebaut für den Übergang von **Rent Buddy online** zu **Easyrent** (Wintersteiger Sports).
+Skiverleih-Buchungsstrecke für **FREUDENHAUS Rent** (Obertauern). Ablösung der bisherigen Rent-Buddy-Onlinebuchung — angebunden an **Easyrent** (Wintersteiger Sports) über die **EasyRest**-API.
 
 ## Namensklärung
 
 | Begriff | Bedeutung |
 | --- | --- |
+| **Rentfreudenhaus** | diese Kunden-Buchungsstrecke |
 | **Easyrent** | Verleihsoftware / Zielsystem |
 | **EasyRest** | REST-API von Easyrent (`/easyrest/rest/…`) |
 | Rent Buddy | bisherige Online-Buchung (wird abgelöst) |

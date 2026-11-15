@@ -24,8 +24,8 @@ A-4910 Ried im Innkreis
 3. EXTERNER EMPFÄNGER / DIENSTLEISTER
 ═══════════════════════════════════════════════════════════════
 Variante A — Online-Buchungsstrecke (aktuelles Projekt):
-Firma:           Betreiber der neuen FREUDENHAUS-Kundenbuchung
-                 (freudenhaus-buchung / Nachfolger Rent Buddy online)
+Firma:           Betreiber von Rentfreudenhaus
+                 (Skiverleih-Buchungsstrecke / Nachfolger Rent Buddy online)
 Adresse:         [bitte eintragen — Hosting/Agentur]
 Kontaktperson:   Maximilian Egger / technischer Ansprechpartner
 Zweck:           Online-Reservierung von Verleihartikeln inkl. Preis-
@@ -62,7 +62,7 @@ Empfehlung Klaviyo (laut Mail Maxi):
 ═══════════════════════════════════════════════════════════════
 5. ZWECK DER DATENWEITERGABE
 ═══════════════════════════════════════════════════════════════
-Ermöglichung der Online-Kundenbuchungsstrecke FREUDENHAUS Rent
+Ermöglichung der Online-Kundenbuchungsstrecke Rentfreudenhaus
 über die Wintersteiger EasyRest-Schnittstelle (Filialen, reservierbare
 Artikel, Verfügbarkeit, Preisberechnung, Reservierungsanlage) sowie
 optional Synchronisation von Kundenstammdaten an das Newsletter-
