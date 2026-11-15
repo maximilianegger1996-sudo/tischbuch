@@ -3,114 +3,180 @@ import { BookingProvider, useBooking, type StepId } from "./state/booking";
 import { formatMoney } from "./lib/money";
 import type { Product } from "./api";
 
-const STEP_LABEL: Record<StepId, string> = {
-  people: "Personen",
-  dates: "Zeitraum",
-  location: "Filiale",
-  products: "Ausrüstung",
-  details: "Daten",
-  review: "Abschluss",
-};
+const DOW = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
 function euroDaily(product: Product, kind: string) {
   return formatMoney(product.displayDaily[kind] || product.displayDaily["1"]);
 }
 
+function iso(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function parseIso(s: string) {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function daysBetween(from: string, to: string) {
+  return Math.round((parseIso(to).getTime() - parseIso(from).getTime()) / 86400000) + 1;
+}
+
+/** Online-Frühbucher laut skirent-obertauern.at */
+function earlyBirdPercent(day: Date, today: Date) {
+  const ms = day.getTime() - today.getTime();
+  const ahead = Math.floor(ms / 86400000);
+  if (ahead < 1) return 0;
+  if (ahead >= 60) return 20;
+  return 10;
+}
+
+function personSummary(draft: ReturnType<typeof useBooking>["draft"]) {
+  const adults = draft.persons.filter((p) => p.kind === "adult").length;
+  const kids = draft.persons.length - adults;
+  const parts = [];
+  if (adults) parts.push(`${adults}× Erwachsen`);
+  if (kids) parts.push(`${kids}× Kind/Jugend`);
+  return {
+    count: `${draft.persons.length} Personen`,
+    detail: parts.join(" · ") || "—",
+  };
+}
+
 function TopBar() {
-  const { site, draft, quote, providerLabel } = useBooking();
-  const loc = draft.locationId;
+  const { draft, quote, locations, setStep, step, providerLabel } = useBooking();
+  const people = personSummary(draft);
+  const loc = locations.find((l) => l.id === draft.locationId);
+  const dayCount =
+    draft.from && draft.to ? `${daysBetween(draft.from, draft.to)} Tage` : "0 Tage";
+  const products = draft.persons.reduce((n, p) => n + p.lines.length, 0);
+  const range =
+    draft.from && draft.to
+      ? `${draft.from.slice(8)}.${draft.from.slice(5, 7)}. – ${draft.to.slice(8)}.${draft.to.slice(5, 7)}.`
+      : dayCount;
+
+  const slots: Array<{
+    id: StepId | "cart";
+    label: string;
+    value: string;
+    unlock: boolean;
+    go?: StepId;
+  }> = [
+    {
+      id: "people",
+      label: "Personen",
+      value: people.detail,
+      unlock: true,
+      go: "people",
+    },
+    {
+      id: "dates",
+      label: range === dayCount ? "Tage" : "Zeitraum",
+      value: range,
+      unlock: draft.persons.length > 0,
+      go: "dates",
+    },
+    {
+      id: "location",
+      label: "Abholort",
+      value: loc?.title || "wählen",
+      unlock: !!(draft.from && draft.to),
+      go: "location",
+    },
+    {
+      id: "products",
+      label: "Produkte",
+      value: `${products} Produkte`,
+      unlock: !!(draft.from && draft.to && draft.locationId),
+      go: "products",
+    },
+    {
+      id: "cart",
+      label: "Warenkorb",
+      value: formatMoney(quote?.cartTotal) || "—",
+      unlock: draft.persons.some((p) => p.lines.length > 0),
+      go: draft.persons.some((p) => p.lines.length > 0) ? "review" : undefined,
+    },
+  ];
+
+  if (step === "people") return null;
+
   return (
     <header className="topbar">
-      <a className="brand" href="#top">
-        {site?.logo ? <img src={site.logo} alt={site?.name || "Rentfreudenhaus"} /> : null}
-        <span className="brand-mark">Rentfreudenhaus</span>
+      <a className="brand" href="#top" onClick={() => setStep("people")}>
+        <img src="/brand/logo-mark.svg" alt="FREUDENHAUS" />
+        <span className="brand-mark">
+          Rent
+          <br />
+          freudenhaus
+        </span>
       </a>
-      <div className="summary-chip">
-        <span>
-          <strong>{draft.persons.length}</strong> Personen
-        </span>
-        <span>
-          <strong>
-            {draft.from && draft.to
-              ? `${draft.from.slice(8)}.${draft.from.slice(5, 7)}. – ${draft.to.slice(8)}.${draft.to.slice(5, 7)}.`
-              : "–"}
-          </strong>
-        </span>
-        <span>
-          <strong>{loc ? `#${loc}` : "Filiale"}</strong>
-        </span>
-        <span>
-          <strong>{formatMoney(quote?.cartTotal)}</strong>
-        </span>
+      <div className="progress-slots">
+        {slots.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            className={`progress-slot${step === s.go ? " active" : ""}`}
+            disabled={!s.unlock || !s.go}
+            onClick={() => s.go && s.unlock && setStep(s.go)}
+          >
+            <span className="label">{s.label}</span>
+            <span className="value">{s.value}</span>
+          </button>
+        ))}
       </div>
-      <div className="provider-tag">{providerLabel}</div>
+      <div className="topbar-meta">{providerLabel}</div>
     </header>
   );
 }
 
-function Stepper() {
-  const { step, steps, setStep, draft } = useBooking();
-  const unlocked = (id: StepId) => {
-    if (id === "people") return true;
-    if (id === "dates") return draft.persons.length > 0;
-    if (id === "location") return !!(draft.from && draft.to);
-    if (id === "products") return !!(draft.from && draft.to && draft.locationId);
-    if (id === "details") return draft.persons.some((p) => p.lines.length > 0);
-    return draft.persons.some((p) => p.lines.length > 0);
-  };
-  return (
-    <nav className="stepper" aria-label="Buchungsschritte">
-      {steps.map((id) => {
-        const i = steps.indexOf(id);
-        const active = step === id;
-        const done = steps.indexOf(step) > i;
-        return (
-          <button
-            key={id}
-            type="button"
-            className={`step-pill${active ? " active" : ""}${done ? " done" : ""}`}
-            disabled={!unlocked(id)}
-            onClick={() => unlocked(id) && setStep(id)}
-          >
-            {i + 1}. {STEP_LABEL[id]}
-          </button>
-        );
-      })}
-    </nav>
-  );
-}
-
 function StepPeople() {
-  const { draft, site, setAdults, setKids, next } = useBooking();
+  const { draft, site, setAdults, setKids, next, setStep } = useBooking();
+  const [open, setOpen] = useState(false);
   const adults = draft.persons.filter((p) => p.kind === "adult").length;
   const kidPersons = draft.persons.filter((p) => p.kind !== "adult");
   const max = site?.maxPersons ?? 20;
+  const summary = personSummary(draft).detail;
 
   return (
-    <section className="stack">
-      <div
-        className="hero-panel"
-        style={
-          {
-            "--hero-image": `url(${site?.bgImage || "https://www.skirent-obertauern.at/img/hero-video-poster.jpg"})`,
-          } as CSSProperties
-        }
-      >
-        <div className="hero-copy">
-          <span className="eyebrow">Obertauern · Online reservieren</span>
-          <h1>Mehr Piste. Weniger Gepäck.</h1>
-          <p>Rentfreudenhaus — die Skiverleih-Buchungsstrecke, angebunden an Easyrent.</p>
-          <button type="button" className="btn" onClick={next}>
-            Jetzt starten
-          </button>
-        </div>
+    <section
+      className="people-hero"
+      style={
+        {
+          "--hero-image": `url(${site?.bgImage || "https://www.skirent-obertauern.at/img/hero-video-poster.jpg"})`,
+        } as CSSProperties
+      }
+    >
+      <div className="brand-float">
+        <img src="/brand/logo-white.svg" alt="FREUDENHAUS" />
       </div>
-
-      <div className="panel">
-        <h2>Wer leiht?</h2>
-        <p className="lede">Erwachsene und Kinder festlegen. Jugend ab {site?.youthAge ?? 11} Jahren wird automatisch erkannt.</p>
-        <div className="stack">
-          <div className="row" style={{ justifyContent: "space-between" }}>
+      <div className="people-center">
+        <h1>Wie viele Personen möchten leihen?</h1>
+        <button type="button" className="people-picker" onClick={() => setOpen((v) => !v)}>
+          <span>{summary}</span>
+          <span className="chev">{open ? "▴" : "▾"}</span>
+        </button>
+        <button
+          type="button"
+          className="people-reset"
+          onClick={() => {
+            setAdults(2);
+            setKids([]);
+            setStep("people");
+          }}
+        >
+          Neu starten?
+        </button>
+        <button type="button" className="btn accent" onClick={next}>
+          Weiter zum Zeitraum
+        </button>
+      </div>
+      {open ? (
+        <div className="people-sheet">
+          <div className="row-line">
             <div>
               <strong>Erwachsene</strong>
               <div className="muted">ab {site?.adultAge ?? 17} Jahren</div>
@@ -120,17 +186,12 @@ function StepPeople() {
                 −
               </button>
               <span>{adults}</span>
-              <button
-                type="button"
-                aria-label="mehr"
-                onClick={() => setAdults(Math.min(max, adults + 1))}
-              >
+              <button type="button" aria-label="mehr" onClick={() => setAdults(Math.min(max, adults + 1))}>
                 +
               </button>
             </div>
           </div>
-
-          <div className="row" style={{ justifyContent: "space-between" }}>
+          <div className="row-line">
             <div>
               <strong>Kinder / Jugend</strong>
               <div className="muted">Alter am ersten Leihtag</div>
@@ -153,7 +214,6 @@ function StepPeople() {
               </button>
             </div>
           </div>
-
           {kidPersons.length > 0 && (
             <div className="grid-2">
               {kidPersons.map((p, i) => (
@@ -178,39 +238,38 @@ function StepPeople() {
             </div>
           )}
         </div>
-      </div>
+      ) : null}
     </section>
   );
 }
 
-function monthMatrix(year: number, month: number) {
-  const first = new Date(year, month, 1);
-  const startPad = (first.getDay() + 6) % 7; // Monday-first
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const cells: Array<Date | null> = [];
-  for (let i = 0; i < startPad; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
-  while (cells.length % 7 !== 0) cells.push(null);
-  return cells;
-}
-
-function iso(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+function monthLabel(d: Date) {
+  return d.toLocaleDateString("de-AT", { month: "long", year: "numeric" });
 }
 
 function StepDates() {
   const { draft, setDates, site, next } = useBooking();
   const seasonStart = site?.seasonStart ? new Date(site.seasonStart) : new Date(2026, 10, 20);
+  const seasonEnd = site?.seasonEnd ? new Date(site.seasonEnd) : new Date(2027, 3, 14);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const minDate = seasonStart > today ? seasonStart : today;
 
-  const [cursor, setCursor] = useState(() => new Date(minDate.getFullYear(), minDate.getMonth(), 1));
-  const cells = monthMatrix(cursor.getFullYear(), cursor.getMonth());
-  const monthLabel = cursor.toLocaleDateString("de-AT", { month: "long", year: "numeric" });
+  const months: Date[] = [];
+  {
+    let cur = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+    const last = new Date(seasonEnd.getFullYear(), seasonEnd.getMonth(), 1);
+    while (cur <= last && months.length < 8) {
+      months.push(new Date(cur));
+      cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+    }
+  }
+
+  const [cursor, setCursor] = useState(() => months[0] || new Date(minDate.getFullYear(), minDate.getMonth(), 1));
+
+  const daysInMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
+  const days: Date[] = [];
+  for (let d = 1; d <= daysInMonth; d++) days.push(new Date(cursor.getFullYear(), cursor.getMonth(), d));
 
   const onPick = (d: Date) => {
     const v = iso(d);
@@ -230,78 +289,82 @@ function StepDates() {
   };
 
   return (
-    <section className="panel stack">
-      <div>
-        <h2>Leihzeitraum</h2>
-        <p className="lede">
-          Zeitraum wählen. Onlinebonus und Frühbucher werden über die Live-Preise berechnet.
-          {site?.pickupTime ? ` Abholung am Vortag ab ${site.pickupTime} Uhr möglich.` : ""}
-        </p>
-      </div>
-      <div className="month-nav">
-        <button
-          type="button"
-          className="btn ghost"
-          onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}
-        >
-          ←
-        </button>
-        <strong>{monthLabel}</strong>
-        <button
-          type="button"
-          className="btn ghost"
-          onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}
-        >
-          →
-        </button>
-      </div>
-      <div className="calendar" aria-label="Kalender">
-        {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((d) => (
-          <div className="cal-head" key={d}>
-            {d}
-          </div>
-        ))}
-        {cells.map((d, i) =>
-          d ? (
+    <>
+      <div
+        className="hero-strip"
+        style={
+          {
+            "--hero-image": `url(${site?.bgImage || "https://www.skirent-obertauern.at/img/hero-video-poster.jpg"})`,
+          } as CSSProperties
+        }
+      />
+      <section className="step-stage">
+        <div className="stage-head">
+          <h2>Wähle deinen Leihzeitraum:</h2>
+          <p>Online-Frühbucher: −20&nbsp;% ab 60 Tage, −10&nbsp;% bis 1 Tag vorher.</p>
+        </div>
+        <div className="month-rail">
+          {months.map((m) => (
             <button
-              key={i}
+              key={iso(m)}
               type="button"
-              className={`day${inRange(d) ? " in-range" : ""}${
-                draft.from === iso(d) || draft.to === iso(d) ? " selected" : ""
-              }`}
-              disabled={d < minDate}
-              onClick={() => onPick(d)}
+              className={
+                m.getFullYear() === cursor.getFullYear() && m.getMonth() === cursor.getMonth()
+                  ? "active"
+                  : ""
+              }
+              onClick={() => setCursor(m)}
             >
-              {d.getDate()}
-              {draft.from === iso(d) && !draft.to ? <small>von</small> : null}
-              {draft.to === iso(d) ? <small>bis</small> : null}
+              {monthLabel(m)}
             </button>
-          ) : (
-            <div key={i} />
-          ),
-        )}
-      </div>
-      <div className="notice">
-        Gewählt:{" "}
-        <strong>
-          {draft.from || "–"}
-          {draft.to ? ` → ${draft.to}` : draft.from ? " (Enddatum tippen)" : ""}
-        </strong>
-      </div>
-      <button type="button" className="btn" disabled={!draft.from || !draft.to} onClick={next}>
-        Weiter zur Filiale
-      </button>
-    </section>
+          ))}
+        </div>
+        <div className="day-grid" aria-label="Kalender">
+          {days.map((d) => {
+            const disabled = d < minDate || d > seasonEnd;
+            const pct = disabled ? 0 : earlyBirdPercent(d, today);
+            const selected = draft.from === iso(d) || draft.to === iso(d);
+            return (
+              <button
+                key={iso(d)}
+                type="button"
+                className={`day-card${inRange(d) ? " in-range" : ""}${selected ? " selected" : ""}`}
+                disabled={disabled}
+                onClick={() => onPick(d)}
+              >
+                <span className="dow">{DOW[(d.getDay() + 6) % 7]}</span>
+                <span className="num">{d.getDate()}</span>
+                <span className="badge">
+                  {disabled ? "nicht verfügbar" : pct ? `−${pct}%` : "·"}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="range-note">
+          {draft.from && draft.to
+            ? `${draft.from} → ${draft.to} · ${daysBetween(draft.from, draft.to)} Tage`
+            : draft.from
+              ? "Enddatum tippen"
+              : "Startdatum tippen"}
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+          <button type="button" className="btn" disabled={!draft.from || !draft.to} onClick={next}>
+            Weiter zum Abholort
+          </button>
+        </div>
+      </section>
+    </>
   );
 }
 
 function StepLocation() {
   const { locations, draft, setLocation, setPickupDayBefore, site, next } = useBooking();
   return (
-    <section className="panel stack">
-      <div>
-        <h2>Abholfiliale</h2>
-        <p className="lede">Fünf Standorte direkt an der Piste — dort abholen, wo du in den Lift steigst.</p>
+    <section className="step-stage">
+      <div className="stage-head">
+        <h2>Abholort</h2>
+        <p>Fünf Standorte direkt an der Piste — dort abholen, wo du in den Lift steigst.</p>
       </div>
       <div className="loc-grid">
         {locations.map((L) => (
@@ -311,28 +374,28 @@ function StepLocation() {
             className={`loc-card${draft.locationId === L.id ? " selected" : ""}`}
             onClick={() => setLocation(L.id)}
           >
-            {L.image ? <img src={L.image} alt="" /> : <div style={{ height: 150, background: "#ddd" }} />}
+            {L.image ? <img src={L.image} alt="" /> : <div style={{ height: 160, background: "#eee" }} />}
             <div className="body">
-              {L.highlight ? <span className="badge">{L.highlight}</span> : null}
+              {L.highlight ? <span className="tag">{L.highlight}</span> : null}
               <h3>{L.title}</h3>
               <div className="muted" dangerouslySetInnerHTML={{ __html: (L.addressHtml || "").slice(0, 180) }} />
             </div>
           </button>
         ))}
       </div>
-      <label className="check">
+      <label className="check" style={{ marginTop: "1.25rem" }}>
         <input
           type="checkbox"
           checked={draft.pickupDayBefore}
           onChange={(e) => setPickupDayBefore(e.target.checked)}
         />
-        <span>
-          Am Vortag abholen (ab {site?.pickupTime || "15:00"} Uhr) — entspannter erster Skitag.
-        </span>
+        <span>Am Vortag abholen (ab {site?.pickupTime || "15:00"} Uhr) — entspannter erster Skitag.</span>
       </label>
-      <button type="button" className="btn" disabled={!draft.locationId} onClick={next}>
-        Weiter zur Ausrüstung
-      </button>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+        <button type="button" className="btn" disabled={!draft.locationId} onClick={next}>
+          Weiter zur Ausrüstung
+        </button>
+      </div>
     </section>
   );
 }
@@ -344,13 +407,10 @@ function StepProducts() {
   const kindCode = person?.kind === "youth" ? "2" : person?.kind === "kid" ? "3" : "1";
 
   return (
-    <section className="panel stack">
-      <div>
-        <h2>Ausrüstung wählen</h2>
-        <p className="lede">
-          Pro Person Pakete zusammenstellen. Preise inkl. aktueller Online-Konditionen
-          {quote?.rate ? ` (${quote.rate.title})` : ""}.
-        </p>
+    <section className="step-stage">
+      <div className="stage-head">
+        <h2>Ausrüstung</h2>
+        <p>Pro Person Pakete zusammenstellen — Platin · Gold · Silber und mehr.</p>
       </div>
       <div className="person-tabs">
         {draft.persons.map((p, i) => (
@@ -367,17 +427,17 @@ function StepProducts() {
       </div>
       {quoteLoading && <div className="muted">Preise werden geladen…</div>}
       {(quote?.categories || []).map((cat) => (
-        <div key={cat.id} className="stack">
-          <strong>{cat.title}</strong>
+        <div key={cat.id}>
+          <span className="cat-title">{cat.title}</span>
           <div className="product-grid">
             {cat.products.map((product) => {
               const selected = person?.lines.some((l) => l.productId === product.id);
               const line = person?.lines.find((l) => l.productId === product.id);
               return (
                 <div key={product.id} className="product-card">
-                  {product.image ? <img src={product.image} alt="" /> : <div />}
+                  {product.image ? <img src={product.image} alt="" /> : <div className="ph" />}
                   <div className="body">
-                    {product.highlight ? <span className="badge">{product.highlight}</span> : null}
+                    {product.highlight ? <span className="tag">{product.highlight}</span> : null}
                     <h3>{product.title}</h3>
                     <div className="muted">{product.subtitle}</div>
                     <div className="price">ab {euroDaily(product, kindCode)} / Tag</div>
@@ -390,14 +450,15 @@ function StepProducts() {
                     ) : null}
                     <button
                       type="button"
-                      className={`btn${selected ? " sage" : ""}`}
+                      className={`btn${selected ? " accent" : ""}`}
+                      style={{ padding: "12px 20px", marginTop: "0.35rem" }}
                       onClick={() => person && toggleProduct(person.id, product)}
                     >
                       {selected ? "Ausgewählt" : "Hinzufügen"}
                     </button>
                     {selected && product.models.length > 0 && (
                       <div className="model-box">
-                        <div className="muted">Modell & Länge (optional, Easyrent-Verfügbarkeit)</div>
+                        <div className="muted">Modell & Länge (optional)</div>
                         <select
                           value={line?.modelId || ""}
                           onChange={(e) => {
@@ -458,14 +519,16 @@ function StepProducts() {
           </div>
         </div>
       ))}
-      <button
-        type="button"
-        className="btn"
-        disabled={!draft.persons.some((p) => p.lines.length)}
-        onClick={next}
-      >
-        Weiter zu den Kontaktdaten
-      </button>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+        <button
+          type="button"
+          className="btn"
+          disabled={!draft.persons.some((p) => p.lines.length)}
+          onClick={next}
+        >
+          Weiter zu den Kontaktdaten
+        </button>
+      </div>
     </section>
   );
 }
@@ -477,13 +540,17 @@ function StepDetails() {
   const insurance = specials.find((s) => s.type === 1);
 
   return (
-    <section className="panel stack">
-      <div>
+    <section className="step-stage stack">
+      <div className="stage-head">
         <h2>Deine Daten</h2>
-        <p className="lede">Für die Übergabe an Easyrent brauchen wir korrekte Gästedaten.</p>
+        <p>Für die Übergabe brauchen wir korrekte Gästedaten.</p>
       </div>
       {draft.persons.map((p, i) => (
-        <div key={p.id} className="stack" style={{ borderTop: i ? "1px solid var(--line)" : undefined, paddingTop: i ? "1rem" : 0 }}>
+        <div
+          key={p.id}
+          className="stack"
+          style={{ borderTop: i ? "1px solid var(--line)" : undefined, paddingTop: i ? "1rem" : 0 }}
+        >
           <strong>
             Person {i + 1} · {p.kind === "adult" ? "Erwachsen" : p.kind === "youth" ? "Jugend" : "Kind"}
           </strong>
@@ -567,7 +634,7 @@ function StepDetails() {
           checked={draft.newsletter}
           onChange={(e) => setNewsletter(e.target.checked)}
         />
-        <span>Neuigkeiten von Rentfreudenhaus per E-Mail erhalten</span>
+        <span>Neues vom Freudenhaus per E-Mail</span>
       </label>
       <label className="check">
         <input
@@ -577,28 +644,28 @@ function StepDetails() {
         />
         <span>AGB und Datenschutz akzeptieren</span>
       </label>
-      <button
-        type="button"
-        className="btn"
-        disabled={
-          !main?.firstName ||
-          !main?.lastName ||
-          !main?.email ||
-          !draft.termsAccepted
-        }
-        onClick={next}
-      >
-        Zur Übersicht
-      </button>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <button
+          type="button"
+          className="btn"
+          disabled={!main?.firstName || !main?.lastName || !main?.email || !draft.termsAccepted}
+          onClick={next}
+        >
+          Zur Übersicht
+        </button>
+      </div>
     </section>
   );
 }
 
 function StepReview() {
   const { draft, quote, locations, submit, submitting, products, providerLabel } = useBooking();
-  const [result, setResult] = useState<{ ok: boolean; message: string; bookingId?: string; raw?: unknown } | null>(
-    null,
-  );
+  const [result, setResult] = useState<{
+    ok: boolean;
+    message: string;
+    bookingId?: string;
+    raw?: unknown;
+  } | null>(null);
   const loc = locations.find((l) => l.id === draft.locationId);
 
   const onSubmit = async () => {
@@ -608,36 +675,25 @@ function StepReview() {
 
   if (result?.ok) {
     return (
-      <section className="panel success-card stack">
-        <h2>Reservierung vorbereitet</h2>
-        <p className="lede">
-          Rentfreudenhaus · Vorgang {result.bookingId} · {providerLabel}
-        </p>
-        <div className="notice">
-          Katalog/Preise/Verfügbarkeit laufen über Easyrent. Ohne{" "}
-          <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run (keine Live-Buchung).
+      <section className="step-stage">
+        <div className="success-card stack">
+          <h2>Reservierung vorbereitet</h2>
+          <p className="muted">
+            Rentfreudenhaus · Vorgang {result.bookingId} · {providerLabel}
+          </p>
+          <div className="notice">
+            Ohne <code>EASYREST_LIVE_BOOK=1</code> bleibt der Abschluss ein Dry-Run.
+          </div>
         </div>
-        <pre
-          style={{
-            textAlign: "left",
-            overflow: "auto",
-            fontSize: "0.75rem",
-            background: "#f3f1ed",
-            padding: "1rem",
-            borderRadius: 12,
-          }}
-        >
-          {JSON.stringify(result.raw, null, 2)}
-        </pre>
       </section>
     );
   }
 
   return (
-    <section className="panel stack">
-      <div>
+    <section className="step-stage stack">
+      <div className="stage-head">
         <h2>Prüfen & absenden</h2>
-        <p className="lede">
+        <p>
           {loc?.title} · {draft.from} → {draft.to} · {formatMoney(quote?.cartTotal)}
         </p>
       </div>
@@ -660,16 +716,12 @@ function StepReview() {
           </ul>
         </div>
       ))}
-      {quote?.rate && (
-        <div className="notice">
-          <strong>{quote.rate.title}</strong>
-          {quote.rate.description ? ` — ${quote.rate.description}` : ""}
-        </div>
-      )}
       {result && !result.ok && <div className="error">{result.message}</div>}
-      <button type="button" className="btn" disabled={submitting} onClick={onSubmit}>
-        {submitting ? "Wird übertragen…" : "An Easyrent senden"}
-      </button>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <button type="button" className="btn accent" disabled={submitting} onClick={onSubmit}>
+          {submitting ? "Wird übertragen…" : "Reservierung senden"}
+        </button>
+      </div>
     </section>
   );
 }
@@ -688,21 +740,21 @@ function FooterBar() {
     return false;
   }, [step, draft]);
 
-  if (step === "review") return null;
+  if (step === "review" || step === "people") return null;
 
   return (
     <div className="footer-bar">
       <div className="footer-inner">
         <div>
-          <div className="muted">{STEP_LABEL[step]}</div>
+          <div className="muted" style={{ fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            Summe
+          </div>
           <strong>{formatMoney(quote?.cartTotal)}</strong>
         </div>
         <div className="row">
-          {step !== "people" && (
-            <button type="button" className="btn ghost" onClick={back}>
-              Zurück
-            </button>
-          )}
+          <button type="button" className="btn ghost" onClick={back}>
+            Zurück
+          </button>
           <button type="button" className="btn" disabled={!canNext} onClick={next}>
             Weiter
           </button>
@@ -717,7 +769,6 @@ function Flow() {
   return (
     <div className="app-shell">
       <TopBar />
-      <Stepper />
       <main>
         {step === "people" && <StepPeople />}
         {step === "dates" && <StepDates />}
