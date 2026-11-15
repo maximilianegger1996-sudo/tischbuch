@@ -1,0 +1,10 @@
+-- Online buchbar ab (venues.online_open_from). Applied via staff API 2026-11-15.
+-- LÜ / Mundwerk: 2026-11-20 · Steinbock: 2026-11-25
+-- public_url = GitHub Pages basis for embed copy links.
+--
+-- update venues set online_open_from = '2026-11-20',
+--   public_url = 'https://maximilianegger1996-sudo.github.io/tischbuch/'
+-- where slug in ('lue','mundwerk');
+-- update venues set online_open_from = '2026-11-25',
+--   public_url = 'https://maximilianegger1996-sudo.github.io/tischbuch/'
+-- where slug = 'steinbock';
