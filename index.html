@@ -173,9 +173,9 @@ details.tv td:last-child{text-align:right}
 .addlock{display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px}
 .addlock label{flex:1;min-width:110px}
 body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main,
-body.guest>#drawer-backdrop,body.guest>#staff-drawer,
+body.guest>#drawer-backdrop,body.guest>#staff-drawer,body.guest>#staff-bottom,
 body.hub>header,body.hub>.kpis,body.hub>nav,body.hub>main,
-body.hub>#drawer-backdrop,body.hub>#staff-drawer{display:none}
+body.hub>#drawer-backdrop,body.hub>#staff-drawer,body.hub>#staff-bottom{display:none}
 #guest{max-width:580px;margin:0 auto;padding:24px 16px 40px}
 .gcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
 .gcard h1{margin:0 0 2px;font-size:24px}
@@ -454,10 +454,9 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
   .kpis::-webkit-scrollbar{display:none}
   .kpi{flex:0 0 auto;min-width:118px;scroll-snap-align:start;padding:12px 14px}
   .kpi b{font-size:20px}
-  nav.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px 10px;position:sticky;top:0;z-index:8;background:var(--bg);border-bottom:1px solid var(--line)}
-  nav.tabs button{border-radius:3px;border:1px solid var(--line);background:var(--panel);min-height:44px;padding:8px 6px;white-space:normal;line-height:1.15;font-size:10px;letter-spacing:.04em}
-  nav.tabs button.on{background:var(--soft);box-shadow:inset 0 0 0 2px var(--accent);color:var(--ink)}
-  main{padding:10px 10px 88px;min-width:0}
+  /* Tablex mobile: drawer + bottom bar; hide dense top tab grid */
+  nav.tabs{display:none!important}
+  main{padding:10px 10px calc(88px + env(safe-area-inset-bottom,0px));min-width:0}
   section{padding:12px;border-radius:3px;min-width:0;overflow-x:clip}
   .planwrap{grid-template-columns:1fr;gap:10px;min-width:0}
   .plan-block{min-width:0}
@@ -563,10 +562,24 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
 /* ===== Tablex-Menü / Dashboard / Design ===== */
 .top .brand{position:relative}
 #b-menu{flex:none;min-width:44px;min-height:44px;padding:8px 10px;margin-right:2px;font-size:18px;line-height:1;letter-spacing:0;text-transform:none}
-#drawer-backdrop{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s}
+#drawer-backdrop{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s}
 #drawer-backdrop.on{opacity:1;pointer-events:auto}
-#staff-drawer{position:fixed;top:0;left:0;bottom:0;z-index:91;width:min(300px,86vw);background:#1a1c1f;color:#f2f2f2;transform:translateX(-105%);transition:transform .22s ease;display:flex;flex-direction:column;font-family:var(--sans);box-shadow:8px 0 28px rgba(0,0,0,.35)}
+#staff-drawer{position:fixed;top:0;left:0;bottom:0;z-index:121;width:min(300px,86vw);background:#1a1c1f;color:#f2f2f2;transform:translateX(-105%);transition:transform .22s ease;display:flex;flex-direction:column;font-family:var(--sans);box-shadow:8px 0 28px rgba(0,0,0,.35);pointer-events:auto}
 #staff-drawer.on{transform:translateX(0)}
+/* Tablex-style bottom bar (mobile reservation views) — hidden on desktop via min-width query below */
+#staff-bottom{display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;align-items:stretch;justify-content:space-around;gap:0;min-height:56px;padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px));background:#1f2228;border-top:1px solid #2c3036;font-family:var(--sans);box-shadow:0 -4px 18px rgba(0,0,0,.18)}
+#staff-bottom button{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-radius:0;border-top:3px solid transparent;background:transparent;color:#aeb4bc;padding:6px 2px 4px;min-height:52px;font-size:9px;font-weight:500;letter-spacing:.02em;text-transform:none;line-height:1.1}
+#staff-bottom button .ico{font-size:16px;line-height:1;opacity:.95}
+#staff-bottom button.on{color:#fff;border-top-color:#1faa6e;background:#2a2e36}
+#staff-bottom button.liste-btn{flex:0 0 auto;min-width:52px;margin:6px 4px;border-radius:8px;border:0;border-top:0;background:#1faa6e;color:#fff;padding:8px 10px}
+#staff-bottom button.liste-btn.on{background:#18a066;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+#staff-bottom .sb-venue{display:none}
+@media (max-width:999px){
+  #staff-bottom:not([hidden]){display:flex}
+}
+@media (min-width:1000px){
+  #staff-bottom{display:none!important}
+}
 #staff-drawer .dw-head{padding:22px 18px 14px;border-bottom:1px solid #2c3036}
 #staff-drawer .dw-head b{display:block;font-size:16px;font-weight:600;letter-spacing:.02em}
 #staff-drawer .dw-head span{display:block;font-size:13px;color:#b8bcc4;margin-top:2px}
@@ -953,6 +966,7 @@ body{overflow-x:clip;-webkit-text-size-adjust:100%}
     <div>Personal-App</div>
   </div>
 </aside>
+<nav id="staff-bottom" class="staff-bottom" aria-label="Reservierungen Ansichten" hidden></nav>
 <div id="cards"></div>
 <div id="toast" role="status"></div>
 <div id="tip" role="tooltip"></div>
@@ -971,7 +985,62 @@ const today=()=>iso(new Date());
 const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail',setupCat:'restaurant',setupQ:''};
+let S, ui={view:'plan',date:today(),filter:'all',planFilter:'all',floorRoom:'',firstScroll:true,statDays:30,floorTime:null,floorEdit:false,floorZoom:null,floorPan:{x:0,y:0},menuOpen:false,payQ:'',tabliniMat:'holz',helpQ:'',helpArt:null,notesTab:'day',mailTab:'mail',setupCat:'restaurant',setupQ:'',resTab:'belegung',_hashNav:false};
+/* Hash routes so drawer destinations are real pages (not ephemeral UI state). */
+const VIEW_TO_HASH={dash:'dashboard',plan:'reservierungen',list:'liste',floor:'tischplan',cal:'kalender',guests:'kontakte',notes:'notizen',payment:'payment',tablini:'tablini',mails:'nachrichten',setup:'einstellungen',online:'online',help:'hilfe',stats:'statistik'};
+const HASH_TO_VIEW={dashboard:'dash',dash:'dash',reservierungen:'plan',reservations:'plan',plan:'plan',belegungsplan:'plan',liste:'list',list:'list',tischplan:'floor',floor:'floor',grundriss:'floor',kalender:'cal',cal:'cal',kontakte:'guests',guests:'guests',contacts:'guests',notizen:'notes',notes:'notes',payment:'payment',zahlungen:'payment',tablini:'tablini',aufsteller:'tablini',nachrichten:'mails',mails:'mails',emails:'mails',einstellungen:'setup',setup:'setup',settings:'setup',online:'online',hilfe:'help',help:'help',statistik:'stats',stats:'stats',keine:'plan'};
+const RES_VIEWS=new Set(['plan','list','floor','cal']);
+function hashForView(view,resTab){
+  if(view==='plan'&&resTab==='keine') return 'keine';
+  if(view==='plan'&&resTab==='belegung') return 'belegungsplan';
+  return VIEW_TO_HASH[view]||view;
+}
+function readHashRoute(){
+  const raw=(location.hash||'').replace(/^#\/?/,'').split(/[?&]/)[0].trim().toLowerCase();
+  if(!raw) return null;
+  if(raw==='keine') return {view:'plan',resTab:'keine'};
+  if(raw==='belegungsplan'||raw==='reservierungen') return {view:'plan',resTab:'belegung'};
+  const view=HASH_TO_VIEW[raw];
+  if(!view) return null;
+  return {view,resTab:view==='plan'?'belegung':ui.resTab};
+}
+function writeHashRoute(replace){
+  if(GUEST||document.body.classList.contains('hub')) return;
+  const h='/#/'+hashForView(ui.view,ui.resTab);
+  if((location.hash||'')===h.slice(1) || location.hash===h) return;
+  const url=location.pathname+location.search+'#/'+hashForView(ui.view,ui.resTab);
+  try{
+    if(replace) history.replaceState({view:ui.view,resTab:ui.resTab},'',url);
+    else history.pushState({view:ui.view,resTab:ui.resTab},'',url);
+  }catch(e){}
+}
+function applyRoute(route,opts){
+  if(!route||!route.view) return false;
+  ui.view=route.view;
+  if(route.resTab) ui.resTab=route.resTab;
+  if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
+  if(ui.view==='plan') ui.firstScroll=true;
+  if(ui.view==='help') ui.helpArt=null;
+  if(ui.view==='setup'){ ui.setupCat=ui.setupCat||'restaurant'; }
+  if(!(opts&&opts.silentHash)) writeHashRoute(!!(opts&&opts.replace));
+  return true;
+}
+function setStaffView(view,opts){
+  const o=opts||{};
+  ui.view=view;
+  if(view==='plan'){
+    if(o.resTab) ui.resTab=o.resTab;
+    else if(ui.resTab!=='keine'&&ui.resTab!=='belegung') ui.resTab='belegung';
+    ui.firstScroll=true;
+  }
+  if(view==='cal') ui.calMonth=ui.date.slice(0,7);
+  if(view==='help') ui.helpArt=null;
+  if(view==='setup'){ if(o.setupCat) ui.setupCat=o.setupCat; else if(!ui.setupCat) ui.setupCat='restaurant'; }
+  if(view==='online'){ ui.view='setup'; ui.setupCat='online'; }
+  setMenuOpen(false);
+  if(!o.skipHash) writeHashRoute(!!o.replace);
+  render();
+}
 let curId=null, pickSel=[];
 const FLOOR_DESIGN_DEFAULTS={untilEod:false,roomNames:true,multiTable:true,numberAbove:false,seatDots:false,tabliniStatus:false,statusColor:true,chairs:true,chairForm:'lehne',lowEnd:false};
 let floorDesign={...FLOOR_DESIGN_DEFAULTS};
@@ -1200,7 +1269,10 @@ async function enter(){
   $('.foot span').textContent='Verbunden mit der Online-Datenbank. Änderungen werden sofort gespeichert.';
   $('.foot [data-act=reset]').hidden=true;
   document.title='Tischbuch – '+(VENUE.name||'Online');
+  const route=readHashRoute();
+  if(route) applyRoute(route,{replace:true,silentHash:true});
   render();
+  writeHashRoute(true);
   const f='venue_id=eq.'+VENUE.id;
   DB.channel('tischbuch')
     .on('postgres_changes',{event:'*',schema:'public',table:'reservations',filter:f},bump)
@@ -1613,8 +1685,9 @@ function setMenuOpen(on){
   ui.menuOpen=!!on;
   const d=$('#staff-drawer'), b=$('#drawer-backdrop'), btn=$('#b-menu');
   if(!d||!b) return;
-  d.hidden=false; b.hidden=false;
-  requestAnimationFrame(()=>{ d.classList.toggle('on',ui.menuOpen); b.classList.toggle('on',ui.menuOpen); });
+  if(ui.menuOpen){ d.hidden=false; b.hidden=false; }
+  /* Apply .on immediately so taps aren’t lost during open animation / rAF delay */
+  d.classList.toggle('on',ui.menuOpen); b.classList.toggle('on',ui.menuOpen);
   if(!ui.menuOpen) setTimeout(()=>{ if(!ui.menuOpen){ d.hidden=true; b.hidden=true; } },240);
   d.setAttribute('aria-hidden', ui.menuOpen?'false':'true');
   if(btn) btn.setAttribute('aria-expanded', ui.menuOpen?'true':'false');
@@ -1633,15 +1706,34 @@ function renderDrawerNav(){
     <button type="button" data-act="switchvenue"><span class="ico" aria-hidden="true">⌂</span>Gastro wechseln</button>
     <button type="button" class="danger" data-act="logout"><span class="ico" aria-hidden="true">⎋</span>Abmelden</button>`;
 }
+function renderBottomNav(){
+  const bar=$('#staff-bottom'); if(!bar) return;
+  const phone=matchMedia('(max-width:999px)').matches;
+  const show=phone&&!GUEST&&!document.body.classList.contains('hub')&&RES_VIEWS.has(ui.view);
+  bar.hidden=!show;
+  if(!show){ bar.innerHTML=''; return; }
+  const tab=ui.resTab||'belegung';
+  const items=[
+    {id:'liste',label:'Liste',ico:'☰',act:'view',v:'list',cls:'liste-btn',on:ui.view==='list'},
+    {id:'keine',label:'Keine',ico:'—',act:'restab',v:'keine',on:ui.view==='plan'&&tab==='keine'},
+    {id:'belegung',label:'Belegungsplan',ico:'▦',act:'restab',v:'belegung',on:ui.view==='plan'&&tab==='belegung'},
+    {id:'floor',label:'Tischplan',ico:'▢',act:'view',v:'floor',on:ui.view==='floor'},
+    {id:'cards',label:'Tischkarten',ico:'▤',act:'cards',v:'',on:false},
+    {id:'cal',label:'Kalender',ico:'📅',act:'view',v:'cal',on:ui.view==='cal'},
+  ];
+  bar.innerHTML=items.map(it=>{
+    const extra=it.cls?` ${it.cls}`:'';
+    const dv=it.v?` data-v="${it.v}"`:'';
+    return `<button type="button" data-act="${it.act}"${dv} class="${it.on?'on':''}${extra}"><span class="ico" aria-hidden="true">${it.ico}</span><span>${it.label}</span></button>`;
+  }).join('');
+}
 function goMenu(id){
   const it=MENU_ITEMS.find(x=>x.id===id); if(!it) return;
+  /* Close drawer first, then navigate — destination must stick (no hub bounce). */
   setMenuOpen(false);
-  ui.view=it.view;
-  if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
-  if(ui.view==='plan') ui.firstScroll=true;
-  if(ui.view==='help') ui.helpArt=null;
-  if(ui.view==='setup'){ ui.setupCat='restaurant'; ui.setupQ=''; }
-  render();
+  if(it.id==='res') setStaffView('plan',{resTab:'belegung'});
+  else if(it.id==='setup') setStaffView('setup',{setupCat:'restaurant'});
+  else setStaffView(it.view);
 }
 function payCfg(){
   S.paycfg??={min_people:6,enabled:true};
@@ -1889,6 +1981,7 @@ function render(){
   const kpisEl=$('#kpis'); if(kpisEl) kpisEl.hidden=['dash','payment','tablini','help','notes','setup'].includes(ui.view);
   renderKpis();
   renderDrawerNav();
+  renderBottomNav();
   if(ui.view==='dash') renderDashboard();
   if(ui.view==='payment') renderPayment();
   if(ui.view==='tablini') renderTablini();
@@ -1935,8 +2028,13 @@ function renderPlan(){
   if(pfEl) pfEl.innerHTML=F.map(([v,l])=>`<button type="button" data-act="planfilter" data-v="${v}" class="${pf===v?'on':''}">${l} (${counts[v]})</button>`).join('');
   const rs=day.filter(r=>r.type==='reservation'&&planMatch(r)).sort((a,b)=>a.start_time.localeCompare(b.start_time)||a.guest_name.localeCompare(b.guest_name));
   const mq=$('#mqueue');
+  const planEl=$('#plan'), waitEl=$('#wait'), legendEl=$('.plan-block .legend');
+  const keineMode=ui.resTab==='keine';
+  if(planEl) planEl.hidden=!!keineMode;
+  if(waitEl) waitEl.hidden=!!keineMode;
+  if(legendEl) legendEl.hidden=!!keineMode;
   if(mq){
-    const phone=matchMedia('(max-width:999px)').matches;
+    const phone=matchMedia('(max-width:999px)').matches||keineMode;
     mq.hidden=!phone;
     if(phone){
       const list=pf==='notable'?day.filter(planMatch).sort((a,b)=>a.start_time.localeCompare(b.start_time)):rs;
@@ -1945,7 +2043,7 @@ function renderPlan(){
             const st=stateOf(r);
             return `<button type="button" class="mq ${st}" data-act="open" data-id="${r.id}"><span><b>${esc(r.guest_name)}</b><small>${r.start_time}–${r.end_time} · ${r.num_people} Pers.${tableNames(r)?' · '+esc(tableNames(r)):''}${r.note?' · '+esc(r.note):''}</small></span><span class="pill ${st}">${LABEL[st]}</span></button>`;
           }).join('')
-        : '<div class="empty">Keine Einträge für diesen Filter.</div>';
+        : `<div class="empty">${keineMode?'Keine Reservierungen gefunden.':'Keine Einträge für diesen Filter.'}</div>`;
     }
   }
   if(pf==='notable'){
@@ -3010,15 +3108,20 @@ document.addEventListener('keydown',ev=>{
 document.addEventListener('click',async ev=>{
   const el=ev.target.closest('[data-act]'); if(!el) return;
   const a=el.dataset.act, id=el.dataset.id;
+  /* Drawer destinations must not fall through to backdrop / hub chrome */
+  if(a==='menugo'||a==='menuclose'||a==='menu'||a==='switchvenue'||a==='logout'||a==='restab'){
+    ev.preventDefault(); ev.stopPropagation();
+  }
   if(a==='day'){ui.date=addDays(ui.date,+el.dataset.n); render();}
   else if(a==='today'){ui.date=today(); ui.firstScroll=true; render();}
   else if(a==='view'){
-    ui.view=el.dataset.v;
-    if(ui.view==='cal') ui.calMonth=ui.date.slice(0,7);
-    if(ui.view==='plan') ui.firstScroll=true;
-    if(ui.view==='setup') ui.setupCat=el.dataset.cat||'tische';
-    if(ui.view==='online'){ ui.view='setup'; ui.setupCat='online'; }
-    setMenuOpen(false); render();
+    const v=el.dataset.v;
+    if(v==='plan') setStaffView('plan',{resTab:'belegung'});
+    else setStaffView(v,{setupCat:el.dataset.cat||undefined});
+  }
+  else if(a==='restab'){
+    const tab=el.dataset.v==='keine'?'keine':'belegung';
+    setStaffView('plan',{resTab:tab});
   }
   else if(a==='setupcat'){ ui.setupCat=el.dataset.id; ui.setupQ=''; renderSetup(); }
   else if(a==='paytoggle'){ const c=payCfg(); c.enabled=!c.enabled; save(); el.classList.toggle('on',c.enabled); el.setAttribute('aria-pressed',c.enabled?'true':'false'); }
@@ -3147,7 +3250,7 @@ document.addEventListener('click',async ev=>{
   else if(a==='print') window.print();
   else if(a==='cards') printCards();
   else if(a==='csv') exportCsv();
-  else if(a==='calday'){ui.date=el.dataset.d; ui.view='plan'; ui.firstScroll=true; render();}
+  else if(a==='calday'){ui.date=el.dataset.d; setStaffView('plan',{resTab:'belegung'});}
   else if(a==='calnav'){const n=+el.dataset.n; if(!n){ui.calMonth=today().slice(0,7);} else {const [y,m]=(ui.calMonth||ui.date.slice(0,7)).split('-').map(Number), d=new Date(y,m-1+n,1,12); ui.calMonth=d.getFullYear()+'-'+pad(d.getMonth()+1);} render();}
   else if(a==='addcombo'){const t=allTables(); if(t.length<2){toast('Dafür braucht es mindestens zwei Tische.');} else {(S.combos??=[]).push({id:uid(),table_ids:[t[0].id,t[1].id],min_capacity:t[0].max_capacity+1,max_capacity:t[0].max_capacity+t[1].max_capacity}); save(); render();}}
   else if(a==='delcombo'){S.combos=S.combos.filter(c=>c.id!==id); save(); render();}
@@ -3157,7 +3260,12 @@ document.addEventListener('click',async ev=>{
   else if(a==='delnote'){S.notes=(S.notes||[]).filter(n=>n.id!==id); save(); render();}
   else if(a==='addtime'){S.online.times.push({id:uid(),name:'Neues Zeitfenster',from:'18:00',to:'20:00',days:[1,2,3,4,5,6,7]}); save(); render();}
   else if(a==='deltime'){ if(await ask('Dieses Zeitfenster löschen? Online ist dann zu diesen Zeiten nichts mehr buchbar.','Löschen')){S.online.times.splice(+el.dataset.i,1); save(); render();} }
-  else if(a==='logout'){ await DB.auth.signOut(); location.href=location.pathname; }
+  else if(a==='logout'){
+    setMenuOpen(false);
+    try{ if(DB) await DB.auth.signOut(); }catch(e){}
+    /* Always leave staff views for the hub start page — never throw when DB is null (demo). */
+    location.href=location.pathname;
+  }
   else if(a==='stafflogin') showLogin();
   else if(a==='backhub') showHub();
   else if(a==='forgot'){
@@ -3402,6 +3510,17 @@ $('#guest').addEventListener('submit',e=>{e.preventDefault(); if(e.target.id==='
 /* Änderungen aus einem anderen Tab (z. B. neue Online-Buchung) übernehmen */
 window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.querySelector('dialog[open]')){ S=load(); if(GUEST?(g.mode==='book'&&g.time===null)||g.look!=null:ui.view==='plan'||ui.view==='list'||ui.view==='mails'||(ui.view==='floor'&&!ui.floorEdit)) render(); } });
 
+function onStaffRouteChange(){
+  if(GUEST||document.body.classList.contains('hub')) return;
+  const route=readHashRoute();
+  if(!route) return;
+  if(route.view===ui.view&&(route.resTab||'')===(ui.resTab||'')) return;
+  applyRoute(route,{replace:true,silentHash:true});
+  render();
+}
+window.addEventListener('hashchange',onStaffRouteChange);
+window.addEventListener('popstate',onStaffRouteChange);
+
 if(ONLINE) startOnline();
 else {
   S=load();
@@ -3411,7 +3530,12 @@ else {
   $('.brand .role-pill').textContent='Demo · '+VENUE_META.short;
   $('.foot span').textContent='Demo: Daten nur in diesem Browser.';
   const rb=$('.foot [data-act=reset]'); if(rb) rb.hidden=!!GUEST;
+  if(!GUEST){
+    const route=readHashRoute();
+    if(route) applyRoute(route,{replace:true,silentHash:true});
+  }
   render();
+  if(!GUEST) writeHashRoute(true);
 }
 setInterval(()=>{ if(ONLINE&&!GUEST){ if(shadow) bump(); return; } if(GUEST){ if(g.mode==='book'&&g.time===null&&!g.done) render(); } else if(!document.querySelector('dialog[open]')&&(ui.view==='plan'||ui.view==='list'||(ui.view==='floor'&&!ui.floorEdit))) render(); },60000);
 </script>
