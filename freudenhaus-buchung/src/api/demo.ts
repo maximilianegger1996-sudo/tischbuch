@@ -48,10 +48,8 @@ function demoCategories(): Category[] {
       bullets: ["Demo-Daten (offline)", "Atomic · Stöckli · AK"],
       displayDaily: { "1": euros(49), "2": euros(39), "3": euros(29) },
       accessories: ["6"],
-      models: [
-        { id: "1710", title: "CLOUD Q14 RVSK S", brand: "Atomic", variants: [{ property1: "168" }] },
-        { id: "1676", title: "MONTERO AX", brand: "STÖCKLI", variants: [{ property1: "170" }] },
-      ],
+      // Empty → media enrich supplies up to 4 photo models
+      models: [],
     },
     {
       id: "2",
@@ -64,9 +62,7 @@ function demoCategories(): Category[] {
       bullets: ["Demo-Daten (offline)"],
       displayDaily: { "1": euros(39), "2": euros(31), "3": euros(23) },
       accessories: ["6"],
-      models: [
-        { id: "1634", title: "CLOUD C9 RVSK LIGHT", brand: "Atomic", variants: [{ property1: "158" }] },
-      ],
+      models: [],
     },
     {
       id: "3",
@@ -111,7 +107,7 @@ function demoCategories(): Category[] {
       bullets: ["Demo-Daten (offline)"],
       displayDaily: { "1": euros(35), "2": euros(28), "3": euros(22) },
       accessories: ["21"],
-      models: [{ id: "1735", title: "SUPER 8 RTL", brand: "Salomon", variants: [{ property1: "155" }] }],
+      models: [],
     },
     {
       id: "21",

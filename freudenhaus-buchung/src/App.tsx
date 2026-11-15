@@ -411,13 +411,15 @@ function PackageCard({
   onClear: () => void;
 }) {
   const ski = products.find((p) => p.id === pack.skiProductId);
+  // Prefer a single model photo over the product collage (less visual clutter).
+  const img = ski?.models.find((m) => m.image)?.image || ski?.image;
   return (
     <button
       type="button"
       className={`pack-card${active ? " active" : ""}`}
       onClick={() => (active ? onClear() : onSelect())}
     >
-      {ski?.image ? <img src={ski.image} alt="" /> : <div className="pack-ph" />}
+      {img ? <img src={img} alt="" /> : <div className="pack-ph" />}
       <div className="pack-body">
         {pack.highlight ? <span className="tag">{pack.highlight}</span> : null}
         <h3>{pack.title}</h3>
