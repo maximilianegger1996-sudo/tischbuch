@@ -1,0 +1,9 @@
+-- Tablex 2D Grundriss parity (2026-11-15).
+-- Visual layout + style live in index.html FLOOR_TX (unified stage).
+-- Positions/capacities applied via staff API (maxi@…).
+--
+-- LÜ Restaurant T1–T15
+-- Steinbock + Bergblick (T601–T613, T613 circular)
+-- Mundwerk Terrasse / Restaurant / Stüberl
+--
+-- See docs/floorplan-parity.md in the project store.

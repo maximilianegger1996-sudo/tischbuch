@@ -1,0 +1,13 @@
+-- LÜ + Steinbock floor plans aligned to Tablex 2D (user screenshots 2026-11-15).
+-- Applied live via staff API; this file documents the intended layout.
+-- Canvas reference width ~640px.
+--
+-- LÜ: 1 room Restaurant — T1–T15
+--   left bar + T1 | T2–T4 top | T5–T9 bottom | right zone T10–T15
+--
+-- Steinbock: 2 rooms
+--   Steinbock (main): T1–T21, T40–T42
+--   Bergblick (upper floor): T601–T613 (T613 circular / round render max≤2)
+--
+-- Capacities for new Bergblick tables default 2–4 (T613 = 1–2).
+-- See docs/floorplan-parity.md in the project store for parity notes.

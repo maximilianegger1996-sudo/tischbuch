@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Tischbuch – LÜ Burger &amp; Grill</title>
+<title>Tischbuch – Lürzer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;600&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Libre+Bodoni:wght@400;600&family=Open+Sans:wght@300;400;500;600;700&family=Open+Sans+Condensed:wght@300;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root{
@@ -18,7 +17,7 @@
   --series:#677967;
   --brand:#677967;--beige:#dfd8d0;--taupe:#928370;--hero:url("https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg");
   --floor:#e9e2d6;--floor-out:#dde2da;--wall:#928370;--chair:#b07a52;--wood1:#d6b98f;--wood2:#b98f62;--woodline:#9c7650;
-  --serif:"Libre Bodoni","Bodoni 72",Didot,Georgia,serif;--sans:Raleway,"Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Libre Bodoni","Bodoni 72",Didot,Georgia,serif;--sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#17191a;--panel:#202324;--ink:#ebe8e3;--muted:#a3a09a;--line:#36393b;--soft:#292c2d;
@@ -30,7 +29,7 @@
 }}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 var(--sans)}
 button,input,select,textarea{font:inherit;color:inherit}
 button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
 button:hover{border-color:var(--muted)}
@@ -166,7 +165,8 @@ details.tv td:last-child{text-align:right}
 .lock{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-bottom:6px;max-width:460px}
 .addlock{display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px}
 .addlock label{flex:1;min-width:110px}
-body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main{display:none}
+body.guest>header,body.guest>.kpis,body.guest>nav,body.guest>main,
+body.hub>header,body.hub>.kpis,body.hub>nav,body.hub>main{display:none}
 #guest{max-width:580px;margin:0 auto;padding:24px 16px 40px}
 .gcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
 .gcard h1{margin:0 0 2px;font-size:24px}
@@ -215,7 +215,28 @@ section h3,aside h3,.chart h3,.floor h3,.gcard h3{font-family:var(--serif);font-
 th{text-transform:uppercase;letter-spacing:.08em;font-size:10px}
 label.f{text-transform:uppercase;letter-spacing:.06em;font-size:10px}
 label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing:0;font-size:15px}
-/* ===== Grundriss: Tische mit Stühlen ===== */
+/* ===== Grundriss: Tablex-2D style ===== */
+#v-floor .floors.tx{display:block;background:#1f2228;border-radius:8px;padding:14px;overflow:auto}
+#v-floor .tx-stage{position:relative;width:640px;margin:0 auto;background:#1f2228}
+#v-floor .tx-room{position:absolute;border-radius:2px}
+#v-floor .tx-room-label{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:3;pointer-events:none;
+  background:#fff;color:#1a1a1a;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.02em;text-transform:none;
+  border-radius:999px;padding:6px 16px;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap}
+#v-floor .tx-fix{position:absolute;border-radius:2px;pointer-events:none}
+#v-floor .ftab.tx{border:0;border-radius:3px;background:#8f6238;color:#fff;padding:0;overflow:hidden;z-index:4;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);filter:none;transform:none;font-family:var(--sans)}
+#v-floor .ftab.tx .ftxt{position:static;padding:0 4px;gap:0}
+#v-floor .ftab.tx .ftxt b{font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:0;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+#v-floor .ftab.tx .ftxt span{display:none}
+#v-floor .ftab.tx.round{border-radius:50%}
+#v-floor .ftab.tx:hover{filter:brightness(1.08);transform:none}
+#v-floor .ftab.tx.occ.not_started{background:var(--open)}
+#v-floor .ftab.tx.occ.late{background:var(--late)}
+#v-floor .ftab.tx.occ.arrived{background:var(--here)}
+#v-floor .ftab.tx.occ.done{background:var(--done)}
+#v-floor .ftab.tx.soon{box-shadow:inset 0 0 0 2px var(--open)}
+#v-floor .ftab.tx.occ .ftxt span{display:block;font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.95}
 .fcanvas{width:650px;border:5px solid var(--wall);border-radius:3px;background-color:var(--floor);
   background-image:repeating-linear-gradient(90deg,rgba(90,70,40,.10) 0 1px,transparent 1px 46px),repeating-linear-gradient(0deg,rgba(90,70,40,.05) 0 1px,transparent 1px 230px)}
 .fcanvas.out{background-color:var(--floor-out);border-style:dashed;border-width:3px;border-color:var(--accent);
@@ -237,7 +258,7 @@ label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing
 .ftxt b{font-family:var(--serif);font-size:15px;letter-spacing:.04em}
 .ftab.round .ftxt{padding:0 14px}
 .ftab.round .ftxt span{font-size:11px}
-.legend i.wood{background:linear-gradient(var(--wood1),var(--wood2))}
+.legend i.wood{background:#8f6238}
 /* ===== Kundenseite ===== */
 #guest{max-width:none;margin:0;padding:0;position:relative}
 .glang{position:absolute;top:10px;right:12px;z-index:3;display:flex;gap:4px}
@@ -261,6 +282,15 @@ body.embed{background:transparent}
 body.embed .ghero,body.embed .gfoot{display:none}
 body.embed #gbody{margin:0 auto;padding:0}
 body.embed .gcard{box-shadow:none;border:1px solid var(--line)}
+/* Steinbock: Website-Typo (Open Sans Condensed Headlines, Open Sans Body) */
+body[data-venue=steinbock]{letter-spacing:.01em}
+body[data-venue=steinbock] .gtitle,body[data-venue=steinbock] .gcard h1,body[data-venue=steinbock] .gcard h3,
+body[data-venue=steinbock] .gkick,body[data-venue=steinbock] .gsteps{font-family:var(--serif);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+body[data-venue=steinbock] .gtitle{letter-spacing:.12em}
+body[data-venue=steinbock] .gcard,body[data-venue=steinbock] .gcard p,body[data-venue=steinbock] .gsum,body[data-venue=steinbock] .gsub,
+body[data-venue=steinbock] button,body[data-venue=steinbock] input,body[data-venue=steinbock] select,body[data-venue=steinbock] textarea{font-family:var(--sans)}
+body[data-venue=steinbock] button{text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+body[data-venue=steinbock].embed .gcard{border-color:#cfd5d9;border-radius:2px}
 .embedrow{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:8px;max-width:820px}
 .embedrow input,.embedrow textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 @media (max-width:620px){.embedrow{grid-template-columns:1fr}}
@@ -363,6 +393,20 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
 }
 #venue-sel{width:auto;max-width:230px;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:0;padding:6px 8px;color:var(--ink)}
 #brandname{font-size:18px;letter-spacing:.08em}
+#hub{position:fixed;inset:0;z-index:99;background:linear-gradient(160deg,#2a2e2c 0%,#4a5348 45%,#3d4540 100%);color:#f4f1ec;overflow:auto;padding:28px 16px 40px}
+#hub .hub-inner{max-width:920px;margin:0 auto}
+#hub h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,42px);margin:0 0 6px;letter-spacing:.04em}
+#hub .hub-sub{opacity:.85;margin:0 0 28px;font-size:15px;max-width:36em}
+#hub .hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px}
+#hub .hub-card{display:flex;flex-direction:column;gap:10px;padding:18px 16px;border:1px solid rgba(244,241,236,.28);border-radius:12px;background:rgba(0,0,0,.22);text-decoration:none;color:inherit;min-height:168px;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+#hub .hub-card:hover{transform:translateY(-2px);border-color:rgba(244,241,236,.55);background:rgba(0,0,0,.32)}
+#hub .hub-card img{height:36px;width:auto;align-self:flex-start;filter:brightness(0) invert(1);opacity:.95}
+#hub .hub-card b{font-family:var(--serif);font-size:20px;letter-spacing:.03em}
+#hub .hub-card span{font-size:13px;opacity:.8;line-height:1.35}
+#hub .hub-card em{margin-top:auto;font-style:normal;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;opacity:.9}
+#hub .hub-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-top:1px solid rgba(244,241,236,.2);padding-top:18px;font-size:14px}
+#hub .hub-foot button,#hub .hub-foot a{color:#f4f1ec;border-color:rgba(244,241,236,.45)}
+#hub .hub-foot a{text-decoration:none;padding:7px 12px;border:1px solid rgba(244,241,236,.45);border-radius:8px}
 #login{position:fixed;inset:0;z-index:100;background:var(--brand);display:grid;place-items:center;padding:16px;overflow:auto}
 #login form{background:var(--panel);border-radius:3px;padding:28px;width:min(380px,100%);display:grid;gap:12px;box-shadow:0 12px 44px rgba(0,0,0,.25)}
 #login h1{margin:0;font-family:var(--serif);font-weight:600;font-size:26px;letter-spacing:.04em;color:var(--taupe)}
@@ -371,7 +415,7 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
 </head>
 <body>
 <header class="top">
-  <div class="brand"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b>Tischbuch<span>Prototyp · Beispieldaten</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
+  <div class="brand"><img data-logo src="https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg" alt="" onerror="this.hidden=true"><b id="brandname" hidden></b>Tischbuch<span>Personal</span><select id="venue-sel" hidden aria-label="Haus wählen"></select></div>
   <div class="datenav">
     <button data-act="day" data-n="-1" aria-label="Vorheriger Tag">‹</button>
     <button data-act="today">Heute</button>
@@ -425,8 +469,8 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
   <section id="v-online" hidden></section>
   <section id="v-mails" hidden></section>
   <div class="foot">
-    <span>Alle Daten sind erfunden und liegen nur in diesem Browser.</span>
-    <button class="link" data-act="reset">Beispieldaten zurücksetzen</button>
+    <span>Tischbuch · Lürzer Obertauern</span>
+    <button class="link" data-act="reset" hidden>Beispieldaten zurücksetzen</button>
   </div>
 </main>
 
@@ -531,8 +575,23 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
   </form>
 </dialog>
 
+<div id="hub" hidden>
+  <div class="hub-inner">
+    <h1>Tischbuch</h1>
+    <p class="hub-sub">Tischreservierung für die Häuser der Lürzer-Gruppe in Obertauern. Wählen Sie ein Restaurant für die Gäste-Buchung oder melden Sie sich als Personal an.</p>
+    <div class="hub-grid" id="hub-grid"></div>
+    <div class="hub-foot">
+      <span>Personal · Tagesplan, Grundriss, Online-Buchung</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="?demo=1&betrieb=lue">Personal-Demo</a>
+        <button type="button" data-act="stafflogin">Personal anmelden</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="login" hidden><form id="loginform">
   <h1>Tischbuch</h1><small id="login-sub">Anmeldung für das Personal</small>
+  <button type="button" class="link" data-act="backhub" style="justify-self:start;padding:0">← Zur Übersicht</button>
   <label class="f">E-Mail<input id="l-mail" type="email" autocomplete="username" required></label>
   <label class="f">Passwort<input id="l-pass" type="password" autocomplete="current-password" required></label>
   <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="l-show"> Passwort anzeigen</label>
@@ -562,7 +621,7 @@ tr.rowlink td{padding-top:10px;padding-bottom:10px}
 
 <script>
 'use strict';
-const KEY='tischbuch.v1', PX=22, TO=1440, LAST_END=1425; // spätestes Ende 23:45
+const KEY='tischbuch.v1.'+(/^[a-z0-9-]{1,40}$/.test(new URLSearchParams(location.search).get('betrieb')||'')?new URLSearchParams(location.search).get('betrieb'):'lue'), PX=22, TO=1440, LAST_END=1425; // spätestes Ende 23:45
 const $=(s,r=document)=>r.querySelector(s);
 const pad=n=>String(n).padStart(2,'0');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -590,6 +649,38 @@ const VENUE_SLUG=/^[a-z0-9-]{1,40}$/.test(QS.get('betrieb')||'')?QS.get('betrieb
 const RECOVERY=/type=recovery/.test(location.hash);   // Rücksprung aus der E-Mail „Passwort zurücksetzen“
 const ONLINE=!QS.has('demo')&&!!window.supabase;
 const DB=ONLINE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
+/* Schriften je Haus (venues.brand.fonts + vars.--sans/--serif). Hub-Fallback = Jost. */
+const FONT_PRESETS={
+  lue:{fonts:['Jost:wght@300;400;500;600;700','Libre Bodoni:wght@400;600'],
+    vars:{'--sans':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif','--serif':'"Libre Bodoni", "Bodoni 72", Didot, Georgia, serif'}},
+  /* Steinbock Website: Open Sans (Fließtext) + Open Sans Condensed (Überschriften/UI) */
+  steinbock:{fonts:['Open Sans:wght@300;400;500;600;700','Open Sans Condensed:wght@300;700'],
+    vars:{'--sans':'"Open Sans", Helvetica, Arial, sans-serif','--serif':'"Open Sans Condensed", "Arial Narrow", Arial, Tahoma, sans-serif'}},
+  mundwerk:{fonts:['Jost:wght@300;400;500;600;700','Libre Bodoni:wght@400;600'],
+    vars:{'--sans':'Jost, system-ui, -apple-system, "Segoe UI", sans-serif','--serif':'"Libre Bodoni", Didot, Georgia, serif'}}
+};
+const normalizeBrand=(b,slug)=>{
+  const preset=FONT_PRESETS[slug]||FONT_PRESETS.lue, brand={...(b||{})};
+  /* Preset gewinnt bei --sans/--serif/fonts (pro Haus); Farben etc. bleiben aus der DB */
+  brand.vars={...(brand.vars||{}),...(preset.vars||{})};
+  brand.fonts=[...(preset.fonts||[])];
+  return brand;
+};
+/* Stammdaten der drei Häuser (Hub, Demo-Branding, Embed-Links). Live-Daten kommen aus Supabase. */
+const VENUES={
+  lue:{slug:'lue',name:'LÜ – Burger & Grill',short:'LÜ Burger & Grill',blurb:'Burger, Grill & Bar · Obertauern',
+    brand:normalizeBrand({hero:'https://www.xn--l-eha.at/wp-content/uploads/2023/07/dsc01942-scaled.jpg',logo:'https://www.xn--l-eha.at/wp-content/uploads/2022/07/lue-logo-beige.svg',imprint:'https://www.xn--l-eha.at/impressum/',privacy:'https://www.xn--l-eha.at/datenschutz/',tagline:'Happiness is burger-shaped'},'lue')},
+  steinbock:{slug:'steinbock',name:'STEINBOCK. Wirtshaus am Tauern',short:'Restaurant Steinbock',blurb:'Wirtshaus am Tauern · Obertauern',
+    brand:normalizeBrand({dark:{'--brand':'#36434b','--taupe':'#b9c4cb','--accent':'#e8344f','--series':'#9fb0bb'},hero:'https://www.steinbock-obertauern.at/wp-content/uploads/2020/07/dsc01629-1-1536x1024.jpg',logo:'https://www.steinbock-obertauern.at/wp-content/uploads/2025/07/steinbock-logo-4c-gray.png',vars:{'--beige':'#e9ecee','--brand':'#4b5c66','--taupe':'#4b5c66','--accent':'#dd052b','--series':'#4b5c66','--accent-ink':'#ffffff'},imprint:'https://www.steinbock-obertauern.at/impressum/',privacy:'https://www.steinbock-obertauern.at/datenschutz/',tagline:'Bock auf gutes Essen?'},'steinbock')},
+  mundwerk:{slug:'mundwerk',name:'Mundwerk',short:'Mundwerk',blurb:'Fresh. Food. Fast. · Obertauern',
+    brand:normalizeBrand({dark:{'--taupe':'#dedc00','--accent':'#dedc00','--series':'#7bc8c5','--accent-ink':'#12120d'},logo:'https://www.meinmundwerk.at/wp-content/uploads/2020/05/mundwerk-logo.svg',vars:{'--beige':'#dedc00','--brand':'#7bc8c5','--taupe':'#12120d','--accent':'#12120d','--series':'#3a9c98','--hero-ink':'#12120d','--title-bg':'#12120d','--brand-ink':'#12120d','--title-ink':'#dedc00','--accent-ink':'#dedc00','--hero-shade':'none'},imprint:'https://www.meinmundwerk.at/impressum/',privacy:'https://www.meinmundwerk.at/datenschutz/',tagline:'Fresh. Food. Fast.'},'mundwerk')}
+};
+const VENUE_META=VENUES[VENUE_SLUG]||VENUES.lue;
+const guestPath=(slug,extra='')=>{
+  const q=new URLSearchParams({gast:'1',betrieb:slug||VENUE_SLUG});
+  if(extra) for(const [k,v] of new URLSearchParams(extra.replace(/^\?/,''))) q.set(k,v);
+  return location.pathname+'?'+q.toString();
+};
 const uid=()=>crypto.randomUUID();
 const hm=t=>(t||'').slice(0,5);
 let VENUE=null, shadow=null, syncQ=Promise.resolve(), syncBusy=0, pendingMails=[];
@@ -722,21 +813,46 @@ function bump(){
     if(JSON.stringify(shadow)!==before||ui.view==='mails') render();
   },600);
 }
-function showLogin(msg=''){ $('#login').hidden=false; $('#l-err').textContent=msg; }
+function showHub(){
+  document.body.classList.add('hub'); document.body.classList.remove('guest');
+  applyBrand(normalizeBrand({tagline:'Tischbuch'},'lue'), 'Tischbuch', 'lue');
+  $('#hub').hidden=false; $('#login').hidden=true;
+  const grid=$('#hub-grid');
+  if(grid&&!grid.dataset.ready){
+    grid.dataset.ready='1';
+    grid.innerHTML=Object.values(VENUES).map(v=>`<div class="hub-card" style="cursor:default">
+      <img src="${esc(v.brand.logo||'')}" alt="" onerror="this.hidden=true">
+      <b>${esc(v.short)}</b><span>${esc(v.blurb)}</span>
+      <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:8px">
+        <a href="${esc(guestPath(v.slug))}" style="color:inherit;font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:13px;text-decoration:none">Tisch reservieren →</a>
+        <a href="?demo=1&gast=1&betrieb=${esc(v.slug)}" style="color:inherit;opacity:.75;font-size:12px;text-decoration:underline">Demo</a>
+      </div></div>`).join('');
+  }
+  document.title='Tischbuch – Lürzer';
+}
+function showLogin(msg=''){
+  document.body.classList.add('hub'); document.body.classList.remove('guest');
+  $('#hub').hidden=true; $('#login').hidden=false; $('#loginform').hidden=false; $('#newpassform').hidden=true;
+  $('#l-err').textContent=msg; document.title='Tischbuch – Anmeldung';
+}
 async function enter(){
-  const {data,error}=await DB.from('venues').select('id,name').order('name');
+  const {data,error}=await DB.from('venues').select('id,name,slug').order('name');
   if(error||!data||!data.length){ await DB.auth.signOut(); return showLogin('Dieser Benutzer ist keinem Betrieb zugeordnet.'); }
   let saved=null; try{saved=localStorage.getItem('tischbuch.venue')}catch(e){}
-  VENUE={id:(data.find(v=>v.id===saved)||data[0]).id};
+  const want=QS.get('betrieb'), bySlug=want&&data.find(v=>v.slug===want);
+  VENUE={id:(bySlug||data.find(v=>v.id===saved)||data[0]).id};
   const sel=$('#venue-sel'); sel.hidden=data.length<2;
   sel.innerHTML=data.map(v=>`<option value="${v.id}"${v.id===VENUE.id?' selected':''}>${esc(v.name)}</option>`).join('');
   sel.onchange=()=>{ try{localStorage.setItem('tischbuch.venue',sel.value)}catch(e){} location.reload(); };
   try{await dbLoad();}catch(e){console.error(e); return showLogin('Die Daten konnten nicht geladen werden: '+(e.message||e));}
-  applyBrand(VENUE.brand,VENUE.name);
-  $('#login').hidden=true; $('#b-logout').hidden=false;
+  await ensureVenueBodyFonts();
+  applyBrand(VENUE.brand,VENUE.name,VENUE.slug);
+  document.body.classList.remove('hub','guest');
+  $('#hub').hidden=true; $('#login').hidden=true; $('#b-logout').hidden=false;
   $('.brand span').textContent='Online';
   $('.foot span').textContent='Verbunden mit der Online-Datenbank. Änderungen werden sofort gespeichert.';
   $('.foot [data-act=reset]').hidden=true;
+  document.title='Tischbuch – '+(VENUE.name||'Online');
   render();
   const f='venue_id=eq.'+VENUE.id;
   DB.channel('tischbuch')
@@ -750,17 +866,18 @@ async function startOnline(){
   const {data}=await DB.auth.getSession();
   if(RECOVERY){
     history.replaceState(null,'',location.pathname+location.search);
-    if(data&&data.session){ $('#login').hidden=false; $('#loginform').hidden=true; $('#newpassform').hidden=false; $('#np-pass').focus(); return; }
+    if(data&&data.session){ $('#hub').hidden=true; $('#login').hidden=false; $('#loginform').hidden=true; $('#newpassform').hidden=false; $('#np-pass').focus(); return; }
     return showLogin('Der Link zum Zurücksetzen ist abgelaufen oder wurde schon benutzt. Bitte „Passwort vergessen?“ erneut anklicken.');
   }
-  if(data&&data.session) await enter(); else showLogin();
+  if(data&&data.session) await enter(); else showHub();
 }
 /* Kundenseite: nur die öffentlichen Funktionen der Datenbank */
 async function guestStart(){
   $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED);
   const {data,error}=await DB.rpc('public_config',{p_slug:VENUE_SLUG});
   if(error||!data){ $('#gbody').innerHTML='<div class="gcard"><h1>Tisch reservieren</h1><div class="gsum">Die Online-Reservierung ist im Moment nicht erreichbar. Bitte rufen Sie uns an.</div></div>'; xl($('#gbody')); return; }
-  applyBrand(data.brand,data.name);
+  applyBrand(data.brand,data.name,VENUE_SLUG);
+  document.title='Reservieren – '+(data.name||VENUE_META.short);
   S={online:{name:data.name,max_pax:data.max_pax,days_ahead:data.days_ahead,cancel_hours:data.cancel_hours,open_from:data.open_from||'',times:[]},
      rooms:data.rooms.map(r=>({id:r.id,name:r.name,tables:[1]})),locks:[],reservations:[],contacts:[]};
   guestSlots();
@@ -778,11 +895,25 @@ async function guestSlots(){
   g.slots=groups; renderGuest();
 }
 const gRefresh=()=>ONLINE?guestSlots():renderGuest();
-/* Design je Haus: Farben, Logo, Titelbild und Slogan kommen aus der Datenbank */
-const BRANDKEYS=['--brand','--brand-ink','--accent','--accent-ink','--beige','--taupe','--series','--serif','--hero-shade','--hero-ink','--title-bg','--title-ink'];
+/* Design je Haus: Farben, Logo, Titelbild, Slogan und Schriften kommen aus der Datenbank (venues.brand) */
+const BRANDKEYS=['--brand','--brand-ink','--accent','--accent-ink','--beige','--taupe','--series','--serif','--sans','--hero-shade','--hero-ink','--title-bg','--title-ink'];
 let curBrand=null;
-function applyBrand(b,name){
-  curBrand={b:b||{},name:name||''}; b=curBrand.b;
+function brandFontHref(fonts){
+  const fam=(Array.isArray(fonts)?fonts:[]).map(f=>String(f||'').trim()).filter(f=>/^[A-Za-z][A-Za-z0-9 ]*(:wght@[0-9;]+)?$/.test(f));
+  if(!fam.length) return '';
+  return 'https://fonts.googleapis.com/css2?'+fam.map(f=>'family='+encodeURIComponent(f).replace(/%20/g,'+').replace(/%3A/g,':').replace(/%40/g,'@').replace(/%3B/g,';'))+'&display=swap';
+}
+function loadBrandFonts(b){
+  const href=brandFontHref(b&&b.fonts);
+  let link=$('#brand-fonts');
+  if(!link){ link=document.createElement('link'); link.id='brand-fonts'; link.rel='stylesheet'; document.head.appendChild(link); }
+  if(href) link.href=href; else link.removeAttribute('href');
+}
+function applyBrand(b,name,slug){
+  const s=slug||(VENUE&&VENUE.slug)||VENUE_SLUG||'lue';
+  curBrand={b:normalizeBrand(b||{},s),name:name||'',slug:s}; b=curBrand.b;
+  document.body.dataset.venue=s;
+  loadBrandFonts(b);
   const dark=matchMedia('(prefers-color-scheme:dark)').matches, vars={...(b.vars||{}),...(dark?b.dark||{}:{})}, st=document.documentElement.style;
   const okUrl=u=>typeof u==='string'&&/^https:\/\/[^"'()\s]+$/.test(u);
   for(const k of BRANDKEYS){ st.removeProperty(k); const v=vars[k]; if(typeof v==='string'&&/^[#\w\s,.%"-]+$/.test(v)) st.setProperty(k,v); }
@@ -790,9 +921,27 @@ function applyBrand(b,name){
   document.querySelectorAll('img[data-logo]').forEach(i=>{ if(okUrl(b.logo)){i.hidden=false; if(i.src!==b.logo) i.src=b.logo;} else i.hidden=true; });
   const bn=$('#brandname'); bn.hidden=okUrl(b.logo); bn.textContent=curBrand.name.split(/[.–-]/)[0].trim();
   $('.gtitle').textContent=b.tagline||curBrand.name;
+  const gl=$('#g-links'); if(gl){
+    const imprint=b.imprint, privacy=b.privacy;
+    gl.innerHTML=(imprint?`<a href="${esc(imprint)}" target="_blank" rel="noopener">Impressum</a> · `:'')+(privacy?`<a href="${esc(privacy)}" target="_blank" rel="noopener">Datenschutz</a> · `:'');
+  }
 }
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name); });
-const onlineDefaults=()=>({name:'LÜ – Burger & Grill',public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
+/* Schreibt fehlende Brand-Schriften je Haus in venues.brand (Personal hat Schreibrecht) */
+async function ensureVenueBodyFonts(){
+  if(!DB||GUEST) return;
+  try{
+    const rows=await one(DB.from('venues').select('id,slug,brand'));
+    for(const row of rows||[]){
+      const slug=row.slug||'lue', cur=row.brand||{}, next=normalizeBrand(cur,slug);
+      if(JSON.stringify(cur)===JSON.stringify(next)) continue;
+      const {error}=await DB.from('venues').update({brand:next}).eq('id',row.id);
+      if(error){ console.warn('brand font migrate', row.id, error); continue; }
+      if(VENUE&&VENUE.id===row.id) VENUE.brand=next;
+    }
+  }catch(e){ console.warn('brand font migrate', e); }
+}
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(curBrand) applyBrand(curBrand.b,curBrand.name,curBrand.slug); });
+const onlineDefaults=()=>({name:VENUE_META.name,public_url:'',max_pax:8,lead_minutes:60,slot_step:30,days_ahead:60,cancel_hours:2,
   limit_per_hour:0,open_from:'',times:[{id:'zt1',name:'Mittag',from:'11:30',to:'14:00',days:[1,2,3,4,5,6,7]},{id:'zt2',name:'Abend',from:'17:30',to:'21:00',days:[1,2,3,4,5,6,7]}]});
 /* ---------- E-Mails (werden nur erzeugt und im Postausgang abgelegt, nicht verschickt) ---------- */
 const mailDefaults=()=>({confirm:true,cancel:true,signature:'Herzliche Grüße\nIhr Team'});
@@ -824,7 +973,7 @@ function queueMail(kind,r,list=[r]){
 }
 function renderMails(){
   const c=S.mailcfg, ts=d=>new Date(d).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-  $('#v-mails').innerHTML=`<p class="hint" style="margin-top:0">Der Prototyp verschickt nichts. Jede E-Mail wird nur erzeugt und hier im Postausgang abgelegt. Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
+  $('#v-mails').innerHTML=`<p class="hint" style="margin-top:0">E-Mails werden derzeit nur in den Postausgang geschrieben (noch kein SMTP-Versand). Reservierungen ohne gültige E-Mail-Adresse bekommen keine.</p>
   <h3>Automatische E-Mails</h3>
   <div class="mailcfg">
     <label><input type="checkbox" data-m="confirm"${c.confirm?' checked':''}> Bestätigung bei neuer Reservierung (online und vom Personal eingetragen)</label>
@@ -1108,10 +1257,26 @@ function renderList(){
     ${term?`<p class="hint" style="margin:0 0 8px">${rs.length} Treffer für „${esc(ui.search)}“ in allen geladenen Tagen. Suchfeld leeren, um wieder den Tag zu sehen.</p>`:''}
     <div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Gast</th><th>Pers.</th><th>Tisch</th><th>Status</th><th>Bemerkung</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">Keine Einträge an diesem Tag.</td></tr>'}</tbody></table></div>`;
 }
-/* ---------- Grundriss ---------- */
+/* ---------- Grundriss (Tablex 2D parity) ---------- */
 const FW=640;
-const fsize=t=>{const c=t.max_capacity; return c<=2?[84,100]:[Math.ceil(c/2)*40+24,92];};
-/* Tisch von oben: Holzplatte, Stühle rundherum; besetzte Plätze in Statusfarbe */
+/* Layouts measured from user Tablex 2D screenshots (blob detection + label map). */
+const FLOOR_TX={
+  lue:{rooms:{Restaurant:{x:0,y:0,w:640,h:320,fill:'#a3c1ad',fixtures:[
+    {x:0,y:100,w:28,h:150,fill:'#8a5a32'},{x:430,y:0,w:4,h:120,fill:'#9aa0a6'},{x:500,y:290,w:80,h:4,fill:'#9aa0a6'},{x:560,y:300,w:60,h:4,fill:'#9aa0a6'}]}},
+    tables:{T2:{x:193,y:48,w:34,h:67},T3:{x:275,y:34,w:33,h:91},T4:{x:354,y:34,w:33,h:91},T11:{x:452,y:12,w:40,h:70},T12:{x:522,y:37,w:48,h:48},T13:{x:587,y:57,w:48,h:47},T1:{x:53,y:127,w:114,h:33},T14:{x:587,y:138,w:48,h:48},T15:{x:587,y:225,w:48,h:48},T10:{x:472,y:232,w:91,h:32},T5:{x:80,y:250,w:58,h:55},T6:{x:148,y:250,w:58,h:55},T7:{x:216,y:250,w:58,h:55},T8:{x:284,y:250,w:58,h:55},T9:{x:352,y:250,w:72,h:55}}},
+  steinbock:{rooms:{Steinbock:{x:0,y:0,w:640,h:620,fill:'#b7c9b8',fixtures:[{x:459,y:171,w:174,h:159,fill:'#6e4a2e'},{x:300,y:300,w:36,h:22,fill:'#5a5e64'}]},
+    Bergblick:{x:0,y:630,w:640,h:460,fill:'#9a928a',fixtures:[]}},
+    tables:{T4:{x:147,y:40,w:60,h:41},T5:{x:286,y:40,w:61,h:41},T40:{x:413,y:52,w:61,h:42},T41:{x:482,y:52,w:60,h:42},T42:{x:557,y:52,w:61,h:42},T3:{x:155,y:98,w:42,h:86},T6:{x:304,y:98,w:42,h:86},T1:{x:20,y:95,w:55,h:36},T2:{x:155,y:207,w:42,h:61},T8:{x:342,y:227,w:42,h:47},T20:{x:7,y:304,w:87,h:41},T7:{x:342,y:332,w:42,h:40},T21:{x:127,y:349,w:87,h:41},T19:{x:14,y:360,w:42,h:61},T18:{x:14,y:425,w:42,h:86},T14:{x:163,y:443,w:41,h:61},T13:{x:351,y:443,w:42,h:61},T10:{x:455,y:443,w:42,h:61},T9:{x:558,y:469,w:42,h:117},T12:{x:351,y:513,w:42,h:87},T11:{x:455,y:513,w:42,h:87},T17:{x:14,y:520,w:42,h:87},T16:{x:116,y:550,w:87,h:42},T15:{x:220,y:550,w:87,h:43},T606:{x:510,y:648,w:117,h:42},T602:{x:141,y:719,w:88,h:44},T607:{x:538,y:754,w:88,h:43},T601:{x:32,y:826,w:63,h:44},T608:{x:538,y:852,w:89,h:43},T603:{x:153,y:868,w:62,h:63},T604:{x:260,y:887,w:63,h:44},T605:{x:371,y:881,w:63,h:50},T613:{x:32,y:1008,w:70,h:70,shape:'round'},T609:{x:191,y:1014,w:42,h:52},T610:{x:313,y:1014,w:43,h:52},T611:{x:447,y:1014,w:43,h:52},T612:{x:560,y:1014,w:44,h:52}}},
+  mundwerk:{rooms:{Terrasse:{x:0,y:0,w:640,h:240,fill:'#8e8e8e',fixtures:[]},
+    Restaurant:{x:0,y:240,w:640,h:780,fill:'#efe9df',fixtures:[{x:125,y:450,w:210,h:150,fill:'#8a5a32'},{x:80,y:520,w:28,h:28,fill:'#4a4e54'},{x:90,y:850,w:50,h:28,fill:'#4a4e54'},{x:520,y:320,w:70,h:24,fill:'#4a4e54'}]},
+    'Stüberl':{x:40,y:1040,w:560,h:200,fill:'#e2d3b8',fixtures:[]}},
+    tables:{T32:{x:165,y:6,w:44,h:91},T31:{x:7,y:92,w:91,h:44},T33:{x:298,y:151,w:44,h:89},T34:{x:433,y:151,w:44,h:89},T30:{x:7,y:180,w:91,h:44},T8:{x:180,y:254,w:147,h:43},T10:{x:343,y:254,w:88,h:43},T11:{x:458,y:254,w:50,h:62},T12:{x:544,y:254,w:89,h:43},T7:{x:21,y:290,w:62,h:62},T6:{x:239,y:390,w:42,h:61},T5:{x:356,y:467,w:50,h:50},T4:{x:356,y:560,w:50,h:50},T3:{x:356,y:655,w:50,h:50},T13:{x:575,y:510,w:43,h:117},T14:{x:575,y:693,w:43,h:117},T1:{x:165,y:720,w:50,h:55},T2:{x:270,y:720,w:50,h:55},T15:{x:533,y:895,w:89,h:43},T23:{x:204,y:900,w:43,h:100},T16:{x:445,y:940,w:88,h:43},T21:{x:80,y:1060,w:55,h:55},T17:{x:480,y:1060,w:55,h:55},T20:{x:80,y:1150,w:55,h:55},T19:{x:280,y:1150,w:70,h:50},T18:{x:480,y:1150,w:55,h:55}}}
+};
+const floorTx=()=>FLOOR_TX[(VENUE&&VENUE.slug)||VENUE_SLUG]||null;
+const txLay=t=>{const L=floorTx(); return L&&L.tables[t.name]||null;};
+const fsize=t=>{const L=txLay(t); if(L) return [L.w,L.h]; const c=t.max_capacity; return c<=2?[84,100]:[Math.ceil(c/2)*40+24,92];};
+const txRound=t=>{const L=txLay(t); return !!(L&&L.shape==='round');};
+/* Legacy chair SVG (edit mode fallback / venues without Tablex layout) */
 function tableSvg(t,w,h,occ=0){
   const n=clamp(t.max_capacity,1,24); let ch='', pl='', top;
   const chair=(x,y,i,cw=24,chh=12,up=true)=>`<rect class="chair${i<occ?' on':''}" x="${x}" y="${y}" width="${cw}" height="${chh}" rx="4"/><rect class="back" x="${x+2}" y="${up?y:y+chh-3}" width="${cw-4}" height="3" rx="1.5"/>`;
@@ -1127,9 +1292,18 @@ function tableSvg(t,w,h,occ=0){
   }
   return `<svg class="tsvg" viewBox="0 0 ${w} ${h}" aria-hidden="true">${ch}${top}${pl}</svg>`;
 }
-/* Tische ohne Position der Reihe nach unter die bereits platzierten setzen */
 function ensurePos(){
   let ch=false;
+  const L=floorTx();
+  if(L&&!ui.floorEdit){
+    for(const room of S.rooms){
+      for(const t of room.tables){
+        const lay=L.tables[t.name]; if(!lay) continue;
+        if(t.x!==lay.x||t.y!==lay.y){t.x=lay.x; t.y=lay.y; ch=true;}
+      }
+    }
+    if(ch) save(); return;
+  }
   for(const room of S.rooms){
     const miss=room.tables.filter(t=>t.x==null); if(!miss.length) continue; ch=true;
     let y=room.tables.filter(t=>t.x!=null).reduce((m,t)=>Math.max(m,t.y+fsize(t)[1]),0)+20, x=20;
@@ -1146,32 +1320,65 @@ function renderFloor(){
     :`<label for="fl-time">Uhrzeit</label><input type="range" id="fl-time" min="${FROM()}" max="${LAST_END-15}" step="15" value="${m}"><output id="fl-out">${m2t(m)}</output>
      <button data-act="floornow">Jetzt</button>`}
     <button data-act="flooredit" class="${E?'primary':''}" style="margin-left:auto">${E?'Fertig':'Tische anordnen'}</button></div>
-  <div class="floors${E?' edit':''}" id="floors"></div>
+  <div class="floors${E?' edit':''}${floorTx()&&!E?' tx':''}" id="floors"></div>
   ${E?'':`<div class="legend"><span><i class="wood"></i>frei</span><span><i style="background:var(--chair)"></i>freier Platz</span><span><i style="border:2px dashed var(--open)"></i>frei, in der nächsten Stunde reserviert</span>
     <span><i style="background:var(--open)"></i>erwartet</span><span><i style="background:var(--late)"></i>verspätet</span><span><i style="background:var(--here)"></i>angekommen</span>
     <span><i style="background:var(--done)"></i>gegangen</span><span>Klick auf einen Tisch öffnet oder erstellt die Reservierung.</span></div>`}`;
   renderFloors();
 }
+function renderTxTab(t,m,rs,E){
+  const [w,h]=fsize(t), L=txLay(t), x=L?L.x:clamp(t.x,0,FW-w), y=L?L.y:(t.y||0);
+  const sm=txRound(t), pos=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`, cls='ftab tx'+(sm?' round':'');
+  const cap=`${t.min_capacity}–${t.max_capacity} Pers.`;
+  if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}"><div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
+  const mine=rs.filter(r=>r.table_ids.includes(t.id));
+  const cur=mine.find(r=>t2m(r.start_time)<=m&&t2m(r.end_time)>m);
+  const next=mine.filter(r=>t2m(r.start_time)>m).sort((a,b)=>a.start_time.localeCompare(b.start_time))[0];
+  if(cur){
+    const st=stateOf(cur);
+    return {html:`<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}"><div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span></div></div>`, free:0};
+  }
+  const soon=next&&t2m(next.start_time)-m<=60;
+  return {html:`<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}"><div class="ftxt"><b>${esc(t.name)}</b></div></div>`, free:1};
+}
 function renderFloors(){
-  const m=floorMin(), E=ui.floorEdit, rs=dayRes().filter(r=>r.type==='reservation');
+  const m=floorMin(), E=ui.floorEdit, rs=dayRes().filter(r=>r.type==='reservation'), TX=floorTx();
+  if(TX&&!E){
+    let free=0, tabs='';
+    const byName={}; for(const room of S.rooms) for(const t of room.tables) byName[t.name]=t;
+    for(const name of Object.keys(TX.tables)){
+      const t=byName[name]; if(!t) continue;
+      const r=renderTxTab(t,m,rs,false); free+=r.free; tabs+=r.html;
+    }
+    for(const t of allTables()){ if(TX.tables[t.name]) continue; const r=renderTxTab(t,m,rs,false); free+=r.free; tabs+=r.html; }
+    const roomsHtml=Object.entries(TX.rooms).map(([name,R])=>{
+      const fix=(R.fixtures||[]).map(f=>`<div class="tx-fix" style="left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.fill}"></div>`).join('');
+      return `<div class="tx-room" style="left:${R.x}px;top:${R.y}px;width:${R.w}px;height:${R.h}px;background:${R.fill}">${fix}<div class="tx-room-label">${esc(name)}</div></div>`;
+    }).join('');
+    const H=Math.max(...Object.values(TX.rooms).map(R=>R.y+R.h), ...Object.values(TX.tables).map(L=>L.y+L.h))+24;
+    $('#floors').innerHTML=`<div class="tx-stage" style="height:${H}px">${roomsHtml}${tabs}</div>
+      <p class="hint" style="color:#c5c8ce;margin:10px 2px 0">${free} von ${allTables().length} Tischen frei · Ansicht wie Tablex 2D</p>`;
+    return;
+  }
   $('#floors').innerHTML=S.rooms.map(room=>{
     let free=0;
     const H=Math.max(220,...room.tables.map(t=>t.y+fsize(t)[1]+20));
     const tabs=room.tables.map(t=>{
-      const [w,h]=fsize(t), x=clamp(t.x,0,FW-w), sm=t.max_capacity<=2, pos=`left:${x}px;top:${t.y}px;width:${w}px;height:${h}px`, cls='ftab'+(t.max_capacity<=2?' round':'');
+      const [w,h]=fsize(t), L=txLay(t), x=L?L.x:clamp(t.x,0,FW-w), y=L?L.y:t.y;
+      const sm=txRound(t), pos=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`, cls='ftab'+(TX?' tx':'')+(sm?' round':'');
       const cap=`${t.min_capacity}–${t.max_capacity} Pers.`;
-      if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}">${tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
+      if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}">${TX?'':tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
       const mine=rs.filter(r=>r.table_ids.includes(t.id));
       const cur=mine.find(r=>t2m(r.start_time)<=m&&t2m(r.end_time)>m);
       const next=mine.filter(r=>t2m(r.start_time)>m).sort((a,b)=>a.start_time.localeCompare(b.start_time))[0];
       if(cur){
         const st=stateOf(cur);
         const share=cur.table_ids.length>1?Math.ceil(cur.num_people/cur.table_ids.length):cur.num_people;
-        return `<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${tableSvg(t,w,h,st==='done'?0:share)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
+        return `<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${TX?'':tableSvg(t,w,h,st==='done'?0:share)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
       }
       free++;
       const soon=next&&t2m(next.start_time)-m<=60;
-      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
+      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${TX?'':tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
     }).join('');
     return `<div class="floor"><h3>${esc(room.name)}${room.is_outside?' · außen':''}<small>${E?room.tables.length+' Tische':free+' von '+room.tables.length+' Tischen frei'}</small></h3>
       <div class="fscroll"><div class="fcanvas${room.is_outside?' out':''}" data-room="${room.id}" style="height:${H}px">${tabs||'<div class="empty" style="padding:12px">Keine Tische in diesem Raum.</div>'}</div></div></div>`;
@@ -1322,7 +1529,8 @@ const longDate=d=>new Date(d+'T12:00:00').toLocaleDateString(typeof LOC==='funct
 function renderOnline(){
   const o=S.online, up=S.reservations.filter(r=>r.is_online_reservation&&r.type!=='canceled'&&r.date>=today()).length;
   const locks=S.locks.filter(l=>l.date>=today()).sort((a,b)=>(a.date+a.from).localeCompare(b.date+b.from));
-  $('#v-online').innerHTML=`<p style="margin-top:0">${up} kommende Online-Buchung(en). <a class="guestlink" href="?gast=1" target="_blank" rel="noopener">Gäste-Ansicht in neuem Tab öffnen ↗</a></p>
+  const guestHref=ONLINE&&VENUE&&VENUE.slug?guestPath(VENUE.slug):guestPath(VENUE_SLUG);
+  $('#v-online').innerHTML=`<p style="margin-top:0">${up} kommende Online-Buchung(en). <a class="guestlink" href="${esc(guestHref)}" target="_blank" rel="noopener">Gäste-Ansicht in neuem Tab öffnen ↗</a></p>
   <h3>Einbinden: Website, Google, Facebook</h3>
   <div class="embedrow"><label for="o-url" style="font-size:13px">Öffentliche Adresse</label><input id="o-url" data-o="public_url" value="${esc(o.public_url)}" placeholder="${esc(location.origin+location.pathname)}"><span></span></div>
   ${embedRows(o)}
@@ -1364,7 +1572,8 @@ function renderOnline(){
 function embedRows(o){
   const base=(o.public_url||location.origin+location.pathname).split('?')[0];
   const row=(l,v)=>`<div class="embedrow"><span style="font-size:13px">${l}</span><input readonly value="${esc(v)}" onfocus="this.select()"><button data-act="copy" data-t="${esc(v)}">Kopieren</button></div>`;
-  const q='?gast=1'+(ONLINE&&VENUE&&VENUE.slug&&VENUE.slug!=='lue'?'&betrieb='+VENUE.slug:'');
+  const slug=(ONLINE&&VENUE&&VENUE.slug)||VENUE_SLUG||'lue';
+  const q='?gast=1&betrieb='+encodeURIComponent(slug);
   return row('Google-Profil',base+q+'&quelle=google')+row('Facebook-Button',base+q+'&quelle=facebook')+row('Instagram-Profil',base+q+'&quelle=instagram')
     +row('Website (iframe)',`<iframe src="${base}${q}&embed=1&quelle=website" title="Tisch reservieren" loading="lazy" style="width:100%;min-height:780px;border:0"></iframe>`);
 }
@@ -1505,7 +1714,7 @@ function renderGuest0(){
     el.innerHTML=`<div class="gcard"><h1>Danke, ${esc(r.guest_name)}!</h1><p class="gsub">Ihr Tisch bei ${esc(o.name)} ist reserviert.</p>
       <div class="gsum"><b>${esc(longDate(r.date))}</b><br>${r.start_time} Uhr · ${r.num_people} ${r.num_people===1?'Person':'Personen'}${r.note?'<br>Ihre Nachricht: '+esc(r.note):''}</div>
       <p>Ihr Buchungscode: <b style="font-size:18px;letter-spacing:1px">${esc(r.code)}</b><br><small>Damit können Sie Ihre Reservierung ${cancelText(o)} selbst stornieren.</small></p>
-      <p><small>${r.mailed?`Eine Bestätigung mit diesem Code geht an ${esc(r.email)}. (Im Prototyp wird sie nicht wirklich verschickt, sondern nur im Postausgang abgelegt.)`:'Bitte notieren Sie den Code, es wird keine Bestätigung per E-Mail verschickt.'}</small></p>
+      <p><small>${r.mailed?`Eine Bestätigung mit diesem Code ist für ${esc(r.email)} vorgesehen. (Der Versand landet vorerst nur im Personal-Postausgang, bis SMTP angebunden ist.)`:'Bitte notieren Sie den Code, es wird keine Bestätigung per E-Mail verschickt.'}</small></p>
       <button data-act="gnew">Weitere Reservierung</button> <button data-act="gmanage" data-code="${esc(r.code)}">Reservierung verwalten</button></div>`; return;}
   const maxDate=addDays(today(),o.days_ahead); if(g.date<today()||g.date>maxDate) g.date=today();
   let pax=''; for(let i=1;i<=o.max_pax;i++) pax+=`<option value="${i}"${g.pax===i?' selected':''}>${i} ${i===1?'Person':'Personen'}</option>`;
@@ -1778,7 +1987,9 @@ document.addEventListener('click',async ev=>{
   else if(a==='delnote'){S.notes=(S.notes||[]).filter(n=>n.id!==id); save(); render();}
   else if(a==='addtime'){S.online.times.push({id:uid(),name:'Neues Zeitfenster',from:'18:00',to:'20:00',days:[1,2,3,4,5,6,7]}); save(); render();}
   else if(a==='deltime'){ if(await ask('Dieses Zeitfenster löschen? Online ist dann zu diesen Zeiten nichts mehr buchbar.','Löschen')){S.online.times.splice(+el.dataset.i,1); save(); render();} }
-  else if(a==='logout'){ await DB.auth.signOut(); location.reload(); }
+  else if(a==='logout'){ await DB.auth.signOut(); location.href=location.pathname; }
+  else if(a==='stafflogin') showLogin();
+  else if(a==='backhub') showHub();
   else if(a==='forgot'){
     const mail=$('#l-mail').value.trim(), e=$('#l-err');
     if(!validMail(mail)){e.textContent='Bitte zuerst oben die E-Mail-Adresse eintragen.'; return;}
@@ -1937,7 +2148,17 @@ $('#guest').addEventListener('submit',e=>{e.preventDefault(); if(e.target.id==='
 /* Änderungen aus einem anderen Tab (z. B. neue Online-Buchung) übernehmen */
 window.addEventListener('storage',e=>{ if(!ONLINE&&e.key===KEY&&!document.querySelector('dialog[open]')){ S=load(); if(GUEST?(g.mode==='book'&&g.time===null)||g.look!=null:ui.view==='plan'||ui.view==='list'||ui.view==='mails'||(ui.view==='floor'&&!ui.floorEdit)) render(); } });
 
-if(ONLINE) startOnline(); else {S=load(); render();}
+if(ONLINE) startOnline();
+else {
+  S=load();
+  applyBrand(VENUE_META.brand,VENUE_META.name,VENUE_SLUG);
+  document.title=(GUEST?'Reservieren':'Tischbuch')+' – '+VENUE_META.short+(GUEST?'':' · Demo');
+  $('.brand span').textContent='Demo · '+VENUE_META.short;
+  $('.foot span').textContent='Demo: Daten nur in diesem Browser.';
+  const rb=$('.foot [data-act=reset]'); if(rb) rb.hidden=!!GUEST;
+  if(GUEST){ $('#guest').hidden=false; document.body.classList.add('guest'); document.body.classList.toggle('embed',EMBED); }
+  render();
+}
 setInterval(()=>{ if(ONLINE&&!GUEST){ if(shadow) bump(); return; } if(GUEST){ if(g.mode==='book'&&g.time===null&&!g.done) render(); } else if(!document.querySelector('dialog[open]')&&(ui.view==='plan'||ui.view==='list'||(ui.view==='floor'&&!ui.floorEdit))) render(); },60000);
 </script>
 </body>
