@@ -215,7 +215,28 @@ section h3,aside h3,.chart h3,.floor h3,.gcard h3{font-family:var(--serif);font-
 th{text-transform:uppercase;letter-spacing:.08em;font-size:10px}
 label.f{text-transform:uppercase;letter-spacing:.06em;font-size:10px}
 label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing:0;font-size:15px}
-/* ===== Grundriss: Tische mit Stühlen ===== */
+/* ===== Grundriss: Tablex-2D style ===== */
+#v-floor .floors.tx{display:block;background:#1f2228;border-radius:8px;padding:14px;overflow:auto}
+#v-floor .tx-stage{position:relative;width:640px;margin:0 auto;background:#1f2228}
+#v-floor .tx-room{position:absolute;border-radius:2px}
+#v-floor .tx-room-label{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:3;pointer-events:none;
+  background:#fff;color:#1a1a1a;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.02em;text-transform:none;
+  border-radius:999px;padding:6px 16px;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap}
+#v-floor .tx-fix{position:absolute;border-radius:2px;pointer-events:none}
+#v-floor .ftab.tx{border:0;border-radius:3px;background:#8f6238;color:#fff;padding:0;overflow:hidden;z-index:4;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);filter:none;transform:none;font-family:var(--sans)}
+#v-floor .ftab.tx .ftxt{position:static;padding:0 4px;gap:0}
+#v-floor .ftab.tx .ftxt b{font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:0;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+#v-floor .ftab.tx .ftxt span{display:none}
+#v-floor .ftab.tx.round{border-radius:50%}
+#v-floor .ftab.tx:hover{filter:brightness(1.08);transform:none}
+#v-floor .ftab.tx.occ.not_started{background:var(--open)}
+#v-floor .ftab.tx.occ.late{background:var(--late)}
+#v-floor .ftab.tx.occ.arrived{background:var(--here)}
+#v-floor .ftab.tx.occ.done{background:var(--done)}
+#v-floor .ftab.tx.soon{box-shadow:inset 0 0 0 2px var(--open)}
+#v-floor .ftab.tx.occ .ftxt span{display:block;font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.95}
 .fcanvas{width:650px;border:5px solid var(--wall);border-radius:3px;background-color:var(--floor);
   background-image:repeating-linear-gradient(90deg,rgba(90,70,40,.10) 0 1px,transparent 1px 46px),repeating-linear-gradient(0deg,rgba(90,70,40,.05) 0 1px,transparent 1px 230px)}
 .fcanvas.out{background-color:var(--floor-out);border-style:dashed;border-width:3px;border-color:var(--accent);
@@ -237,7 +258,7 @@ label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing
 .ftxt b{font-family:var(--serif);font-size:15px;letter-spacing:.04em}
 .ftab.round .ftxt{padding:0 14px}
 .ftab.round .ftxt span{font-size:11px}
-.legend i.wood{background:linear-gradient(var(--wood1),var(--wood2))}
+.legend i.wood{background:#8f6238}
 /* ===== Kundenseite ===== */
 #guest{max-width:none;margin:0;padding:0;position:relative}
 .glang{position:absolute;top:10px;right:12px;z-index:3;display:flex;gap:4px}
@@ -1236,10 +1257,26 @@ function renderList(){
     ${term?`<p class="hint" style="margin:0 0 8px">${rs.length} Treffer für „${esc(ui.search)}“ in allen geladenen Tagen. Suchfeld leeren, um wieder den Tag zu sehen.</p>`:''}
     <div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Gast</th><th>Pers.</th><th>Tisch</th><th>Status</th><th>Bemerkung</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">Keine Einträge an diesem Tag.</td></tr>'}</tbody></table></div>`;
 }
-/* ---------- Grundriss ---------- */
+/* ---------- Grundriss (Tablex 2D parity) ---------- */
 const FW=640;
-const fsize=t=>{const c=t.max_capacity; return c<=2?[84,100]:[Math.ceil(c/2)*40+24,92];};
-/* Tisch von oben: Holzplatte, Stühle rundherum; besetzte Plätze in Statusfarbe */
+/* Layouts measured from user Tablex 2D screenshots (blob detection + label map). */
+const FLOOR_TX={
+  lue:{rooms:{Restaurant:{x:0,y:0,w:640,h:320,fill:'#a3c1ad',fixtures:[
+    {x:0,y:100,w:28,h:150,fill:'#8a5a32'},{x:430,y:0,w:4,h:120,fill:'#9aa0a6'},{x:500,y:290,w:80,h:4,fill:'#9aa0a6'},{x:560,y:300,w:60,h:4,fill:'#9aa0a6'}]}},
+    tables:{T2:{x:193,y:48,w:34,h:67},T3:{x:275,y:34,w:33,h:91},T4:{x:354,y:34,w:33,h:91},T11:{x:452,y:12,w:40,h:70},T12:{x:522,y:37,w:48,h:48},T13:{x:587,y:57,w:48,h:47},T1:{x:53,y:127,w:114,h:33},T14:{x:587,y:138,w:48,h:48},T15:{x:587,y:225,w:48,h:48},T10:{x:472,y:232,w:91,h:32},T5:{x:80,y:250,w:58,h:55},T6:{x:148,y:250,w:58,h:55},T7:{x:216,y:250,w:58,h:55},T8:{x:284,y:250,w:58,h:55},T9:{x:352,y:250,w:72,h:55}}},
+  steinbock:{rooms:{Steinbock:{x:0,y:0,w:640,h:620,fill:'#b7c9b8',fixtures:[{x:459,y:171,w:174,h:159,fill:'#6e4a2e'},{x:300,y:300,w:36,h:22,fill:'#5a5e64'}]},
+    Bergblick:{x:0,y:630,w:640,h:460,fill:'#9a928a',fixtures:[]}},
+    tables:{T4:{x:147,y:40,w:60,h:41},T5:{x:286,y:40,w:61,h:41},T40:{x:413,y:52,w:61,h:42},T41:{x:482,y:52,w:60,h:42},T42:{x:557,y:52,w:61,h:42},T3:{x:155,y:98,w:42,h:86},T6:{x:304,y:98,w:42,h:86},T1:{x:20,y:95,w:55,h:36},T2:{x:155,y:207,w:42,h:61},T8:{x:342,y:227,w:42,h:47},T20:{x:7,y:304,w:87,h:41},T7:{x:342,y:332,w:42,h:40},T21:{x:127,y:349,w:87,h:41},T19:{x:14,y:360,w:42,h:61},T18:{x:14,y:425,w:42,h:86},T14:{x:163,y:443,w:41,h:61},T13:{x:351,y:443,w:42,h:61},T10:{x:455,y:443,w:42,h:61},T9:{x:558,y:469,w:42,h:117},T12:{x:351,y:513,w:42,h:87},T11:{x:455,y:513,w:42,h:87},T17:{x:14,y:520,w:42,h:87},T16:{x:116,y:550,w:87,h:42},T15:{x:220,y:550,w:87,h:43},T606:{x:510,y:648,w:117,h:42},T602:{x:141,y:719,w:88,h:44},T607:{x:538,y:754,w:88,h:43},T601:{x:32,y:826,w:63,h:44},T608:{x:538,y:852,w:89,h:43},T603:{x:153,y:868,w:62,h:63},T604:{x:260,y:887,w:63,h:44},T605:{x:371,y:881,w:63,h:50},T613:{x:32,y:1008,w:70,h:70,shape:'round'},T609:{x:191,y:1014,w:42,h:52},T610:{x:313,y:1014,w:43,h:52},T611:{x:447,y:1014,w:43,h:52},T612:{x:560,y:1014,w:44,h:52}}},
+  mundwerk:{rooms:{Terrasse:{x:0,y:0,w:640,h:240,fill:'#8e8e8e',fixtures:[]},
+    Restaurant:{x:0,y:240,w:640,h:780,fill:'#efe9df',fixtures:[{x:125,y:450,w:210,h:150,fill:'#8a5a32'},{x:80,y:520,w:28,h:28,fill:'#4a4e54'},{x:90,y:850,w:50,h:28,fill:'#4a4e54'},{x:520,y:320,w:70,h:24,fill:'#4a4e54'}]},
+    'Stüberl':{x:40,y:1040,w:560,h:200,fill:'#e2d3b8',fixtures:[]}},
+    tables:{T32:{x:165,y:6,w:44,h:91},T31:{x:7,y:92,w:91,h:44},T33:{x:298,y:151,w:44,h:89},T34:{x:433,y:151,w:44,h:89},T30:{x:7,y:180,w:91,h:44},T8:{x:180,y:254,w:147,h:43},T10:{x:343,y:254,w:88,h:43},T11:{x:458,y:254,w:50,h:62},T12:{x:544,y:254,w:89,h:43},T7:{x:21,y:290,w:62,h:62},T6:{x:239,y:390,w:42,h:61},T5:{x:356,y:467,w:50,h:50},T4:{x:356,y:560,w:50,h:50},T3:{x:356,y:655,w:50,h:50},T13:{x:575,y:510,w:43,h:117},T14:{x:575,y:693,w:43,h:117},T1:{x:165,y:720,w:50,h:55},T2:{x:270,y:720,w:50,h:55},T15:{x:533,y:895,w:89,h:43},T23:{x:204,y:900,w:43,h:100},T16:{x:445,y:940,w:88,h:43},T21:{x:80,y:1060,w:55,h:55},T17:{x:480,y:1060,w:55,h:55},T20:{x:80,y:1150,w:55,h:55},T19:{x:280,y:1150,w:70,h:50},T18:{x:480,y:1150,w:55,h:55}}}
+};
+const floorTx=()=>FLOOR_TX[(VENUE&&VENUE.slug)||VENUE_SLUG]||null;
+const txLay=t=>{const L=floorTx(); return L&&L.tables[t.name]||null;};
+const fsize=t=>{const L=txLay(t); if(L) return [L.w,L.h]; const c=t.max_capacity; return c<=2?[84,100]:[Math.ceil(c/2)*40+24,92];};
+const txRound=t=>{const L=txLay(t); return !!(L&&L.shape==='round');};
+/* Legacy chair SVG (edit mode fallback / venues without Tablex layout) */
 function tableSvg(t,w,h,occ=0){
   const n=clamp(t.max_capacity,1,24); let ch='', pl='', top;
   const chair=(x,y,i,cw=24,chh=12,up=true)=>`<rect class="chair${i<occ?' on':''}" x="${x}" y="${y}" width="${cw}" height="${chh}" rx="4"/><rect class="back" x="${x+2}" y="${up?y:y+chh-3}" width="${cw-4}" height="3" rx="1.5"/>`;
@@ -1255,9 +1292,18 @@ function tableSvg(t,w,h,occ=0){
   }
   return `<svg class="tsvg" viewBox="0 0 ${w} ${h}" aria-hidden="true">${ch}${top}${pl}</svg>`;
 }
-/* Tische ohne Position der Reihe nach unter die bereits platzierten setzen */
 function ensurePos(){
   let ch=false;
+  const L=floorTx();
+  if(L&&!ui.floorEdit){
+    for(const room of S.rooms){
+      for(const t of room.tables){
+        const lay=L.tables[t.name]; if(!lay) continue;
+        if(t.x!==lay.x||t.y!==lay.y){t.x=lay.x; t.y=lay.y; ch=true;}
+      }
+    }
+    if(ch) save(); return;
+  }
   for(const room of S.rooms){
     const miss=room.tables.filter(t=>t.x==null); if(!miss.length) continue; ch=true;
     let y=room.tables.filter(t=>t.x!=null).reduce((m,t)=>Math.max(m,t.y+fsize(t)[1]),0)+20, x=20;
@@ -1274,32 +1320,65 @@ function renderFloor(){
     :`<label for="fl-time">Uhrzeit</label><input type="range" id="fl-time" min="${FROM()}" max="${LAST_END-15}" step="15" value="${m}"><output id="fl-out">${m2t(m)}</output>
      <button data-act="floornow">Jetzt</button>`}
     <button data-act="flooredit" class="${E?'primary':''}" style="margin-left:auto">${E?'Fertig':'Tische anordnen'}</button></div>
-  <div class="floors${E?' edit':''}" id="floors"></div>
+  <div class="floors${E?' edit':''}${floorTx()&&!E?' tx':''}" id="floors"></div>
   ${E?'':`<div class="legend"><span><i class="wood"></i>frei</span><span><i style="background:var(--chair)"></i>freier Platz</span><span><i style="border:2px dashed var(--open)"></i>frei, in der nächsten Stunde reserviert</span>
     <span><i style="background:var(--open)"></i>erwartet</span><span><i style="background:var(--late)"></i>verspätet</span><span><i style="background:var(--here)"></i>angekommen</span>
     <span><i style="background:var(--done)"></i>gegangen</span><span>Klick auf einen Tisch öffnet oder erstellt die Reservierung.</span></div>`}`;
   renderFloors();
 }
+function renderTxTab(t,m,rs,E){
+  const [w,h]=fsize(t), L=txLay(t), x=L?L.x:clamp(t.x,0,FW-w), y=L?L.y:(t.y||0);
+  const sm=txRound(t), pos=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`, cls='ftab tx'+(sm?' round':'');
+  const cap=`${t.min_capacity}–${t.max_capacity} Pers.`;
+  if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}"><div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
+  const mine=rs.filter(r=>r.table_ids.includes(t.id));
+  const cur=mine.find(r=>t2m(r.start_time)<=m&&t2m(r.end_time)>m);
+  const next=mine.filter(r=>t2m(r.start_time)>m).sort((a,b)=>a.start_time.localeCompare(b.start_time))[0];
+  if(cur){
+    const st=stateOf(cur);
+    return {html:`<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}"><div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span></div></div>`, free:0};
+  }
+  const soon=next&&t2m(next.start_time)-m<=60;
+  return {html:`<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}"><div class="ftxt"><b>${esc(t.name)}</b></div></div>`, free:1};
+}
 function renderFloors(){
-  const m=floorMin(), E=ui.floorEdit, rs=dayRes().filter(r=>r.type==='reservation');
+  const m=floorMin(), E=ui.floorEdit, rs=dayRes().filter(r=>r.type==='reservation'), TX=floorTx();
+  if(TX&&!E){
+    let free=0, tabs='';
+    const byName={}; for(const room of S.rooms) for(const t of room.tables) byName[t.name]=t;
+    for(const name of Object.keys(TX.tables)){
+      const t=byName[name]; if(!t) continue;
+      const r=renderTxTab(t,m,rs,false); free+=r.free; tabs+=r.html;
+    }
+    for(const t of allTables()){ if(TX.tables[t.name]) continue; const r=renderTxTab(t,m,rs,false); free+=r.free; tabs+=r.html; }
+    const roomsHtml=Object.entries(TX.rooms).map(([name,R])=>{
+      const fix=(R.fixtures||[]).map(f=>`<div class="tx-fix" style="left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.fill}"></div>`).join('');
+      return `<div class="tx-room" style="left:${R.x}px;top:${R.y}px;width:${R.w}px;height:${R.h}px;background:${R.fill}">${fix}<div class="tx-room-label">${esc(name)}</div></div>`;
+    }).join('');
+    const H=Math.max(...Object.values(TX.rooms).map(R=>R.y+R.h), ...Object.values(TX.tables).map(L=>L.y+L.h))+24;
+    $('#floors').innerHTML=`<div class="tx-stage" style="height:${H}px">${roomsHtml}${tabs}</div>
+      <p class="hint" style="color:#c5c8ce;margin:10px 2px 0">${free} von ${allTables().length} Tischen frei · Ansicht wie Tablex 2D</p>`;
+    return;
+  }
   $('#floors').innerHTML=S.rooms.map(room=>{
     let free=0;
     const H=Math.max(220,...room.tables.map(t=>t.y+fsize(t)[1]+20));
     const tabs=room.tables.map(t=>{
-      const [w,h]=fsize(t), x=clamp(t.x,0,FW-w), sm=t.max_capacity<=2, pos=`left:${x}px;top:${t.y}px;width:${w}px;height:${h}px`, cls='ftab'+(t.max_capacity<=2?' round':'');
+      const [w,h]=fsize(t), L=txLay(t), x=L?L.x:clamp(t.x,0,FW-w), y=L?L.y:t.y;
+      const sm=txRound(t), pos=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`, cls='ftab'+(TX?' tx':'')+(sm?' round':'');
       const cap=`${t.min_capacity}–${t.max_capacity} Pers.`;
-      if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}">${tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
+      if(E) return `<div class="${cls}" data-drag="${t.id}" style="${pos}">${TX?'':tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b><span>${cap}</span></div></div>`;
       const mine=rs.filter(r=>r.table_ids.includes(t.id));
       const cur=mine.find(r=>t2m(r.start_time)<=m&&t2m(r.end_time)>m);
       const next=mine.filter(r=>t2m(r.start_time)>m).sort((a,b)=>a.start_time.localeCompare(b.start_time))[0];
       if(cur){
         const st=stateOf(cur);
         const share=cur.table_ids.length>1?Math.ceil(cur.num_people/cur.table_ids.length):cur.num_people;
-        return `<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${tableSvg(t,w,h,st==='done'?0:share)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
+        return `<div class="${cls} occ ${st}" data-act="ftab" data-id="${cur.id}" style="${pos}" title="${esc(t.name)} · ${esc(cur.guest_name)} · ${cur.num_people} Pers. · ${cur.start_time}–${cur.end_time} · ${LABEL[st]}">${TX?'':tableSvg(t,w,h,st==='done'?0:share)}<div class="ftxt"><b>${esc(t.name)}</b><span>${esc(cur.guest_name)}</span><span>${sm?'':cur.num_people+' P. · '}bis ${cur.end_time}</span></div></div>`;
       }
       free++;
       const soon=next&&t2m(next.start_time)-m<=60;
-      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
+      return `<div class="${cls}${soon?' soon':''}" data-act="ftab" data-table="${t.id}" style="${pos}" title="${esc(t.name)} · ${cap} · ${next?'frei bis '+next.start_time+' ('+esc(next.guest_name)+')':'frei'}">${TX?'':tableSvg(t,w,h)}<div class="ftxt"><b>${esc(t.name)}</b>${sm&&next?'<span>frei</span>':''}<span>${next?(sm?'':'frei ')+'bis '+next.start_time:'frei'}</span></div></div>`;
     }).join('');
     return `<div class="floor"><h3>${esc(room.name)}${room.is_outside?' · außen':''}<small>${E?room.tables.length+' Tische':free+' von '+room.tables.length+' Tischen frei'}</small></h3>
       <div class="fscroll"><div class="fcanvas${room.is_outside?' out':''}" data-room="${room.id}" style="height:${H}px">${tabs||'<div class="empty" style="padding:12px">Keine Tische in diesem Raum.</div>'}</div></div></div>`;
